@@ -25,12 +25,7 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.format.enable": false,
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   // ── Editor: general ──
   "editor.tabSize": 2,
@@ -60,29 +55,23 @@
   "files.watcherExclude": {
     "**/.next/**": true,
     "**/node_modules/**": true,
-    "**/.turbo/**": true,
+    "**/.turbo/**": true
   },
   "files.associations": {
     "*.css": "tailwindcss"
   },
 
-  // ── TypeScript ──
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.preferTypeOnlyAutoImports": true,
-  "typescript.preferences.quoteStyle": "double",
-  "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.tsdk": "node_modules/typescript/lib",
-
-  // ── JavaScript ──
-  "javascript.preferences.quoteStyle": "double",
-  "javascript.updateImportsOnFileMove.enabled": "always",
+  // ── TypeScript / JavaScript ──
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "js/ts.preferences.quoteStyle": "double",
+  "js/ts.suggest.autoImports": true,
+  "js/ts.updateImportsOnFileMove.enabled": "always",
 
   // ── Tailwind CSS ──
-  "tailwindCSS.experimental.classRegex": [
-    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"]
-  ],
+  "tailwindCSS.experimental.classRegex": [["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"]],
   "tailwindCSS.classAttributes": ["class", "className", "ngClass"],
 
   // ── Prisma ──
@@ -96,9 +85,6 @@
     "**/node_modules": true,
     "**/coverage": true
   },
-
-  // ── Testing ──
-  "vitest.enable": true,
 
   // ── Explorer: file nesting for Next.js App Router ──
   "explorer.fileNesting.enabled": true,
