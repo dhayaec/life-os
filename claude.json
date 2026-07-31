@@ -1,0 +1,808 @@
+{
+  "projectName": "Next.js Production Application",
+  "version": "1.0.0",
+  "author": "Your Team",
+  "created": "2026-01-01T00:00:00Z",
+  
+  "codeStandards": {
+    "language": "TypeScript",
+    "framework": "Next.js 14+",
+    "uiLibrary": "React 18+",
+    "strictMode": true,
+    "enforceTypes": "strict"
+  },
+
+  "preCommitCheckpoints": {
+    "linting": {
+      "enabled": true,
+      "tool": "ESLint",
+      "rules": {
+        "eslint:recommended": true,
+        "next/recommended": true,
+        "react/recommended": true,
+        "react-hooks/rules-of-hooks": "error",
+        "@typescript-eslint/explicit-function-return-types": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/strict-boolean-expressions": "error",
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-debugger": "error"
+      },
+      "stagingOnly": true
+    },
+
+    "formatting": {
+      "enabled": true,
+      "tool": "Prettier",
+      "config": {
+        "semi": true,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "tabWidth": 2,
+        "useTabs": false,
+        "printWidth": 100,
+        "bracketSpacing": true,
+        "arrowParens": "always"
+      },
+      "stagingOnly": true
+    },
+
+    "typeScript": {
+      "enabled": true,
+      "checkMode": "strict",
+      "checks": [
+        "noImplicitAny",
+        "strictNullChecks",
+        "strictFunctionTypes",
+        "strictBindCallApply",
+        "strictPropertyInitialization",
+        "noImplicitThis",
+        "alwaysStrict",
+        "noUnusedLocals",
+        "noUnusedParameters",
+        "noImplicitReturns",
+        "noFallthroughCasesInSwitch",
+        "noUncheckedIndexedAccess",
+        "noImplicitOverride",
+        "noPropertyAccessFromIndexSignature"
+      ],
+      "stagingOnly": true,
+      "failOnError": true
+    },
+
+    "accessibility": {
+      "enabled": true,
+      "tool": "eslint-plugin-jsx-a11y",
+      "checks": [
+        "alt-text",
+        "aria-role",
+        "aria-props",
+        "aria-proptypes",
+        "aria-supported-aria-props",
+        "img-redundant-alt",
+        "jsx-a11y/anchor-is-valid",
+        "jsx-a11y/click-events-have-key-events",
+        "jsx-a11y/no-static-element-interactions",
+        "jsx-a11y/heading-has-content",
+        "jsx-a11y/html-has-lang"
+      ],
+      "failLevel": "error",
+      "stagingOnly": true
+    },
+
+    "security": {
+      "enabled": true,
+      "checks": [
+        {
+          "name": "No hardcoded secrets",
+          "pattern": "(API_KEY|SECRET|PASSWORD|TOKEN)\\s*=\\s*['\"]",
+          "failOnMatch": true
+        },
+        {
+          "name": "No eval() usage",
+          "pattern": "\\beval\\s*\\(",
+          "failOnMatch": true
+        },
+        {
+          "name": "No innerHTML assignment",
+          "pattern": "innerHTML\\s*=",
+          "failOnMatch": true,
+          "except": ["sanitized with DOMPurify", "marked as safe"]
+        },
+        {
+          "name": "Proper .env usage",
+          "pattern": "process\\.env\\.([A-Z_]+)",
+          "checkPrefix": "NEXT_PUBLIC_ or server-side only",
+          "failOnMismatch": true
+        },
+        {
+          "name": "No SQL injection vectors",
+          "pattern": "db\\.query\\(.*\\+.*\\)",
+          "failOnMatch": true,
+          "message": "Use parameterized queries"
+        }
+      ],
+      "stagingOnly": true,
+      "failOnError": true
+    },
+
+    "performance": {
+      "enabled": true,
+      "checks": [
+        {
+          "name": "Image optimization",
+          "rule": "Use Next.js Image component",
+          "pattern": "img\\s",
+          "suggestion": "Replace with 'import Image from 'next/image''",
+          "exceptions": ["SVG", "data URLs"]
+        },
+        {
+          "name": "Font optimization",
+          "rule": "Use next/font",
+          "pattern": "google\\(',
+          "suggestion": "Use next/font/google"
+        },
+        {
+          "name": "Large bundle detection",
+          "rule": "Check bundle size",
+          "threshold": 500,
+          "unit": "KB",
+          "action": "warn"
+        },
+        {
+          "name": "No unused imports",
+          "tool": "ESLint no-unused-vars",
+          "failOnMatch": true
+        },
+        {
+          "name": "Proper code splitting",
+          "rule": "Use dynamic imports for large components",
+          "pattern": "import.*from.*\\.(tsx?|jsx?).*// (700|800|900).*lines",
+          "suggestion": "Consider dynamic import with next/dynamic"
+        },
+        {
+          "name": "API route efficiency",
+          "rule": "Caching headers set for GET requests",
+          "checkInApiRoutes": true
+        }
+      ],
+      "stagingOnly": true
+    },
+
+    "reactBestPractices": {
+      "enabled": true,
+      "checks": [
+        {
+          "name": "Hook rules",
+          "rules": [
+            "Hooks called at top level",
+            "Hooks called only in React function components",
+            "No conditional hook calls"
+          ],
+          "tool": "eslint-plugin-react-hooks"
+        },
+        {
+          "name": "Key prop in lists",
+          "pattern": "\\.map\\([^)]+ => [^)]*<",
+          "requiresKey": true,
+          "failOnMissing": true
+        },
+        {
+          "name": "Proper dependency arrays",
+          "rule": "useEffect/useCallback/useMemo must have correct deps",
+          "tool": "react-hooks/exhaustive-deps"
+        },
+        {
+          "name": "No direct state mutation",
+          "pattern": "state\\[|this\\.state\\.",
+          "allowOnly": "setState|useState|useReducer"
+        },
+        {
+          "name": "Client vs Server components",
+          "rule": "'use client' for interactive components",
+          "checkInAppRouter": true
+        }
+      ],
+      "stagingOnly": true
+    },
+
+    "nextJsBestPractices": {
+      "enabled": true,
+      "checks": [
+        {
+          "name": "Use App Router",
+          "rule": "app/ directory preferred over pages/",
+          "minVersion": "13.0"
+        },
+        {
+          "name": "Server Component by default",
+          "rule": "Only add 'use client' when necessary",
+          "checkForOveruse": true
+        },
+        {
+          "name": "Dynamic imports",
+          "rule": "Use next/dynamic for client-side imports",
+          "pattern": "import.*dynamic"
+        },
+        {
+          "name": "Image optimization",
+          "rule": "next/image for all images",
+          "failOnDirectImg": true
+        },
+        {
+          "name": "Font optimization",
+          "rule": "next/font for all custom fonts",
+          "failOnGoogleFontsLink": true
+        },
+        {
+          "name": "Metadata API",
+          "rule": "Use Metadata object in layouts/pages",
+          "checkInPages": true
+        },
+        {
+          "name": "Proper routing",
+          "rule": "Use Link component for navigation",
+          "failOnAnchorHref": true,
+          "exceptions": ["External links", "Query string changes only"]
+        },
+        {
+          "name": "API routes security",
+          "rule": "Check auth/validation in API routes",
+          "checkInApiRoutes": true
+        }
+      ],
+      "stagingOnly": true
+    },
+
+    "testing": {
+      "enabled": true,
+      "required": false,
+      "checks": [
+        {
+          "name": "Unit test presence",
+          "rule": "Critical functions should have tests",
+          "pattern": "\\.test\\.ts$|\\.spec\\.ts$",
+          "minimumCoverage": 70
+        },
+        {
+          "name": "Integration tests",
+          "rule": "API routes should have integration tests",
+          "checkInApiRoutes": true
+        },
+        {
+          "name": "Test structure",
+          "rule": "Follow AAA pattern (Arrange, Act, Assert)"
+        }
+      ],
+      "stagingOnly": false
+    },
+
+    "documentation": {
+      "enabled": true,
+      "checks": [
+        {
+          "name": "JSDoc comments",
+          "rule": "Export functions must have JSDoc",
+          "pattern": "^export\\s+(function|const)",
+          "requiresComment": true,
+          "includeTypes": true
+        },
+        {
+          "name": "Complex logic comments",
+          "rule": "Business logic requires explanation",
+          "checkComplexity": true
+        },
+        {
+          "name": "Component prop documentation",
+          "rule": "Props must be typed and documented",
+          "checkInComponents": true
+        }
+      ],
+      "stagingOnly": true
+    }
+  },
+
+  "commitStandards": {
+    "tool": "commitlint",
+    "format": "conventional",
+    "types": [
+      {
+        "name": "feat",
+        "title": "Features",
+        "description": "A new feature",
+        "emoji": "✨"
+      },
+      {
+        "name": "fix",
+        "title": "Bug Fixes",
+        "description": "A bug fix",
+        "emoji": "🐛"
+      },
+      {
+        "name": "docs",
+        "title": "Documentation",
+        "description": "Documentation only changes",
+        "emoji": "📖"
+      },
+      {
+        "name": "style",
+        "title": "Styles",
+        "description": "Changes that do not affect code meaning (formatting, etc.)",
+        "emoji": "💅"
+      },
+      {
+        "name": "refactor",
+        "title": "Code Refactoring",
+        "description": "A code change that neither fixes a bug nor adds a feature",
+        "emoji": "♻️"
+      },
+      {
+        "name": "perf",
+        "title": "Performance Improvements",
+        "description": "A code change that improves performance",
+        "emoji": "⚡"
+      },
+      {
+        "name": "test",
+        "title": "Tests",
+        "description": "Adding missing tests or correcting existing tests",
+        "emoji": "✅"
+      },
+      {
+        "name": "chore",
+        "title": "Chores",
+        "description": "Changes to build process, dependencies, etc.",
+        "emoji": "🔧"
+      },
+      {
+        "name": "ci",
+        "title": "CI/CD",
+        "description": "Changes to CI/CD configuration",
+        "emoji": "🤖"
+      },
+      {
+        "name": "security",
+        "title": "Security",
+        "description": "Security improvements or fixes",
+        "emoji": "🔒"
+      },
+      {
+        "name": "a11y",
+        "title": "Accessibility",
+        "description": "Accessibility improvements",
+        "emoji": "♿"
+      }
+    ],
+    "rules": {
+      "type-enum": true,
+      "type-case": "always-lowercase",
+      "type-empty": "never",
+      "scope-empty": "never",
+      "subject-empty": "never",
+      "subject-full-stop": "never",
+      "subject-case": "never",
+      "header-max-length": 100,
+      "body-leading-blank": true,
+      "body-max-line-length": 100,
+      "footer-leading-blank": true,
+      "footer-max-line-length": 100
+    },
+    "examples": [
+      "feat(auth): add OAuth2 login with Google",
+      "fix(performance): memoize expensive component render",
+      "docs(readme): update installation instructions",
+      "refactor(api): extract common validation logic",
+      "perf(images): implement lazy loading for product gallery",
+      "test(checkout): add payment processing tests",
+      "a11y(forms): add ARIA labels to input fields",
+      "security(env): rotate API keys and update secrets",
+      "chore(deps): upgrade Next.js to 14.2.0",
+      "ci(actions): add lighthouse performance check"
+    ]
+  },
+
+  "branchProtection": {
+    "mainBranch": {
+      "name": "main",
+      "rules": {
+        "requirePullRequestReviews": {
+          "enabled": true,
+          "dismissalAllowance": false,
+          "requireCodeOwnerReviews": true,
+          "requiredApprovingReviewCount": 2
+        },
+        "requireStatusChecks": {
+          "enabled": true,
+          "checks": [
+            "lint",
+            "type-check",
+            "test",
+            "build",
+            "security-scan",
+            "accessibility-audit",
+            "performance-check"
+          ],
+          "strict": true
+        },
+        "restrictPushes": {
+          "enabled": true,
+          "allowBypassActors": ["github/dependabot"]
+        },
+        "dismissStaleReviews": true,
+        "requireConversationResolution": true,
+        "requireSignedCommits": false,
+        "requireUpToDateBranches": true,
+        "requireLinearHistory": true
+      }
+    },
+    "developBranch": {
+      "name": "develop",
+      "rules": {
+        "requirePullRequestReviews": {
+          "enabled": true,
+          "requiredApprovingReviewCount": 1
+        },
+        "requireStatusChecks": {
+          "enabled": true,
+          "checks": ["lint", "type-check", "test", "build"],
+          "strict": false
+        },
+        "dismissStaleReviews": true,
+        "requireUpToDateBranches": true
+      }
+    }
+  },
+
+  "preCommitHooks": {
+    "pre-commit": {
+      "tasks": [
+        {
+          "name": "Format staged files",
+          "command": "prettier --write",
+          "files": ["src/**/*.{ts,tsx,js,jsx}"]
+        },
+        {
+          "name": "Lint staged files",
+          "command": "eslint --fix",
+          "files": ["src/**/*.{ts,tsx,js,jsx}"]
+        },
+        {
+          "name": "Type check",
+          "command": "tsc --noEmit",
+          "failOnError": true
+        }
+      ]
+    },
+    "pre-push": {
+      "tasks": [
+        {
+          "name": "Run full test suite",
+          "command": "npm run test:coverage",
+          "failOnError": true
+        },
+        {
+          "name": "Build check",
+          "command": "npm run build",
+          "failOnError": true
+        },
+        {
+          "name": "Security audit",
+          "command": "npm audit --audit-level=moderate",
+          "failOnError": true,
+          "allowExceptions": "reviewed and approved by security team"
+        },
+        {
+          "name": "Bundle size check",
+          "command": "npm run analyze:bundle",
+          "failOnError": false,
+          "warn": "if exceeds 500KB"
+        }
+      ]
+    },
+    "commit-msg": {
+      "tool": "commitlint",
+      "config": ".commitlintrc.js"
+    }
+  },
+
+  "automatedChecks": {
+    "gitHubActions": {
+      "workflows": [
+        {
+          "name": "CI Pipeline",
+          "trigger": "on PR and push to develop/main",
+          "jobs": [
+            {
+              "name": "Lint",
+              "command": "npm run lint",
+              "required": true
+            },
+            {
+              "name": "Type Check",
+              "command": "npm run type-check",
+              "required": true
+            },
+            {
+              "name": "Test",
+              "command": "npm run test:coverage",
+              "required": true,
+              "threshold": "70% coverage"
+            },
+            {
+              "name": "Build",
+              "command": "npm run build",
+              "required": true
+            },
+            {
+              "name": "Security Scan",
+              "command": "npm audit && npm run security:scan",
+              "required": true
+            },
+            {
+              "name": "Accessibility Audit",
+              "command": "npm run a11y:audit",
+              "required": true,
+              "tool": "axe-core"
+            },
+            {
+              "name": "Lighthouse",
+              "command": "npm run lighthouse",
+              "required": false,
+              "thresholds": {
+                "performance": 90,
+                "accessibility": 95,
+                "bestPractices": 90,
+                "seo": 90
+              }
+            },
+            {
+              "name": "Next.js Static Analysis",
+              "command": "next lint && next build --debug",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  "productionChecklistBeforeRelease": {
+    "security": [
+      "All secrets removed from code",
+      "No hardcoded credentials",
+      "Environment variables properly configured",
+      "HTTPS enforced",
+      "CSP headers configured",
+      "CORS properly set",
+      "Dependencies audited and up-to-date",
+      "No vulnerable packages detected",
+      "SQL injection prevention verified",
+      "XSS protection verified",
+      "CSRF tokens implemented",
+      "Rate limiting configured",
+      "API authentication verified",
+      "Database backups configured",
+      "Secrets manager integrated"
+    ],
+    "performance": [
+      "Bundle size < 500KB (initial)",
+      "Lighthouse score > 90 on all metrics",
+      "First Contentful Paint < 2s",
+      "Largest Contentful Paint < 2.5s",
+      "Cumulative Layout Shift < 0.1",
+      "Images optimized (Next.js Image component)",
+      "Fonts optimized (next/font)",
+      "Code splitting implemented",
+      "Dynamic imports for large components",
+      "Caching headers configured",
+      "CDN configured and tested",
+      "Database queries optimized",
+      "N+1 query problems eliminated",
+      "API response times < 200ms",
+      "Build output analyzed and optimized"
+    ],
+    "accessibility": [
+      "WCAG 2.1 AA compliance verified",
+      "Keyboard navigation tested",
+      "Screen reader tested (NVDA, JAWS, VoiceOver)",
+      "Color contrast verified (WCAG standards)",
+      "ARIA labels present where needed",
+      "Semantic HTML used correctly",
+      "Form labels properly associated",
+      "Focus management implemented",
+      "Skip links present",
+      "Alt text for all images",
+      "No flashing content (> 3Hz)",
+      "Animations respect prefers-reduced-motion",
+      "Text alternatives for media",
+      "Links have descriptive text"
+    ],
+    "testing": [
+      "Unit test coverage > 70%",
+      "Integration tests passing",
+      "E2E tests passing",
+      "Error scenarios tested",
+      "Edge cases covered",
+      "Cross-browser tested",
+      "Mobile responsiveness tested",
+      "Accessibility tests automated",
+      "Performance tests automated",
+      "Load testing completed",
+      "Security tests (OWASP Top 10)",
+      "API contract tests passing"
+    ],
+    "codeQuality": [
+      "TypeScript strict mode enabled",
+      "No 'any' types",
+      "No console.log in production",
+      "No commented-out code",
+      "All imports used",
+      "Unused variables removed",
+      "No duplicate code",
+      "Complexity metrics acceptable",
+      "Proper error handling",
+      "Logging implemented correctly",
+      "Code reviewed by 2+ team members",
+      "Linting passes 100%",
+      "Formatting consistent"
+    ],
+    "deployment": [
+      "Environment variables validated",
+      "Database migrations tested",
+      "Rollback plan documented",
+      "Monitoring configured",
+      "Alert thresholds set",
+      "Log aggregation configured",
+      "Error tracking set up (Sentry/etc.)",
+      "Analytics configured",
+      "Health checks configured",
+      "Graceful shutdown implemented",
+      "Load balancer configured",
+      "SSL/TLS configured",
+      "Backup strategy verified",
+      "Disaster recovery plan documented"
+    ],
+    "documentation": [
+      "README up-to-date",
+      "API documentation complete",
+      "Component documentation complete",
+      "Architecture diagram present",
+      "Deployment guide written",
+      "Troubleshooting guide present",
+      "Environment setup guide written",
+      "Contributing guidelines present",
+      "Changelog updated",
+      "Version bumped appropriately"
+    ],
+    "devOps": [
+      "Docker image built and tested",
+      "Kubernetes manifests validated",
+      "CI/CD pipeline passing",
+      "Automated deployments working",
+      "Database backups automated",
+      "Monitoring dashboards created",
+      "Alert rules configured",
+      "Log retention policies set",
+      "Secret rotation configured",
+      "Network security reviewed"
+    ]
+  },
+
+  "developmentWorkflow": {
+    "branchNaming": {
+      "format": "{type}/{description}",
+      "types": [
+        "feature/",
+        "fix/",
+        "refactor/",
+        "docs/",
+        "test/",
+        "perf/",
+        "security/"
+      ],
+      "examples": [
+        "feature/oauth-google-login",
+        "fix/cart-price-calculation",
+        "refactor/auth-service",
+        "perf/image-lazy-loading",
+        "security/sql-injection-fix"
+      ]
+    },
+    "pullRequestTemplate": {
+      "title": "Clear, descriptive title",
+      "description": "What problem does this PR solve?",
+      "motivation": "Why are these changes needed?",
+      "testing": "How were these changes tested?",
+      "checklist": [
+        "Self-review completed",
+        "Comments added for complex logic",
+        "Documentation updated",
+        "Tests added",
+        "No breaking changes (or documented)",
+        "TypeScript errors resolved",
+        "Linting passes",
+        "Performance impact considered",
+        "Accessibility impact considered",
+        "Security impact considered"
+      ]
+    }
+  },
+
+  "tools": {
+    "required": [
+      {
+        "name": "husky",
+        "version": ">=8.0.0",
+        "purpose": "Git hooks",
+        "setupCmd": "npx husky install"
+      },
+      {
+        "name": "lint-staged",
+        "version": ">=13.0.0",
+        "purpose": "Run linters on staged files",
+        "config": ".lintstagedrc.js"
+      },
+      {
+        "name": "commitlint",
+        "version": ">=17.0.0",
+        "purpose": "Enforce commit message standards",
+        "config": ".commitlintrc.js"
+      },
+      {
+        "name": "eslint",
+        "version": ">=8.0.0",
+        "plugins": [
+          "@typescript-eslint/eslint-plugin",
+          "eslint-plugin-react",
+          "eslint-plugin-react-hooks",
+          "eslint-plugin-next",
+          "eslint-plugin-jsx-a11y",
+          "eslint-plugin-import"
+        ],
+        "config": ".eslintrc.js"
+      },
+      {
+        "name": "prettier",
+        "version": ">=3.0.0",
+        "purpose": "Code formatting",
+        "config": ".prettierrc"
+      },
+      {
+        "name": "typescript",
+        "version": ">=5.0.0",
+        "config": "tsconfig.json (strict mode)"
+      }
+    ],
+    "optional": [
+      {
+        "name": "vitest",
+        "purpose": "Unit testing",
+        "recommended": true
+      },
+      {
+        "name": "playwright",
+        "purpose": "E2E testing",
+        "recommended": true
+      },
+      {
+        "name": "axe-core",
+        "purpose": "Accessibility testing",
+        "recommended": true
+      },
+      {
+        "name": "bundlesize",
+        "purpose": "Bundle size monitoring",
+        "recommended": true
+      },
+      {
+        "name": "npm-audit",
+        "purpose": "Security vulnerability scanning",
+        "builtin": true
+      },
+      {
+        "name": "@next/bundle-analyzer",
+        "purpose": "Analyze bundle composition",
+        "recommended": true
+      }
+    ]
+  }
+}
