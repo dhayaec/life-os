@@ -2,8 +2,9 @@ import { render, screen } from '@testing-library/react';
 import Home from '@/app/page';
 
 describe('Home', () => {
-  it('renders the starter heading', () => {
+  it('renders the landing heading', () => {
     render(<Home />);
-    expect(screen.getByText(/To get started, edit the page\.tsx file\./i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /LifeOS/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /open dashboard/i })).toBeInTheDocument();
   });
 });
