@@ -13,6 +13,10 @@ jobs:
   quality:
     name: Lint, type-check, test & build
     runs-on: ubuntu-latest
+    # Build-time placeholders satisfy src/server/env.ts; real secrets take over once configured.
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://user:pass@localhost:5432/ci' }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET || 'ci-only-build-secret-0123456789abcdef' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
