@@ -97,7 +97,7 @@ export function NotificationsView({
                   {item.body ? (
                     <span className="text-muted-foreground text-xs">{item.body}</span>
                   ) : null}
-                  <span className="text-muted-foreground text-[10px]">
+                  <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
                     {new Date(item.createdAt).toLocaleString()}
                   </span>
                 </span>

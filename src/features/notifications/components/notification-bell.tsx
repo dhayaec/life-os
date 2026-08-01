@@ -110,7 +110,9 @@ export function NotificationBell() {
                 {item.body ? (
                   <span className="text-muted-foreground line-clamp-2 text-xs">{item.body}</span>
                 ) : null}
-                <span className="text-muted-foreground text-[10px]">{timeAgo(item.createdAt)}</span>
+                <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
+                  {timeAgo(item.createdAt)}
+                </span>
               </span>
               <Button
                 variant="ghost"

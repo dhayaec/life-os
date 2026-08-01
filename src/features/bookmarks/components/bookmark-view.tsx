@@ -175,7 +175,9 @@ function BookmarkCard({ bookmark, onEdit }: { bookmark: BookmarkItem; onEdit: ()
         <span className="text-muted-foreground ml-auto text-[10px]">{hostOf(bookmark.url)}</span>
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-[10px]">{formatDate(bookmark.createdAt)}</span>
+        <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
+          {formatDate(bookmark.createdAt)}
+        </span>
         <Button variant="ghost" size="sm" onClick={onEdit}>
           Edit
         </Button>
