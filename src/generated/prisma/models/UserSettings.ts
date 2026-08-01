@@ -29,6 +29,7 @@ export type UserSettingsMinAggregateOutputType = {
   theme: string | null;
   timezone: string | null;
   locale: string | null;
+  emailNotifications: boolean | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -39,6 +40,7 @@ export type UserSettingsMaxAggregateOutputType = {
   theme: string | null;
   timezone: string | null;
   locale: string | null;
+  emailNotifications: boolean | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -49,6 +51,7 @@ export type UserSettingsCountAggregateOutputType = {
   theme: number;
   timezone: number;
   locale: number;
+  emailNotifications: number;
   createdAt: number;
   updatedAt: number;
   _all: number;
@@ -60,6 +63,7 @@ export type UserSettingsMinAggregateInputType = {
   theme?: true;
   timezone?: true;
   locale?: true;
+  emailNotifications?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -70,6 +74,7 @@ export type UserSettingsMaxAggregateInputType = {
   theme?: true;
   timezone?: true;
   locale?: true;
+  emailNotifications?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -80,6 +85,7 @@ export type UserSettingsCountAggregateInputType = {
   theme?: true;
   timezone?: true;
   locale?: true;
+  emailNotifications?: true;
   createdAt?: true;
   updatedAt?: true;
   _all?: true;
@@ -167,6 +173,7 @@ export type UserSettingsGroupByOutputType = {
   theme: string;
   timezone: string;
   locale: string;
+  emailNotifications: boolean;
   createdAt: Date;
   updatedAt: Date;
   _count: UserSettingsCountAggregateOutputType | null;
@@ -195,6 +202,7 @@ export type UserSettingsWhereInput = {
   theme?: Prisma.StringFilter<'UserSettings'> | string;
   timezone?: Prisma.StringFilter<'UserSettings'> | string;
   locale?: Prisma.StringFilter<'UserSettings'> | string;
+  emailNotifications?: Prisma.BoolFilter<'UserSettings'> | boolean;
   createdAt?: Prisma.DateTimeFilter<'UserSettings'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'UserSettings'> | Date | string;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -206,6 +214,7 @@ export type UserSettingsOrderByWithRelationInput = {
   theme?: Prisma.SortOrder;
   timezone?: Prisma.SortOrder;
   locale?: Prisma.SortOrder;
+  emailNotifications?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   user?: Prisma.UserOrderByWithRelationInput;
@@ -221,6 +230,7 @@ export type UserSettingsWhereUniqueInput = Prisma.AtLeast<
     theme?: Prisma.StringFilter<'UserSettings'> | string;
     timezone?: Prisma.StringFilter<'UserSettings'> | string;
     locale?: Prisma.StringFilter<'UserSettings'> | string;
+    emailNotifications?: Prisma.BoolFilter<'UserSettings'> | boolean;
     createdAt?: Prisma.DateTimeFilter<'UserSettings'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'UserSettings'> | Date | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -234,6 +244,7 @@ export type UserSettingsOrderByWithAggregationInput = {
   theme?: Prisma.SortOrder;
   timezone?: Prisma.SortOrder;
   locale?: Prisma.SortOrder;
+  emailNotifications?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   _count?: Prisma.UserSettingsCountOrderByAggregateInput;
@@ -254,6 +265,7 @@ export type UserSettingsScalarWhereWithAggregatesInput = {
   theme?: Prisma.StringWithAggregatesFilter<'UserSettings'> | string;
   timezone?: Prisma.StringWithAggregatesFilter<'UserSettings'> | string;
   locale?: Prisma.StringWithAggregatesFilter<'UserSettings'> | string;
+  emailNotifications?: Prisma.BoolWithAggregatesFilter<'UserSettings'> | boolean;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'UserSettings'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'UserSettings'> | Date | string;
 };
@@ -263,6 +275,7 @@ export type UserSettingsCreateInput = {
   theme?: string;
   timezone?: string;
   locale?: string;
+  emailNotifications?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   user: Prisma.UserCreateNestedOneWithoutSettingsInput;
@@ -274,6 +287,7 @@ export type UserSettingsUncheckedCreateInput = {
   theme?: string;
   timezone?: string;
   locale?: string;
+  emailNotifications?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -283,6 +297,7 @@ export type UserSettingsUpdateInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   user?: Prisma.UserUpdateOneRequiredWithoutSettingsNestedInput;
@@ -294,6 +309,7 @@ export type UserSettingsUncheckedUpdateInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -304,6 +320,7 @@ export type UserSettingsCreateManyInput = {
   theme?: string;
   timezone?: string;
   locale?: string;
+  emailNotifications?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -313,6 +330,7 @@ export type UserSettingsUpdateManyMutationInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -323,6 +341,7 @@ export type UserSettingsUncheckedUpdateManyInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -338,6 +357,7 @@ export type UserSettingsCountOrderByAggregateInput = {
   theme?: Prisma.SortOrder;
   timezone?: Prisma.SortOrder;
   locale?: Prisma.SortOrder;
+  emailNotifications?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -348,6 +368,7 @@ export type UserSettingsMaxOrderByAggregateInput = {
   theme?: Prisma.SortOrder;
   timezone?: Prisma.SortOrder;
   locale?: Prisma.SortOrder;
+  emailNotifications?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -358,6 +379,7 @@ export type UserSettingsMinOrderByAggregateInput = {
   theme?: Prisma.SortOrder;
   timezone?: Prisma.SortOrder;
   locale?: Prisma.SortOrder;
+  emailNotifications?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -423,6 +445,7 @@ export type UserSettingsCreateWithoutUserInput = {
   theme?: string;
   timezone?: string;
   locale?: string;
+  emailNotifications?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -432,6 +455,7 @@ export type UserSettingsUncheckedCreateWithoutUserInput = {
   theme?: string;
   timezone?: string;
   locale?: string;
+  emailNotifications?: boolean;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -469,6 +493,7 @@ export type UserSettingsUpdateWithoutUserInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -478,6 +503,7 @@ export type UserSettingsUncheckedUpdateWithoutUserInput = {
   theme?: Prisma.StringFieldUpdateOperationsInput | string;
   timezone?: Prisma.StringFieldUpdateOperationsInput | string;
   locale?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -491,6 +517,7 @@ export type UserSettingsSelect<
     theme?: boolean;
     timezone?: boolean;
     locale?: boolean;
+    emailNotifications?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -507,6 +534,7 @@ export type UserSettingsSelectCreateManyAndReturn<
     theme?: boolean;
     timezone?: boolean;
     locale?: boolean;
+    emailNotifications?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -523,6 +551,7 @@ export type UserSettingsSelectUpdateManyAndReturn<
     theme?: boolean;
     timezone?: boolean;
     locale?: boolean;
+    emailNotifications?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -536,6 +565,7 @@ export type UserSettingsSelectScalar = {
   theme?: boolean;
   timezone?: boolean;
   locale?: boolean;
+  emailNotifications?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
 };
@@ -543,7 +573,14 @@ export type UserSettingsSelectScalar = {
 export type UserSettingsOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'userId' | 'theme' | 'timezone' | 'locale' | 'createdAt' | 'updatedAt',
+  | 'id'
+  | 'userId'
+  | 'theme'
+  | 'timezone'
+  | 'locale'
+  | 'emailNotifications'
+  | 'createdAt'
+  | 'updatedAt',
   ExtArgs['result']['userSettings']
 >;
 export type UserSettingsInclude<
@@ -576,6 +613,7 @@ export type $UserSettingsPayload<
       theme: string;
       timezone: string;
       locale: string;
+      emailNotifications: boolean;
       createdAt: Date;
       updatedAt: Date;
     },
@@ -1166,6 +1204,7 @@ export interface UserSettingsFieldRefs {
   readonly theme: Prisma.FieldRef<'UserSettings', 'String'>;
   readonly timezone: Prisma.FieldRef<'UserSettings', 'String'>;
   readonly locale: Prisma.FieldRef<'UserSettings', 'String'>;
+  readonly emailNotifications: Prisma.FieldRef<'UserSettings', 'Boolean'>;
   readonly createdAt: Prisma.FieldRef<'UserSettings', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'UserSettings', 'DateTime'>;
 }

@@ -5,7 +5,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { magicLink } from 'better-auth/plugins/magic-link';
 
-import { sendDevEmail } from '@/lib/dev-email';
+import { sendEmail } from '@/lib/email';
 import { db } from '@/server/db';
 import { env } from '@/server/env';
 
@@ -17,13 +17,27 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     minPasswordLength: 8,
-    sendResetPassword: async ({ url }) => {
-      sendDevEmail(`Reset your LifeOS password`, url);
+    sendResetPassword: async ({ url, user }) => {
+      await sendEmail({
+        to: user.email,
+        name: user.name,
+        subject: 'Reset your LifeOS password',
+        url,
+        actionLabel: 'Reset password',
+        body: 'We received a request to reset your LifeOS password. Click below to choose a new one. If you did not request this, you can safely ignore this email.',
+      });
     },
   },
   emailVerification: {
-    sendVerificationEmail: async ({ url }) => {
-      sendDevEmail(`Verify your LifeOS email`, url);
+    sendVerificationEmail: async ({ url, user }) => {
+      await sendEmail({
+        to: user.email,
+        name: user.name,
+        subject: 'Verify your LifeOS email',
+        url,
+        actionLabel: 'Verify email',
+        body: 'Welcome to LifeOS. Click below to verify your email address and activate your account.',
+      });
     },
   },
   socialProviders: {
@@ -46,8 +60,14 @@ export const auth = betterAuth({
   },
   plugins: [
     magicLink({
-      sendMagicLink: async ({ url }) => {
-        sendDevEmail(`Your LifeOS magic link`, url);
+      sendMagicLink: async ({ url, email }) => {
+        await sendEmail({
+          to: email,
+          subject: 'Your LifeOS magic link',
+          url,
+          actionLabel: 'Sign in',
+          body: 'Here is your sign-in link for LifeOS. It expires shortly, so use it soon.',
+        });
       },
     }),
     nextCookies(),

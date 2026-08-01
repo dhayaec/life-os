@@ -2,7 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 
-// Populated by src/lib/dev-email.ts (E2E_EMAIL_FILE) so tests can complete the
+// Populated by src/lib/email.ts (E2E_EMAIL_FILE) so tests can complete the
 // real email-verification step instead of bypassing it. The suite runs with a
 // single worker so this shared file is never read concurrently.
 const EMAIL_FILE = path.join(process.cwd(), '.e2e-email.log');

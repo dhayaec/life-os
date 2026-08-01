@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -26,12 +27,19 @@ export function SettingsForm({ initial }: { initial: UserSettingsData }) {
   const [theme, setThemeValue] = useState<ThemeLiteral>(initial.theme as ThemeLiteral);
   const [timezone, setTimezone] = useState(initial.timezone);
   const [locale, setLocale] = useState(initial.locale);
+  const [emailNotifications, setEmailNotifications] = useState(initial.emailNotifications);
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setSaving(true);
-    const result = await updateSettingsAction({ name, theme, timezone, locale });
+    const result = await updateSettingsAction({
+      name,
+      theme,
+      timezone,
+      locale,
+      emailNotifications,
+    });
     setSaving(false);
     if (!result.ok) {
       toast.error(result.error);
@@ -126,6 +134,28 @@ export function SettingsForm({ initial }: { initial: UserSettingsData }) {
               </SelectContent>
             </Select>
           </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div>
+          <h2 className="text-sm font-semibold">Notifications</h2>
+          <p className="text-muted-foreground text-xs">
+            Choose how LifeOS reaches you outside the app.
+          </p>
+        </div>
+        <div className="flex max-w-xl items-center justify-between gap-4 rounded-lg border p-4">
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="settings-email-notifications">Email notifications</Label>
+            <p className="text-muted-foreground text-xs">
+              Send app notifications to your email too.
+            </p>
+          </div>
+          <Switch
+            id="settings-email-notifications"
+            checked={emailNotifications}
+            onCheckedChange={setEmailNotifications}
+          />
         </div>
       </section>
 
