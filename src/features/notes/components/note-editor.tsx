@@ -14,6 +14,7 @@ import {
   ListOrdered,
   Quote,
   RotateCcw,
+  Sparkles,
   Star,
   Trash2,
 } from 'lucide-react';
@@ -59,6 +60,7 @@ export function NoteEditor({
   const [tags, setTags] = useState(initialTagsString);
   const [favorite, setFavorite] = useState(isFavorite);
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [aiBusy, setAiBusy] = useState<string | null>(null);
   const trashed = Boolean(trashedAt);
 
   const editor = useEditor({
@@ -121,6 +123,37 @@ export function NoteEditor({
     router.refresh();
   }
 
+  async function callAI(operation: 'summarize' | 'tasks-from-note', body: object) {
+    setAiBusy(operation);
+    try {
+      const res = await fetch(`/api/ai/${operation}`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.ok) {
+        toast.error(json?.error ?? 'Something went wrong');
+        return null;
+      }
+      return json;
+    } finally {
+      setAiBusy(null);
+    }
+  }
+
+  async function handleSummarize() {
+    const json = await callAI('summarize', { content });
+    if (json) toast.success('Summary', { description: json.data.summary });
+  }
+
+  async function handleGenerateTasks() {
+    const json = await callAI('tasks-from-note', { content });
+    if (!json) return;
+    toast.success(`Created ${json.data.count} tasks`);
+    router.refresh();
+  }
+
   function saveStateIcon() {
     if (saveState === 'saving') return <CloudUpload className="size-3.5" />;
     if (saveState === 'saved') return <Check className="size-3.5" />;
@@ -180,6 +213,26 @@ export function NoteEditor({
                 : ''}
         </span>
         <div className="ml-auto flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1"
+            disabled={trashed || aiBusy === 'summarize'}
+            onClick={handleSummarize}
+          >
+            <Sparkles className="size-4" />
+            Summarize
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1"
+            disabled={trashed || aiBusy === 'tasks-from-note'}
+            onClick={handleGenerateTasks}
+          >
+            <Sparkles className="size-4" />
+            Tasks
+          </Button>
           <Button
             variant="ghost"
             size="icon"
