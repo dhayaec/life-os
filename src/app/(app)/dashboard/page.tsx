@@ -14,7 +14,9 @@ import {
 
 import { requireUser } from '@/server/session';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/format';
 import { getDashboardData } from '@/features/dashboard/services/dashboard-service';
+import { getLocale } from '@/features/settings/services/settings-service';
 import { BriefingCard } from '@/features/ai/components/briefing-card';
 
 export const metadata: Metadata = { title: 'Dashboard' };
@@ -22,6 +24,7 @@ export const metadata: Metadata = { title: 'Dashboard' };
 export default async function DashboardPage() {
   const user = await requireUser();
   const data = await getDashboardData(user.id);
+  const locale = await getLocale(user.id);
 
   return (
     <div className="flex flex-col gap-4">
@@ -61,6 +64,7 @@ export default async function DashboardPage() {
           income={data.finance.income}
           expense={data.finance.expense}
           balance={data.finance.balance}
+          locale={locale}
         />
         <DueTasksCard tasks={data.dueTasks} />
         <UpcomingEventsCard events={data.upcomingEvents} />
@@ -145,10 +149,12 @@ function FinanceCard({
   income,
   expense,
   balance,
+  locale,
 }: {
   income: number;
   expense: number;
   balance: number;
+  locale: string;
 }) {
   return (
     <Card>
@@ -163,13 +169,13 @@ function FinanceCard({
       </CardHeader>
       <CardContent className="flex items-end justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <Stat label="Income" value={currency(income)} className="text-emerald-600" />
-          <Stat label="Expenses" value={currency(expense)} className="text-red-600" />
+          <Stat label="Income" value={currency(income, locale)} className="text-emerald-600" />
+          <Stat label="Expenses" value={currency(expense, locale)} className="text-red-600" />
         </div>
         <div className="text-right">
           <div className="text-muted-foreground text-xs font-medium uppercase">Balance</div>
           <div className={`text-2xl font-semibold ${balance < 0 ? 'text-red-600' : ''}`}>
-            {currency(balance)}
+            {currency(balance, locale)}
           </div>
         </div>
       </CardContent>
@@ -339,8 +345,8 @@ function isOverdue(dueAt: string | null): boolean {
   return dueAt !== null && new Date(dueAt).getTime() < Date.now();
 }
 
-function currency(value: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+function currency(value: number, locale: string) {
+  return formatCurrency(value, locale);
 }
 
 function timeLabel(iso: string) {

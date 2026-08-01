@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { AppShell } from '@/components/layouts/app-shell';
 import { getSession } from '@/server/session';
+import { getLocale } from '@/features/settings/services/settings-service';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -15,5 +16,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     ...(session.user.image ? { image: session.user.image } : {}),
   };
 
-  return <AppShell user={user}>{children}</AppShell>;
+  const locale = await getLocale(session.user.id);
+
+  return (
+    <AppShell user={user} locale={locale}>
+      {children}
+    </AppShell>
+  );
 }

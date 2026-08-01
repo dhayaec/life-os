@@ -6,6 +6,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 import { Button } from '@/components/ui/button';
+import { formatCurrency } from '@/lib/format';
+import { useLocale } from '@/providers/locale-provider';
 import { BudgetDialog, type BudgetInitial } from '@/features/finance/components/budget-dialog';
 import {
   TransactionDialog,
@@ -42,6 +44,7 @@ export function FinanceView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { locale } = useLocale();
   const [txDialog, setTxDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; tx: TransactionItem } | null
   >(null);
@@ -179,7 +182,7 @@ export function FinanceView({
                         <Cell key={entry.name} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip formatter={(value) => formatCurrency(Number(value), locale)} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -193,7 +196,7 @@ export function FinanceView({
                       />
                       {item.category}
                     </span>
-                    <span>{formatCurrency(item.amount)}</span>
+                    <span>{formatCurrency(item.amount, locale)}</span>
                   </div>
                 ))}
               </div>
@@ -234,7 +237,7 @@ export function FinanceView({
                     }`}
                   >
                     {tx.type === 'income' ? '+' : '-'}
-                    {formatCurrency(tx.amount)}
+                    {formatCurrency(tx.amount, locale)}
                   </span>
                 </div>
               </button>
@@ -268,11 +271,12 @@ function SummaryCard({
   value: number;
   className?: string;
 }) {
+  const { locale } = useLocale();
   return (
     <div className="rounded-md border p-4">
       <div className="text-muted-foreground text-xs font-medium uppercase">{label}</div>
       <div className={`mt-1 text-2xl font-semibold ${className ?? ''}`}>
-        {formatCurrency(value)}
+        {formatCurrency(value, locale)}
       </div>
     </div>
   );
@@ -287,6 +291,7 @@ function BudgetSection({
   onEdit: (budget: BudgetItem) => void;
   onCreate: () => void;
 }) {
+  const { locale } = useLocale();
   return (
     <div className="rounded-md border p-4">
       <div className="flex items-center justify-between">
@@ -313,7 +318,7 @@ function BudgetSection({
                 <div className="flex items-center justify-between gap-2 text-sm">
                   <span className="font-medium">{budget.category}</span>
                   <span className="text-muted-foreground">
-                    {formatCurrency(budget.spent)} / {formatCurrency(budget.amount)}
+                    {formatCurrency(budget.spent, locale)} / {formatCurrency(budget.amount, locale)}
                   </span>
                 </div>
                 <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -347,8 +352,4 @@ function todayKey() {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
     date.getDate()
   ).padStart(2, '0')}`;
-}
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
