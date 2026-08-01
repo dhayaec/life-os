@@ -8,7 +8,10 @@ const EMAIL_FILE = path.join(process.cwd(), '.e2e-email.log');
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  // Serial, single worker: tests share the .e2e-email.log sink, so they must
+  // never run concurrently or they'd read each other's verification links.
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
