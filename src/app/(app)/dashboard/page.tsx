@@ -15,6 +15,7 @@ import {
 import { requireUser } from '@/server/session';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getDashboardData } from '@/features/dashboard/services/dashboard-service';
+import { BriefingCard } from '@/features/ai/components/briefing-card';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
@@ -41,6 +42,20 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        <div className="lg:col-span-2">
+          <BriefingCard
+            snapshot={{
+              agenda: data.agendaEvents.map((e) => ({ title: e.title, startAt: e.startAt })),
+              tasksDue: data.dueTasks.map((t) => ({ title: t.title, dueAt: t.dueAt })),
+              habits: data.habitStreaks.map((h) => ({ name: h.name, streak: h.currentStreak })),
+              recentNotes: data.recentNotes.map((n) => ({
+                title: n.title,
+                updatedAt: n.updatedAt,
+              })),
+              finance: { balance: data.finance.balance, expense: data.finance.expense },
+            }}
+          />
+        </div>
         <AgendaCard events={data.agendaEvents} tasks={data.agendaTasks} />
         <FinanceCard
           income={data.finance.income}

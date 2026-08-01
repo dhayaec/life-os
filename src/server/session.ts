@@ -3,6 +3,7 @@ import 'server-only';
 import { headers } from 'next/headers';
 
 import { auth } from '@/server/auth';
+import { assertRole, type Role } from '@/utils/rbac';
 
 export async function getSession() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -20,4 +21,14 @@ export async function requireUser() {
     throw new Error('Unauthorized');
   }
   return user;
+}
+
+export async function requireRole(...roles: Role[]) {
+  const user = await requireUser();
+  assertRole(user.role, roles);
+  return user;
+}
+
+export async function requireAdmin() {
+  return requireRole('admin');
 }

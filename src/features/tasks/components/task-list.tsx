@@ -87,6 +87,7 @@ export function TaskList({
             <div className="flex shrink-0 items-center gap-1.5">
               {task.dueAt ? (
                 <span className={`text-xs ${overdue ? 'text-red-500' : 'text-muted-foreground'}`}>
+                  {overdue ? <span className="sr-only">Overdue — </span> : null}
                   {formatDue(task.dueAt)}
                 </span>
               ) : null}
@@ -96,7 +97,7 @@ export function TaskList({
               <button
                 type="button"
                 onClick={() => handleDelete(task)}
-                className="text-muted-foreground hover:text-destructive rounded p-1 opacity-0 transition-opacity group-hover:opacity-100"
+                className="text-muted-foreground hover:text-destructive rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
                 aria-label="Delete task"
               >
                 <Trash2 className="size-4" />

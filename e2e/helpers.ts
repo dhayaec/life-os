@@ -13,7 +13,15 @@ function emailUrls(): string[] {
   return readFileSync(EMAIL_FILE, 'utf-8')
     .split('\n')
     .filter(Boolean)
-    .map((line) => (JSON.parse(line) as { url: string }).url);
+    .flatMap((line) => {
+      try {
+        const parsed = JSON.parse(line) as { url: string };
+        return parsed.url ? [parsed.url] : [];
+      } catch {
+        // Skip a partially-written line while the log is being appended.
+        return [];
+      }
+    });
 }
 
 // The first DB-touching request after `next start` boots intermittently loses
@@ -32,6 +40,24 @@ async function warmUp(page: Page): Promise<void> {
   });
 }
 
+// The login POST intermittently loses its response (Neon cold start), leaving
+// the page on /login. Retry the submission rather than failing the whole test.
+async function signIn(page: Page, email: string): Promise<void> {
+  for (let attempt = 1; ; attempt++) {
+    await page.getByLabel('Email').fill(email);
+    await page.getByLabel('Password').fill(PASSWORD);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    try {
+      await expect(page).toHaveURL(/\/dashboard/, { timeout: 15_000 });
+      return;
+    } catch {
+      if (attempt >= 3) {
+        throw new Error('Sign-in did not reach /dashboard after 3 attempts');
+      }
+    }
+  }
+}
+
 export async function signUpAndLogin(page: Page): Promise<void> {
   const email = `e2e-${Date.now()}@example.com`;
   rmSync(EMAIL_FILE, { force: true });
@@ -48,8 +74,6 @@ export async function signUpAndLogin(page: Page): Promise<void> {
   await page.goto(emailUrls()[0] as string);
 
   await page.goto('/login');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(PASSWORD);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await expect(page).toHaveURL(/\/dashboard/);
+  await warmUp(page);
+  await signIn(page, email);
 }

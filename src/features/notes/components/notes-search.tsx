@@ -28,6 +28,7 @@ export function NotesSearch() {
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder="Search notes…"
+        aria-label="Search notes"
         className="bg-muted/40 h-9 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
       />
     </form>

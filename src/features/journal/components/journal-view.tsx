@@ -69,9 +69,11 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span
+                      aria-hidden="true"
                       className="size-2 shrink-0 rounded-full"
                       style={{ backgroundColor: mood.color }}
                     />
+                    <span className="sr-only">{mood.label}</span>
                     <span className="font-medium">
                       {entry.title || formatDateTime(entry.entryAt)}
                     </span>
