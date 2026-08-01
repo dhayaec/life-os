@@ -70,6 +70,7 @@ export const ModelName = {
   Bookmark: 'Bookmark',
   FinanceTransaction: 'FinanceTransaction',
   Budget: 'Budget',
+  ShoppingItem: 'ShoppingItem',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -370,6 +371,21 @@ export const BudgetScalarFieldEnum = {
 
 export type BudgetScalarFieldEnum =
   (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum];
+
+export const ShoppingItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  category: 'category',
+  quantity: 'quantity',
+  note: 'note',
+  completed: 'completed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type ShoppingItemScalarFieldEnum =
+  (typeof ShoppingItemScalarFieldEnum)[keyof typeof ShoppingItemScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

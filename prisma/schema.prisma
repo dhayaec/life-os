@@ -40,6 +40,7 @@ model User {
   bookmarks     Bookmark[]
   transactions  FinanceTransaction[]
   budgets       Budget[]
+  shoppingItems ShoppingItem[]
 
   @@index([role])
 }
@@ -370,4 +371,19 @@ model Budget {
 
   @@index([userId, month])
   @@unique([userId, month, category])
+}
+
+model ShoppingItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  category  String   @default("Other")
+  quantity  Int      @default(1)
+  note      String?
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, completed])
 }

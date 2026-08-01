@@ -126,3 +126,8 @@ export type FinanceTransaction = Prisma.FinanceTransactionModel;
  *
  */
 export type Budget = Prisma.BudgetModel;
+/**
+ * Model ShoppingItem
+ *
+ */
+export type ShoppingItem = Prisma.ShoppingItemModel;

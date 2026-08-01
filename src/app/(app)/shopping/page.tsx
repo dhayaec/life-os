@@ -1,9 +1,23 @@
-import { ShoppingCart } from 'lucide-react';
+import type { Metadata } from 'next';
 
-import { ModulePlaceholder } from '@/components/common/module-placeholder';
+import { requireUser } from '@/server/session';
+import { ShoppingView } from '@/features/shopping/components/shopping-view';
+import { getShoppingItems } from '@/features/shopping/services/shopping-service';
 
-export default function ShoppingPage() {
-  return (
-    <ModulePlaceholder title="Shopping" description="Lists and checklists" icon={ShoppingCart} />
-  );
+export const metadata: Metadata = { title: 'Shopping' };
+
+export default async function ShoppingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const user = await requireUser();
+  const { category: categoryParam } = await searchParams;
+
+  const categories = await getShoppingItems(user.id).then((data) => data.categories);
+  const category = categoryParam && categories.includes(categoryParam) ? categoryParam : null;
+
+  const data = await getShoppingItems(user.id, category);
+
+  return <ShoppingView {...data} category={category} />;
 }
