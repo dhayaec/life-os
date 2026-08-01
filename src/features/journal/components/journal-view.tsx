@@ -74,11 +74,11 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
                       style={{ backgroundColor: mood.color }}
                     />
                     <span className="sr-only">{mood.label}</span>
-                    <span className="font-medium">
+                    <span suppressHydrationWarning className="font-medium">
                       {entry.title || formatDateTime(entry.entryAt)}
                     </span>
                   </div>
-                  <span className="text-muted-foreground text-xs">
+                  <span suppressHydrationWarning className="text-muted-foreground text-xs">
                     {formatDateTime(entry.entryAt)}
                   </span>
                 </div>

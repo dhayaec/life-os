@@ -138,7 +138,9 @@ export function FinanceView({
           <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
             <ChevronRight className="size-4" />
           </Button>
-          <h1 className="text-lg font-semibold">{monthLabel(month)}</h1>
+          <h1 suppressHydrationWarning className="text-lg font-semibold">
+            {monthLabel(month)}
+          </h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setBudgetDialog({ mode: 'create' })}>

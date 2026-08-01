@@ -78,7 +78,7 @@ export function HabitView({ month, habits }: { month: string; habits: HabitItem[
           <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
             <ChevronRight className="size-4" />
           </Button>
-          <h1 className="text-lg font-semibold">
+          <h1 suppressHydrationWarning className="text-lg font-semibold">
             {new Date(year, month0, 1).toLocaleDateString(undefined, {
               month: 'long',
               year: 'numeric',

@@ -159,7 +159,7 @@ export function DocumentsView({
                   >
                     {doc.name}
                   </a>
-                  <span className="text-muted-foreground text-xs">
+                  <span suppressHydrationWarning className="text-muted-foreground text-xs">
                     {formatSize(doc.size)} · {new Date(doc.createdAt).toLocaleDateString()}
                   </span>
                 </div>

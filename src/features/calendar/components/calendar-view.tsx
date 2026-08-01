@@ -100,7 +100,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
         <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
           <ChevronRight className="size-4" />
         </Button>
-        <h1 className="text-lg font-semibold">
+        <h1 suppressHydrationWarning className="text-lg font-semibold">
           {firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
         </h1>
       </div>
@@ -146,6 +146,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
                   key={event.id}
                   type="button"
                   onClick={() => setDialog({ mode: 'edit', event })}
+                  suppressHydrationWarning
                   className="flex items-center gap-1 truncate rounded px-1 py-0.5 text-left text-[10px]"
                   style={{ backgroundColor: `${event.color}22`, color: event.color }}
                 >
