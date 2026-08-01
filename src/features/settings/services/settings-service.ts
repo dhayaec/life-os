@@ -8,6 +8,7 @@ export type UserSettingsData = {
   theme: string;
   timezone: string;
   locale: string;
+  emailNotifications: boolean;
 };
 
 export async function getSettings(userId: string): Promise<UserSettingsData> {
@@ -29,6 +30,7 @@ export async function getSettings(userId: string): Promise<UserSettingsData> {
     theme: settings.theme,
     timezone: settings.timezone,
     locale: settings.locale,
+    emailNotifications: settings.emailNotifications,
   };
 }
 
@@ -39,6 +41,7 @@ export async function updateSettings(
     theme: string;
     timezone: string;
     locale: string;
+    emailNotifications: boolean;
   }
 ): Promise<UserSettingsData> {
   await Promise.all([
@@ -49,12 +52,14 @@ export async function updateSettings(
         theme: input.theme,
         timezone: input.timezone,
         locale: input.locale,
+        emailNotifications: input.emailNotifications,
       },
       create: {
         userId,
         theme: input.theme,
         timezone: input.timezone,
         locale: input.locale,
+        emailNotifications: input.emailNotifications,
       },
     }),
   ]);
@@ -70,5 +75,6 @@ export async function updateSettings(
     theme: input.theme,
     timezone: input.timezone,
     locale: input.locale,
+    emailNotifications: input.emailNotifications,
   };
 }

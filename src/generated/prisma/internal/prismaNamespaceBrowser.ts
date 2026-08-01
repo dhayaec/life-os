@@ -157,6 +157,7 @@ export const UserSettingsScalarFieldEnum = {
   theme: 'theme',
   timezone: 'timezone',
   locale: 'locale',
+  emailNotifications: 'emailNotifications',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 } as const;
@@ -168,6 +169,7 @@ export const NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   title: 'title',
+  type: 'type',
   body: 'body',
   read: 'read',
   createdAt: 'createdAt',

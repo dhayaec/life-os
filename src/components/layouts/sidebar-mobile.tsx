@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Command, MenuIcon } from 'lucide-react';
+import { MenuIcon } from 'lucide-react';
+
+import { LifeIcon } from '@/components/common/logo';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -26,9 +28,7 @@ export function MobileSidebar() {
       <SheetContent side="left" className="w-72 p-0">
         <SheetHeader className="border-b px-4 py-3">
           <SheetTitle className="flex items-center gap-2 text-base">
-            <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
-              <Command className="size-4" />
-            </span>
+            <LifeIcon className="size-8" />
             LifeOS
           </SheetTitle>
         </SheetHeader>

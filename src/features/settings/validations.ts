@@ -27,4 +27,5 @@ export const updateSettingsSchema = z.object({
   theme: z.enum(THEMES),
   timezone: z.enum(TIMEZONES),
   locale: z.enum(LOCALES),
+  emailNotifications: z.boolean(),
 });
