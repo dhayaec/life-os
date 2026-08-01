@@ -1,12 +1,12 @@
 'use client';
 
-import { Bell, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { ThemeToggle } from '@/components/common/theme-toggle';
+import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,9 +63,7 @@ export function Topbar({ user }: { user: TopbarUser }) {
         </kbd>
       </button>
       <div className="ml-auto flex items-center gap-1">
-        <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="size-4" />
-        </Button>
+        <NotificationBell />
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
