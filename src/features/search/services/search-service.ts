@@ -18,15 +18,20 @@ export async function globalSearch(
   const query = q.trim();
   if (!query) return [];
 
+  // Tokenize so "buy milk" matches rows containing both words in any order
+  // (substring search required the exact phrase). Every token must match
+  // somewhere across the searched fields, case-insensitively.
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const like = (token: string) => ({ contains: token, mode: 'insensitive' as const });
+
   const [notes, tasks, events, journal, habits, bookmarks] = await Promise.all([
     db.note.findMany({
       where: {
         userId,
         trashedAt: null,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { content: { contains: query, mode: 'insensitive' } },
-        ],
+        AND: tokens.map((token) => ({
+          OR: [{ title: like(token) }, { content: like(token) }],
+        })),
       },
       select: { id: true, title: true },
       take: limitPerType,
@@ -34,42 +39,39 @@ export async function globalSearch(
     db.task.findMany({
       where: {
         userId,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } },
-        ],
+        AND: tokens.map((token) => ({
+          OR: [{ title: like(token) }, { description: like(token) }],
+        })),
       },
       select: { id: true, title: true },
       take: limitPerType,
     }),
     db.calendarEvent.findMany({
-      where: { userId, title: { contains: query, mode: 'insensitive' } },
+      where: { userId, AND: tokens.map((token) => ({ title: like(token) })) },
       select: { id: true, title: true },
       take: limitPerType,
     }),
     db.journalEntry.findMany({
       where: {
         userId,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { content: { contains: query, mode: 'insensitive' } },
-        ],
+        AND: tokens.map((token) => ({
+          OR: [{ title: like(token) }, { content: like(token) }],
+        })),
       },
       select: { id: true, title: true, content: true },
       take: limitPerType,
     }),
     db.habit.findMany({
-      where: { userId, name: { contains: query, mode: 'insensitive' } },
+      where: { userId, AND: tokens.map((token) => ({ name: like(token) })) },
       select: { id: true, name: true },
       take: limitPerType,
     }),
     db.bookmark.findMany({
       where: {
         userId,
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { url: { contains: query, mode: 'insensitive' } },
-        ],
+        AND: tokens.map((token) => ({
+          OR: [{ title: like(token) }, { url: like(token) }],
+        })),
       },
       select: { id: true, title: true, url: true },
       take: limitPerType,
