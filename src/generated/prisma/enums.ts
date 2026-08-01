@@ -57,3 +57,10 @@ export const BookmarkType = {
 } as const;
 
 export type BookmarkType = (typeof BookmarkType)[keyof typeof BookmarkType];
+
+export const TransactionType = {
+  income: 'income',
+  expense: 'expense',
+} as const;
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType];

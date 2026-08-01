@@ -38,6 +38,8 @@ model User {
   journalEntries JournalEntry[]
   collections   Collection[]
   bookmarks     Bookmark[]
+  transactions  FinanceTransaction[]
+  budgets       Budget[]
 
   @@index([role])
 }
@@ -334,4 +336,38 @@ model Bookmark {
 
   @@index([userId])
   @@index([userId, collectionId])
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+model FinanceTransaction {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Decimal         @db.Decimal(12, 2)
+  type      TransactionType @default(expense)
+  category  String
+  date      DateTime        @db.Date
+  note      String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId, date])
+}
+
+model Budget {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category  String
+  amount    Decimal  @db.Decimal(12, 2)
+  month     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, month])
+  @@unique([userId, month, category])
 }

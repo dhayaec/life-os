@@ -116,3 +116,13 @@ export type Collection = Prisma.CollectionModel;
  *
  */
 export type Bookmark = Prisma.BookmarkModel;
+/**
+ * Model FinanceTransaction
+ *
+ */
+export type FinanceTransaction = Prisma.FinanceTransactionModel;
+/**
+ * Model Budget
+ *
+ */
+export type Budget = Prisma.BudgetModel;
