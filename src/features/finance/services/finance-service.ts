@@ -190,6 +190,17 @@ export type BudgetUpdateInput = {
   month?: string | undefined;
 };
 
+async function spentForCategory(userId: string, category: string, month: string): Promise<number> {
+  const [year, m] = month.split('-').map(Number) as [number, number];
+  const from = new Date(year, m - 1, 1);
+  const to = new Date(year, m, 1);
+  const rows = await db.financeTransaction.findMany({
+    where: { userId, category, type: 'expense', date: { gte: from, lt: to } },
+    select: { amount: true },
+  });
+  return rows.reduce((sum, row) => sum + Number(row.amount), 0);
+}
+
 export async function createBudget(userId: string, input: BudgetInput): Promise<BudgetItem> {
   const budget = await db.budget.create({
     data: {
@@ -204,7 +215,7 @@ export async function createBudget(userId: string, input: BudgetInput): Promise<
     category: budget.category,
     amount: Number(budget.amount),
     month: budget.month,
-    spent: 0,
+    spent: await spentForCategory(userId, budget.category, budget.month),
   };
 }
 
@@ -232,7 +243,7 @@ export async function updateBudget(
     category: updated.category,
     amount: Number(updated.amount),
     month: updated.month,
-    spent: 0,
+    spent: await spentForCategory(userId, updated.category, updated.month),
   };
 }
 
