@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // Next aliases `server-only` internally at build; give vitest a local empty module.
+      'server-only': fileURLToPath(new URL('./tests/mocks/server-only.ts', import.meta.url)),
     },
   },
   test: {
