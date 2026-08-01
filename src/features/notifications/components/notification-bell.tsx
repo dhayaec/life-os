@@ -99,10 +99,12 @@ export function NotificationBell() {
               className="flex items-start gap-2 py-2"
             >
               <span
+                aria-hidden="true"
                 className={`mt-1.5 size-2 shrink-0 rounded-full ${
                   item.read ? 'bg-transparent' : 'bg-primary'
                 }`}
               />
+              <span className="sr-only">{item.read ? 'Read' : 'Unread'}</span>
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                 <span className="text-sm font-medium">{item.title}</span>
                 {item.body ? (

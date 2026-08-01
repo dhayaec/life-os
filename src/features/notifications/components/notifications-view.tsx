@@ -86,10 +86,12 @@ export function NotificationsView({
             >
               <span className="flex min-w-0 items-start gap-2">
                 <span
+                  aria-hidden="true"
                   className={`mt-1.5 size-2 shrink-0 rounded-full ${
                     item.read ? 'bg-transparent' : 'bg-primary'
                   }`}
                 />
+                <span className="sr-only">{item.read ? 'Read' : 'Unread'}</span>
                 <span className="flex flex-col gap-0.5">
                   <span className="text-sm font-medium">{item.title}</span>
                   {item.body ? (

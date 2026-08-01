@@ -55,6 +55,7 @@ export function TaskView({
             key={item.value}
             type="button"
             onClick={() => setStatus(item.value)}
+            aria-pressed={initialStatus === item.value}
             className={`rounded-full px-3 py-1 text-sm ${
               initialStatus === item.value
                 ? 'bg-primary text-primary-foreground'
@@ -70,6 +71,7 @@ export function TaskView({
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search tasks…"
+            aria-label="Search tasks"
             className="bg-muted/40 h-8 w-full rounded-md border pl-9 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </form>

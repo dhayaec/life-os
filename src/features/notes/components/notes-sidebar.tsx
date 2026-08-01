@@ -90,6 +90,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
           )}
           <Link
             href={`/notes?folder=${node.id}`}
+            aria-current={isActive ? 'page' : undefined}
             className={`flex flex-1 items-center gap-1.5 truncate rounded-md px-1 text-sm ${
               isActive ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
             }`}
@@ -119,6 +120,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
 
       <Link
         href="/notes"
+        aria-current={!activeFolder && !isTrash ? 'page' : undefined}
         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ${
           !activeFolder && !isTrash ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
         }`}
@@ -128,6 +130,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
       </Link>
       <Link
         href="/notes?favorite=1"
+        aria-current={searchParams.get('favorite') ? 'page' : undefined}
         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ${
           searchParams.get('favorite') ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
         }`}
@@ -137,6 +140,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
       </Link>
       <Link
         href="/notes/trash"
+        aria-current={isTrash ? 'page' : undefined}
         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ${
           isTrash ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
         }`}
@@ -164,6 +168,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
           <Input
             autoFocus
             placeholder="Folder name"
+            aria-label="Folder name"
             value={newFolderName}
             onChange={(event) => setNewFolderName(event.target.value)}
             onBlur={() => setCreating(false)}
