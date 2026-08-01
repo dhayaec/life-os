@@ -1,15 +1,52 @@
 'use client';
 
 import { Bell, Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { ThemeToggle } from '@/components/common/theme-toggle';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { authClient } from '@/lib/auth-client';
 import { useAppDispatch } from '@/store/redux/hooks';
 import { setCommandPaletteOpen } from '@/store/redux/slices/ui-slice';
 import { MobileSidebar } from './sidebar-mobile';
 
-export function Topbar() {
+export type TopbarUser = {
+  name: string;
+  email: string;
+  image?: string | null;
+};
+
+export function Topbar({ user }: { user: TopbarUser }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const initials = user.name
+    .split(' ')
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  async function handleSignOut() {
+    const { error } = await authClient.signOut();
+    if (error) {
+      toast.error('Unable to sign out');
+      return;
+    }
+    router.push('/login');
+    router.refresh();
+  }
 
   return (
     <header className="bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-4 backdrop-blur">
@@ -30,9 +67,32 @@ export function Topbar() {
           <Bell className="size-4" />
         </Button>
         <ThemeToggle />
-        <div className="bg-primary text-primary-foreground ml-2 flex size-8 items-center justify-center rounded-full text-xs font-semibold">
-          U
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label="Account menu"
+              className="ml-2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Avatar className="size-8">
+                {user.image ? <AvatarImage src={user.image} alt={user.name} /> : null}
+                <AvatarFallback className="text-xs font-semibold">{initials}</AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col">
+                <span className="truncate text-sm font-semibold">{user.name}</span>
+                <span className="text-muted-foreground truncate text-xs font-normal">
+                  {user.email}
+                </span>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
