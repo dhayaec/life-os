@@ -246,6 +246,7 @@ export type UserWhereInput = {
   transactions?: Prisma.FinanceTransactionListRelationFilter;
   budgets?: Prisma.BudgetListRelationFilter;
   shoppingItems?: Prisma.ShoppingItemListRelationFilter;
+  documents?: Prisma.DocumentListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -277,6 +278,7 @@ export type UserOrderByWithRelationInput = {
   transactions?: Prisma.FinanceTransactionOrderByRelationAggregateInput;
   budgets?: Prisma.BudgetOrderByRelationAggregateInput;
   shoppingItems?: Prisma.ShoppingItemOrderByRelationAggregateInput;
+  documents?: Prisma.DocumentOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -315,6 +317,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     transactions?: Prisma.FinanceTransactionListRelationFilter;
     budgets?: Prisma.BudgetListRelationFilter;
     shoppingItems?: Prisma.ShoppingItemListRelationFilter;
+    documents?: Prisma.DocumentListRelationFilter;
   },
   'id' | 'email'
 >;
@@ -382,6 +385,7 @@ export type UserCreateInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -413,6 +417,7 @@ export type UserUncheckedCreateInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -444,6 +449,7 @@ export type UserUpdateInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -475,6 +481,7 @@ export type UserUncheckedUpdateInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -1033,6 +1040,32 @@ export type UserUpdateOneRequiredWithoutShoppingItemsNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutDocumentsInput,
+    Prisma.UserUncheckedCreateWithoutDocumentsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutDocumentsInput,
+    Prisma.UserUncheckedCreateWithoutDocumentsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDocumentsInput;
+  upsert?: Prisma.UserUpsertWithoutDocumentsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutDocumentsInput,
+      Prisma.UserUpdateWithoutDocumentsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutDocumentsInput
+  >;
+};
+
 export type UserCreateWithoutSessionsInput = {
   id: string;
   name: string;
@@ -1061,6 +1094,7 @@ export type UserCreateWithoutSessionsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1091,6 +1125,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1149,6 +1184,7 @@ export type UserUpdateWithoutSessionsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1179,6 +1215,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutAccountsInput = {
@@ -1209,6 +1246,7 @@ export type UserCreateWithoutAccountsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1239,6 +1277,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1297,6 +1336,7 @@ export type UserUpdateWithoutAccountsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1327,6 +1367,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutSettingsInput = {
@@ -1357,6 +1398,7 @@ export type UserCreateWithoutSettingsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutSettingsInput = {
@@ -1387,6 +1429,7 @@ export type UserUncheckedCreateWithoutSettingsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutSettingsInput = {
@@ -1445,6 +1488,7 @@ export type UserUpdateWithoutSettingsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutSettingsInput = {
@@ -1475,6 +1519,7 @@ export type UserUncheckedUpdateWithoutSettingsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutNotificationsInput = {
@@ -1505,6 +1550,7 @@ export type UserCreateWithoutNotificationsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -1535,6 +1581,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -1593,6 +1640,7 @@ export type UserUpdateWithoutNotificationsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1623,6 +1671,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutFoldersInput = {
@@ -1653,6 +1702,7 @@ export type UserCreateWithoutFoldersInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutFoldersInput = {
@@ -1683,6 +1733,7 @@ export type UserUncheckedCreateWithoutFoldersInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutFoldersInput = {
@@ -1741,6 +1792,7 @@ export type UserUpdateWithoutFoldersInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutFoldersInput = {
@@ -1771,6 +1823,7 @@ export type UserUncheckedUpdateWithoutFoldersInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutNotesInput = {
@@ -1801,6 +1854,7 @@ export type UserCreateWithoutNotesInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutNotesInput = {
@@ -1831,6 +1885,7 @@ export type UserUncheckedCreateWithoutNotesInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutNotesInput = {
@@ -1886,6 +1941,7 @@ export type UserUpdateWithoutNotesInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutNotesInput = {
@@ -1916,6 +1972,7 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutTagsInput = {
@@ -1946,6 +2003,7 @@ export type UserCreateWithoutTagsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutTagsInput = {
@@ -1976,6 +2034,7 @@ export type UserUncheckedCreateWithoutTagsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutTagsInput = {
@@ -2022,6 +2081,7 @@ export type UserUpdateWithoutTagsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutTagsInput = {
@@ -2052,6 +2112,7 @@ export type UserUncheckedUpdateWithoutTagsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutTasksInput = {
@@ -2082,6 +2143,7 @@ export type UserCreateWithoutTasksInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -2112,6 +2174,7 @@ export type UserUncheckedCreateWithoutTasksInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -2167,6 +2230,7 @@ export type UserUpdateWithoutTasksInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -2197,6 +2261,7 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutLabelsInput = {
@@ -2227,6 +2292,7 @@ export type UserCreateWithoutLabelsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutLabelsInput = {
@@ -2257,6 +2323,7 @@ export type UserUncheckedCreateWithoutLabelsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutLabelsInput = {
@@ -2315,6 +2382,7 @@ export type UserUpdateWithoutLabelsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutLabelsInput = {
@@ -2345,6 +2413,7 @@ export type UserUncheckedUpdateWithoutLabelsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutEventsInput = {
@@ -2375,6 +2444,7 @@ export type UserCreateWithoutEventsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutEventsInput = {
@@ -2405,6 +2475,7 @@ export type UserUncheckedCreateWithoutEventsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutEventsInput = {
@@ -2463,6 +2534,7 @@ export type UserUpdateWithoutEventsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutEventsInput = {
@@ -2493,6 +2565,7 @@ export type UserUncheckedUpdateWithoutEventsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutHabitsInput = {
@@ -2523,6 +2596,7 @@ export type UserCreateWithoutHabitsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutHabitsInput = {
@@ -2553,6 +2627,7 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutHabitsInput = {
@@ -2611,6 +2686,7 @@ export type UserUpdateWithoutHabitsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutHabitsInput = {
@@ -2641,6 +2717,7 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutJournalEntriesInput = {
@@ -2671,6 +2748,7 @@ export type UserCreateWithoutJournalEntriesInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutJournalEntriesInput = {
@@ -2701,6 +2779,7 @@ export type UserUncheckedCreateWithoutJournalEntriesInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutJournalEntriesInput = {
@@ -2759,6 +2838,7 @@ export type UserUpdateWithoutJournalEntriesInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutJournalEntriesInput = {
@@ -2789,6 +2869,7 @@ export type UserUncheckedUpdateWithoutJournalEntriesInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutCollectionsInput = {
@@ -2819,6 +2900,7 @@ export type UserCreateWithoutCollectionsInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutCollectionsInput = {
@@ -2849,6 +2931,7 @@ export type UserUncheckedCreateWithoutCollectionsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutCollectionsInput = {
@@ -2907,6 +2990,7 @@ export type UserUpdateWithoutCollectionsInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutCollectionsInput = {
@@ -2937,6 +3021,7 @@ export type UserUncheckedUpdateWithoutCollectionsInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutBookmarksInput = {
@@ -2967,6 +3052,7 @@ export type UserCreateWithoutBookmarksInput = {
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutBookmarksInput = {
@@ -2997,6 +3083,7 @@ export type UserUncheckedCreateWithoutBookmarksInput = {
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutBookmarksInput = {
@@ -3055,6 +3142,7 @@ export type UserUpdateWithoutBookmarksInput = {
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutBookmarksInput = {
@@ -3085,6 +3173,7 @@ export type UserUncheckedUpdateWithoutBookmarksInput = {
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutTransactionsInput = {
@@ -3115,6 +3204,7 @@ export type UserCreateWithoutTransactionsInput = {
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -3145,6 +3235,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -3203,6 +3294,7 @@ export type UserUpdateWithoutTransactionsInput = {
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -3233,6 +3325,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutBudgetsInput = {
@@ -3263,6 +3356,7 @@ export type UserCreateWithoutBudgetsInput = {
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput;
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutBudgetsInput = {
@@ -3293,6 +3387,7 @@ export type UserUncheckedCreateWithoutBudgetsInput = {
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput;
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutBudgetsInput = {
@@ -3351,6 +3446,7 @@ export type UserUpdateWithoutBudgetsInput = {
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput;
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutBudgetsInput = {
@@ -3381,6 +3477,7 @@ export type UserUncheckedUpdateWithoutBudgetsInput = {
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput;
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutShoppingItemsInput = {
@@ -3411,6 +3508,7 @@ export type UserCreateWithoutShoppingItemsInput = {
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput;
   transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutShoppingItemsInput = {
@@ -3441,6 +3539,7 @@ export type UserUncheckedCreateWithoutShoppingItemsInput = {
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput;
   transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutShoppingItemsInput = {
@@ -3499,6 +3598,7 @@ export type UserUpdateWithoutShoppingItemsInput = {
   bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput;
   transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutShoppingItemsInput = {
@@ -3529,6 +3629,159 @@ export type UserUncheckedUpdateWithoutShoppingItemsInput = {
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput;
   transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutDocumentsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+  journalEntries?: Prisma.JournalEntryCreateNestedManyWithoutUserInput;
+  collections?: Prisma.CollectionCreateNestedManyWithoutUserInput;
+  bookmarks?: Prisma.BookmarkCreateNestedManyWithoutUserInput;
+  transactions?: Prisma.FinanceTransactionCreateNestedManyWithoutUserInput;
+  budgets?: Prisma.BudgetCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutDocumentsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+  journalEntries?: Prisma.JournalEntryUncheckedCreateNestedManyWithoutUserInput;
+  collections?: Prisma.CollectionUncheckedCreateNestedManyWithoutUserInput;
+  bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutUserInput;
+  transactions?: Prisma.FinanceTransactionUncheckedCreateNestedManyWithoutUserInput;
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutDocumentsInput,
+    Prisma.UserUncheckedCreateWithoutDocumentsInput
+  >;
+};
+
+export type UserUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutDocumentsInput,
+    Prisma.UserUncheckedUpdateWithoutDocumentsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutDocumentsInput,
+    Prisma.UserUncheckedCreateWithoutDocumentsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutDocumentsInput,
+    Prisma.UserUncheckedUpdateWithoutDocumentsInput
+  >;
+};
+
+export type UserUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+  journalEntries?: Prisma.JournalEntryUpdateManyWithoutUserNestedInput;
+  collections?: Prisma.CollectionUpdateManyWithoutUserNestedInput;
+  bookmarks?: Prisma.BookmarkUpdateManyWithoutUserNestedInput;
+  transactions?: Prisma.FinanceTransactionUpdateManyWithoutUserNestedInput;
+  budgets?: Prisma.BudgetUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+  journalEntries?: Prisma.JournalEntryUncheckedUpdateManyWithoutUserNestedInput;
+  collections?: Prisma.CollectionUncheckedUpdateManyWithoutUserNestedInput;
+  bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutUserNestedInput;
+  transactions?: Prisma.FinanceTransactionUncheckedUpdateManyWithoutUserNestedInput;
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -3552,6 +3805,7 @@ export type UserCountOutputType = {
   transactions: number;
   budgets: number;
   shoppingItems: number;
+  documents: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -3573,6 +3827,7 @@ export type UserCountOutputTypeSelect<
   transactions?: boolean | UserCountOutputTypeCountTransactionsArgs;
   budgets?: boolean | UserCountOutputTypeCountBudgetsArgs;
   shoppingItems?: boolean | UserCountOutputTypeCountShoppingItemsArgs;
+  documents?: boolean | UserCountOutputTypeCountDocumentsArgs;
 };
 
 /**
@@ -3731,6 +3986,15 @@ export type UserCountOutputTypeCountShoppingItemsArgs<
   where?: Prisma.ShoppingItemWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDocumentsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.DocumentWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -3763,6 +4027,7 @@ export type UserSelect<
     transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>;
     budgets?: boolean | Prisma.User$budgetsArgs<ExtArgs>;
     shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
+    documents?: boolean | Prisma.User$documentsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -3856,6 +4121,7 @@ export type UserInclude<
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>;
   budgets?: boolean | Prisma.User$budgetsArgs<ExtArgs>;
   shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
+  documents?: boolean | Prisma.User$documentsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -3887,6 +4153,7 @@ export type $UserPayload<
     transactions: Prisma.$FinanceTransactionPayload<ExtArgs>[];
     budgets: Prisma.$BudgetPayload<ExtArgs>[];
     shoppingItems: Prisma.$ShoppingItemPayload<ExtArgs>[];
+    documents: Prisma.$DocumentPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -4579,6 +4846,17 @@ export interface Prisma__UserClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$ShoppingItemPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  documents<T extends Prisma.User$documentsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$documentsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$DocumentPayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -5487,6 +5765,32 @@ export type User$shoppingItemsArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.ShoppingItemScalarFieldEnum | Prisma.ShoppingItemScalarFieldEnum[];
+};
+
+/**
+ * User.documents
+ */
+export type User$documentsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null;
+  where?: Prisma.DocumentWhereInput;
+  orderBy?: Prisma.DocumentOrderByWithRelationInput | Prisma.DocumentOrderByWithRelationInput[];
+  cursor?: Prisma.DocumentWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[];
 };
 
 /**

@@ -159,3 +159,8 @@ export type Budget = Prisma.BudgetModel;
  *
  */
 export type ShoppingItem = Prisma.ShoppingItemModel;
+/**
+ * Model Document
+ *
+ */
+export type Document = Prisma.DocumentModel;

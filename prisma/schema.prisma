@@ -41,6 +41,7 @@ model User {
   transactions  FinanceTransaction[]
   budgets       Budget[]
   shoppingItems ShoppingItem[]
+  documents     Document[]
 
   @@index([role])
 }
@@ -386,4 +387,22 @@ model ShoppingItem {
   updatedAt DateTime @updatedAt
 
   @@index([userId, completed])
+}
+
+model Document {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  type       String    @default("application/octet-stream")
+  size       Int       @default(0)
+  url        String
+  pathname   String
+  isFavorite Boolean   @default(false)
+  trashedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId, trashedAt])
+  @@index([userId, isFavorite])
 }

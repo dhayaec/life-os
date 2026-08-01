@@ -30,4 +30,5 @@ export type * from './models/Bookmark';
 export type * from './models/FinanceTransaction';
 export type * from './models/Budget';
 export type * from './models/ShoppingItem';
+export type * from './models/Document';
 export type * from './commonInputTypes';
