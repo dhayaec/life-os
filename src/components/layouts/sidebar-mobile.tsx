@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MenuIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { LifeIcon } from '@/components/common/logo';
 
@@ -17,6 +18,18 @@ export function MobileSidebar() {
   const open = useAppSelector((state) => state.ui.mobileNavOpen);
   const dispatch = useAppDispatch();
   const pathname = usePathname();
+
+  // Android back button closes the open drawer first. A history entry is
+  // pushed while open so the back press lands on `popstate` instead of
+  // leaving the app; leftover entries from overlay/link closes are consumed
+  // harmlessly on later back presses.
+  useEffect(() => {
+    if (!open) return;
+    window.history.pushState({ mobileNavOpen: true }, '');
+    const handlePopState = () => dispatch(setMobileNavOpen(false));
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [open, dispatch]);
 
   return (
     <Sheet open={open} onOpenChange={(next) => dispatch(setMobileNavOpen(next))}>

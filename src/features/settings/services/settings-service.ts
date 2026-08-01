@@ -34,6 +34,14 @@ export async function getSettings(userId: string): Promise<UserSettingsData> {
   };
 }
 
+export async function getLocale(userId: string): Promise<string> {
+  const settings = await db.userSettings.findUnique({
+    where: { userId },
+    select: { locale: true },
+  });
+  return settings?.locale ?? 'en';
+}
+
 export async function updateSettings(
   userId: string,
   input: {

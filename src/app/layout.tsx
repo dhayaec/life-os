@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { Toaster } from '@/components/ui/sonner';
@@ -22,6 +22,23 @@ export const metadata: Metadata = {
   },
   description:
     'A modern, full-stack personal operating system for managing notes, tasks, calendar, habits, and more.',
+  applicationName: 'LifeOS',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/app-icon.svg',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'LifeOS',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0F172A',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

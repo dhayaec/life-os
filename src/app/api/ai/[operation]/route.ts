@@ -8,19 +8,39 @@ import {
   suggestTasksFromNote,
 } from '@/server/ai/operations';
 import { getSession } from '@/server/session';
+import { rateLimit } from '@/server/rate-limit';
 import { createTask } from '@/features/tasks/services/task-service';
+import { createNotification } from '@/features/notifications/services/notifications-service';
 
-const summarizeSchema = z.object({ content: z.string() });
-const tasksFromNoteSchema = z.object({ content: z.string() });
+const AI_RATE_LIMIT = 10;
+const AI_RATE_WINDOW_MS = 60 * 1000;
+// Keep payloads bounded: each call bills the shared gateway key, so a single
+// request must not be able to ship megabytes of text to the model.
+const CONTENT_MAX = 50_000;
+
+const summarizeSchema = z.object({ content: z.string().min(1).max(CONTENT_MAX) });
+const tasksFromNoteSchema = z.object({ content: z.string().min(1).max(CONTENT_MAX) });
 const briefingSchema = z.object({
-  agenda: z.array(z.object({ title: z.string(), startAt: z.string() })).default([]),
-  tasksDue: z.array(z.object({ title: z.string(), dueAt: z.string().nullable() })).default([]),
-  habits: z.array(z.object({ name: z.string(), streak: z.number() })).default([]),
-  recentNotes: z.array(z.object({ title: z.string(), updatedAt: z.string() })).default([]),
+  agenda: z
+    .array(z.object({ title: z.string().max(500), startAt: z.string().max(64) }))
+    .max(50)
+    .default([]),
+  tasksDue: z
+    .array(z.object({ title: z.string().max(500), dueAt: z.string().max(64).nullable() }))
+    .max(50)
+    .default([]),
+  habits: z
+    .array(z.object({ name: z.string().max(200), streak: z.number() }))
+    .max(50)
+    .default([]),
+  recentNotes: z
+    .array(z.object({ title: z.string().max(500), updatedAt: z.string().max(64) }))
+    .max(50)
+    .default([]),
   finance: z.object({ balance: z.number(), expense: z.number() }).nullable().optional(),
 });
 const searchSchema = z.object({
-  query: z.string().min(1),
+  query: z.string().min(1).max(500),
   items: z.array(z.object({ id: z.string(), type: z.string(), title: z.string() })).max(200),
 });
 
@@ -31,6 +51,10 @@ export async function POST(
   const session = await getSession();
   if (!session) {
     return new Response('Unauthorized', { status: 401 });
+  }
+
+  if (!rateLimit(`ai:${session.user.id}`, AI_RATE_LIMIT, AI_RATE_WINDOW_MS)) {
+    return Response.json({ ok: false, error: 'Too many requests' }, { status: 429 });
   }
 
   const { operation } = await params;
@@ -52,11 +76,23 @@ export async function POST(
       case 'tasks-from-note': {
         const { content } = tasksFromNoteSchema.parse(body);
         const suggestions = await suggestTasksFromNote(content);
-        const tasks = await Promise.all(
-          suggestions.map((s) =>
-            createTask(session.user.id, { title: s.title, description: s.description ?? null })
+        const tasks = (
+          await Promise.all(
+            suggestions.map((s) =>
+              createTask(session.user.id, { title: s.title, description: s.description ?? null })
+            )
           )
-        );
+        ).filter((task): task is NonNullable<typeof task> => task !== null);
+        if (tasks.length > 0) {
+          await createNotification(session.user.id, {
+            title: `AI created ${tasks.length} task${tasks.length === 1 ? '' : 's'} from your note`,
+            body: tasks
+              .slice(0, 5)
+              .map((t) => t.title)
+              .join('\n'),
+            type: 'task',
+          });
+        }
         return Response.json({ ok: true, data: { count: tasks.length, tasks } });
       }
       case 'briefing': {

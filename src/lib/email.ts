@@ -70,6 +70,15 @@ export async function sendEmail({
     console.log(`[LifeOS email]\n  To: ${to}\n  Subject: ${subject}\n  ${url}`);
   }
 
+  // Resend's @resend.dev sender only delivers to the account owner, so real
+  // recipients silently miss auth emails. With requireEmailVerification: true
+  // that locks new signups out entirely, so surface the misconfiguration.
+  if (env.EMAIL_FROM.includes('@resend.dev')) {
+    console.warn(
+      `[LifeOS email] EMAIL_FROM (${env.EMAIL_FROM}) is Resend's test sender and only delivers to your own account. Set EMAIL_FROM to an address on a verified domain before going live.`
+    );
+  }
+
   try {
     const { error } = await new Resend(env.RESEND_API_KEY).emails.send({
       from: env.EMAIL_FROM,
