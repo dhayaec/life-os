@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronsLeft } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 import { LifeIcon } from '@/components/common/logo';
 
@@ -53,11 +53,14 @@ function NavItemLink({
 export function Sidebar() {
   const collapsed = useAppStore((state) => state.sidebarCollapsed);
   const toggleSidebar = useAppStore((state) => state.toggleSidebar);
+  const visible = useAppStore((state) => state.sidebarVisible);
+
+  if (!visible) return null;
 
   return (
     <aside
       className={cn(
-        'bg-muted/40 sticky top-0 hidden h-screen shrink-0 flex-col border-r transition-[width] duration-200 md:flex',
+        'bg-muted/40 relative sticky top-0 hidden h-screen shrink-0 flex-col border-r transition-[width] duration-200 md:flex',
         collapsed ? 'w-14' : 'w-64'
       )}
     >
@@ -84,6 +87,18 @@ export function Sidebar() {
           </Button>
         )}
       </div>
+
+      {collapsed && (
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleSidebar}
+          aria-label="Expand sidebar"
+          className="absolute top-1/2 -right-3 z-10 size-6 -translate-y-1/2 rounded-full bg-background shadow-md"
+        >
+          <ChevronsRight className="size-3.5" />
+        </Button>
+      )}
 
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-1 p-2" aria-label="Primary">

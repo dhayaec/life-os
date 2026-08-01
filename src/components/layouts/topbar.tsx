@@ -1,6 +1,6 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { PanelLeft, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { authClient } from '@/lib/auth-client';
 import { useAppDispatch } from '@/store/redux/hooks';
+import { useAppStore } from '@/store/app-store';
 import { setCommandPaletteOpen } from '@/store/redux/slices/ui-slice';
 import { MobileSidebar } from './sidebar-mobile';
 
@@ -31,6 +32,8 @@ export type TopbarUser = {
 export function Topbar({ user }: { user: TopbarUser }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const sidebarVisible = useAppStore((state) => state.sidebarVisible);
+  const toggleSidebarVisible = useAppStore((state) => state.toggleSidebarVisible);
 
   const initials = user.name
     .split(' ')
@@ -52,6 +55,15 @@ export function Topbar({ user }: { user: TopbarUser }) {
 
   return (
     <header className="bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-4 backdrop-blur">
+      <button
+        type="button"
+        onClick={toggleSidebarVisible}
+        aria-label={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
+        aria-pressed={sidebarVisible}
+        className="hidden size-9 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring md:inline-flex"
+      >
+        <PanelLeft className="size-4" />
+      </button>
       <MobileSidebar />
       <Link href="/dashboard" className="md:hidden" aria-label="LifeOS home">
         <LifeLogo className="h-8 w-auto" />
