@@ -1,7 +1,11 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 import { getSession } from '@/server/session';
+import { rateLimit } from '@/server/rate-limit';
 import { createDocument } from '@/features/documents/services/documents-service';
+
+const UPLOAD_TOKEN_LIMIT = 30;
+const UPLOAD_TOKEN_WINDOW_MS = 10 * 60 * 1000;
 
 export async function POST(request: Request) {
   const session = await getSession();
@@ -9,6 +13,10 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
   const userId = session.user.id;
+
+  if (!rateLimit(`blob-upload:${userId}`, UPLOAD_TOKEN_LIMIT, UPLOAD_TOKEN_WINDOW_MS)) {
+    return new Response('Too many requests', { status: 429 });
+  }
 
   const body = (await request.json()) as HandleUploadBody;
 
