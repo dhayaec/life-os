@@ -19,8 +19,14 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/app/**', 'src/**/*.d.ts'],
+      // Core logic only: services, validation schemas, and server utilities.
+      // UI components are exercised via Playwright E2E instead.
+      include: [
+        'src/server/**/*.ts',
+        'src/features/**/services/**/*.{ts,tsx}',
+        'src/features/**/validations.ts',
+      ],
+      exclude: ['src/**/*.d.ts', '**/*.test.{ts,tsx}'],
     },
   },
 });
