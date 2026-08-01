@@ -6,6 +6,10 @@
 :root {
   --radius: 0.625rem;
 
+  --logo-icon-from: #86efac;
+  --logo-icon-to: #16a34a;
+  --logo-ink: #0f172a;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -32,6 +36,10 @@
 }
 
 .dark {
+  --logo-icon-from: #a7f3d0;
+  --logo-icon-to: #22c55e;
+  --logo-ink: #f8fafc;
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

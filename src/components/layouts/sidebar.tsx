@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronsLeft, Command } from 'lucide-react';
+import { ChevronsLeft } from 'lucide-react';
+
+import { LifeIcon } from '@/components/common/logo';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
@@ -64,11 +66,10 @@ export function Sidebar() {
       >
         <Link
           href="/dashboard"
+          aria-label="LifeOS home"
           className={cn('flex items-center gap-2 font-semibold', collapsed && 'justify-center')}
         >
-          <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-md">
-            <Command className="size-4" />
-          </span>
+          <LifeIcon className="size-8" />
           {!collapsed && <span className="tracking-tight">LifeOS</span>}
         </Link>
         {!collapsed && (

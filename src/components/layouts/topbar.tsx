@@ -1,10 +1,12 @@
 'use client';
 
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { ThemeToggle } from '@/components/common/theme-toggle';
+import { LifeLogo } from '@/components/common/logo';
 import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -51,6 +53,9 @@ export function Topbar({ user }: { user: TopbarUser }) {
   return (
     <header className="bg-background/80 sticky top-0 z-30 flex h-14 items-center gap-2 border-b px-4 backdrop-blur">
       <MobileSidebar />
+      <Link href="/dashboard" className="md:hidden" aria-label="LifeOS home">
+        <LifeLogo className="h-8 w-auto" />
+      </Link>
       <button
         type="button"
         onClick={() => dispatch(setCommandPaletteOpen(true))}
