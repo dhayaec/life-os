@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { requireUser } from '@/server/session';
 import { getNotes } from '@/features/notes/services/note-service';
 import { NoteList, type NoteListItem } from '@/features/notes/components/note-list';
+import { NewNoteButton } from '@/features/notes/components/new-note-button';
 import { NotesSearch } from '@/features/notes/components/notes-search';
 
 export const metadata: Metadata = { title: 'Notes' };
@@ -33,7 +34,10 @@ export default async function NotesPage({
 
   return (
     <>
-      <NotesSearch />
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <NotesSearch />
+        <NewNoteButton />
+      </div>
       <NoteList notes={items} />
     </>
   );
