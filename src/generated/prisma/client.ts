@@ -129,3 +129,8 @@ export type Habit = Prisma.HabitModel;
  *
  */
 export type HabitEntry = Prisma.HabitEntryModel;
+/**
+ * Model JournalEntry
+ *
+ */
+export type JournalEntry = Prisma.JournalEntryModel;

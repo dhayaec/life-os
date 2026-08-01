@@ -407,6 +407,7 @@ export const ModelName = {
   CalendarEvent: 'CalendarEvent',
   Habit: 'Habit',
   HabitEntry: 'HabitEntry',
+  JournalEntry: 'JournalEntry',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -443,7 +444,8 @@ export type TypeMap<
       | 'taskLabel'
       | 'calendarEvent'
       | 'habit'
-      | 'habitEntry';
+      | 'habitEntry'
+      | 'journalEntry';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -1709,6 +1711,81 @@ export type TypeMap<
         };
       };
     };
+    JournalEntry: {
+      payload: Prisma.$JournalEntryPayload<ExtArgs>;
+      fields: Prisma.JournalEntryFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.JournalEntryFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.JournalEntryFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        findFirst: {
+          args: Prisma.JournalEntryFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.JournalEntryFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        findMany: {
+          args: Prisma.JournalEntryFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[];
+        };
+        create: {
+          args: Prisma.JournalEntryCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        createMany: {
+          args: Prisma.JournalEntryCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.JournalEntryCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[];
+        };
+        delete: {
+          args: Prisma.JournalEntryDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        update: {
+          args: Prisma.JournalEntryUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        deleteMany: {
+          args: Prisma.JournalEntryDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.JournalEntryUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.JournalEntryUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>[];
+        };
+        upsert: {
+          args: Prisma.JournalEntryUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JournalEntryPayload>;
+        };
+        aggregate: {
+          args: Prisma.JournalEntryAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJournalEntry>;
+        };
+        groupBy: {
+          args: Prisma.JournalEntryGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.JournalEntryGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.JournalEntryCountArgs<ExtArgs>;
+          result:
+            runtime.Types.Utils.Optional<Prisma.JournalEntryCountAggregateOutputType> | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -1961,6 +2038,20 @@ export const HabitEntryScalarFieldEnum = {
 export type HabitEntryScalarFieldEnum =
   (typeof HabitEntryScalarFieldEnum)[keyof typeof HabitEntryScalarFieldEnum];
 
+export const JournalEntryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  content: 'content',
+  mood: 'mood',
+  entryAt: 'entryAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type JournalEntryScalarFieldEnum =
+  (typeof JournalEntryScalarFieldEnum)[keyof typeof JournalEntryScalarFieldEnum];
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
@@ -2067,6 +2158,22 @@ export type EnumHabitFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumHabitFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   'HabitFrequency[]'
+>;
+
+/**
+ * Reference to a field of type 'JournalMood'
+ */
+export type EnumJournalMoodFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'JournalMood'
+>;
+
+/**
+ * Reference to a field of type 'JournalMood[]'
+ */
+export type ListEnumJournalMoodFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'JournalMood[]'
 >;
 
 /**
@@ -2253,6 +2360,7 @@ export type GlobalOmitConfig = {
   calendarEvent?: Prisma.CalendarEventOmit;
   habit?: Prisma.HabitOmit;
   habitEntry?: Prisma.HabitEntryOmit;
+  journalEntry?: Prisma.JournalEntryOmit;
 };
 
 /* Types for Logging */

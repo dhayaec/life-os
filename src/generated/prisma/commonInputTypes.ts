@@ -227,6 +227,23 @@ export type EnumHabitFrequencyWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumHabitFrequencyFilter<$PrismaModel>;
 };
 
+export type EnumJournalMoodFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalMood | Prisma.EnumJournalMoodFieldRefInput<$PrismaModel>;
+  in?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel> | $Enums.JournalMood;
+};
+
+export type EnumJournalMoodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalMood | Prisma.EnumJournalMoodFieldRefInput<$PrismaModel>;
+  in?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumJournalMoodWithAggregatesFilter<$PrismaModel> | $Enums.JournalMood;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
+};
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>;
@@ -453,4 +470,21 @@ export type NestedEnumHabitFrequencyWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumHabitFrequencyFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumHabitFrequencyFilter<$PrismaModel>;
+};
+
+export type NestedEnumJournalMoodFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalMood | Prisma.EnumJournalMoodFieldRefInput<$PrismaModel>;
+  in?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel> | $Enums.JournalMood;
+};
+
+export type NestedEnumJournalMoodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JournalMood | Prisma.EnumJournalMoodFieldRefInput<$PrismaModel>;
+  in?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.JournalMood[] | Prisma.ListEnumJournalMoodFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumJournalMoodWithAggregatesFilter<$PrismaModel> | $Enums.JournalMood;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
 };

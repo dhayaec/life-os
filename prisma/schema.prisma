@@ -35,6 +35,7 @@ model User {
   labels        Label[]
   events        CalendarEvent[]
   habits        Habit[]
+  journalEntries JournalEntry[]
 
   @@index([role])
 }
@@ -268,4 +269,26 @@ model HabitEntry {
   createdAt DateTime @default(now())
 
   @@unique([habitId, date])
+}
+
+enum JournalMood {
+  terrible
+  bad
+  okay
+  good
+  great
+}
+
+model JournalEntry {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String?
+  content   String
+  mood      JournalMood  @default(okay)
+  entryAt   DateTime     @default(now())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([userId, entryAt])
 }

@@ -24,4 +24,5 @@ export type * from './models/TaskLabel';
 export type * from './models/CalendarEvent';
 export type * from './models/Habit';
 export type * from './models/HabitEntry';
+export type * from './models/JournalEntry';
 export type * from './commonInputTypes';

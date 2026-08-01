@@ -38,3 +38,13 @@ export const HabitFrequency = {
 } as const;
 
 export type HabitFrequency = (typeof HabitFrequency)[keyof typeof HabitFrequency];
+
+export const JournalMood = {
+  terrible: 'terrible',
+  bad: 'bad',
+  okay: 'okay',
+  good: 'good',
+  great: 'great',
+} as const;
+
+export type JournalMood = (typeof JournalMood)[keyof typeof JournalMood];
