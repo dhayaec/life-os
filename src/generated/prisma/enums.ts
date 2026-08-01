@@ -14,3 +14,27 @@ export const Role = {
 } as const;
 
 export type Role = (typeof Role)[keyof typeof Role];
+
+export const TaskStatus = {
+  todo: 'todo',
+  in_progress: 'in_progress',
+  done: 'done',
+} as const;
+
+export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus];
+
+export const TaskPriority = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+} as const;
+
+export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority];
+
+export const HabitFrequency = {
+  daily: 'daily',
+  weekly: 'weekly',
+  monthly: 'monthly',
+} as const;
+
+export type HabitFrequency = (typeof HabitFrequency)[keyof typeof HabitFrequency];

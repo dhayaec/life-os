@@ -1,13 +1,40 @@
-import { StickyNote } from 'lucide-react';
+import type { Metadata } from 'next';
 
-import { ModulePlaceholder } from '@/components/common/module-placeholder';
+import { requireUser } from '@/server/session';
+import { getNotes } from '@/features/notes/services/note-service';
+import { NoteList, type NoteListItem } from '@/features/notes/components/note-list';
+import { NotesSearch } from '@/features/notes/components/notes-search';
 
-export default function NotesPage() {
+export const metadata: Metadata = { title: 'Notes' };
+
+export default async function NotesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ folder?: string; favorite?: string; search?: string }>;
+}) {
+  const user = await requireUser();
+  const { folder, favorite, search } = await searchParams;
+
+  const notes = await getNotes(user.id, {
+    ...(folder ? { folderId: folder } : {}),
+    ...(favorite ? { favorite: favorite === '1' } : {}),
+    ...(search ? { search } : {}),
+  });
+
+  const items: NoteListItem[] = notes.map((note) => ({
+    id: note.id,
+    title: note.title,
+    content: note.content,
+    isFavorite: note.isFavorite,
+    trashedAt: note.trashedAt?.toISOString() ?? null,
+    updatedAt: note.updatedAt.toISOString(),
+    tags: note.tags,
+  }));
+
   return (
-    <ModulePlaceholder
-      title="Notes"
-      description="Capture and organize thoughts"
-      icon={StickyNote}
-    />
+    <>
+      <NotesSearch />
+      <NoteList notes={items} />
+    </>
   );
 }

@@ -233,6 +233,13 @@ export type UserWhereInput = {
     Prisma.UserSettingsWhereInput
   > | null;
   notifications?: Prisma.NotificationListRelationFilter;
+  folders?: Prisma.FolderListRelationFilter;
+  notes?: Prisma.NoteListRelationFilter;
+  tags?: Prisma.TagListRelationFilter;
+  tasks?: Prisma.TaskListRelationFilter;
+  labels?: Prisma.LabelListRelationFilter;
+  events?: Prisma.CalendarEventListRelationFilter;
+  habits?: Prisma.HabitListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -251,6 +258,13 @@ export type UserOrderByWithRelationInput = {
   accounts?: Prisma.AccountOrderByRelationAggregateInput;
   settings?: Prisma.UserSettingsOrderByWithRelationInput;
   notifications?: Prisma.NotificationOrderByRelationAggregateInput;
+  folders?: Prisma.FolderOrderByRelationAggregateInput;
+  notes?: Prisma.NoteOrderByRelationAggregateInput;
+  tags?: Prisma.TagOrderByRelationAggregateInput;
+  tasks?: Prisma.TaskOrderByRelationAggregateInput;
+  labels?: Prisma.LabelOrderByRelationAggregateInput;
+  events?: Prisma.CalendarEventOrderByRelationAggregateInput;
+  habits?: Prisma.HabitOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -276,6 +290,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
       Prisma.UserSettingsWhereInput
     > | null;
     notifications?: Prisma.NotificationListRelationFilter;
+    folders?: Prisma.FolderListRelationFilter;
+    notes?: Prisma.NoteListRelationFilter;
+    tags?: Prisma.TagListRelationFilter;
+    tasks?: Prisma.TaskListRelationFilter;
+    labels?: Prisma.LabelListRelationFilter;
+    events?: Prisma.CalendarEventListRelationFilter;
+    habits?: Prisma.HabitListRelationFilter;
   },
   'id' | 'email'
 >;
@@ -330,6 +351,13 @@ export type UserCreateInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -348,6 +376,13 @@ export type UserUncheckedCreateInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -366,6 +401,13 @@ export type UserUpdateInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -384,6 +426,13 @@ export type UserUncheckedUpdateInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -607,6 +656,185 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutFoldersInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutFoldersInput,
+    Prisma.UserUncheckedCreateWithoutFoldersInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutFoldersInput,
+    Prisma.UserUncheckedCreateWithoutFoldersInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput;
+  upsert?: Prisma.UserUpsertWithoutFoldersInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutFoldersInput,
+      Prisma.UserUpdateWithoutFoldersInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutFoldersInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutNotesInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutNotesInput,
+    Prisma.UserUncheckedCreateWithoutNotesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutNotesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutNotesInput,
+    Prisma.UserUncheckedCreateWithoutNotesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotesInput;
+  upsert?: Prisma.UserUpsertWithoutNotesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutNotesInput,
+      Prisma.UserUpdateWithoutNotesInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutNotesInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutTagsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTagsInput,
+    Prisma.UserUncheckedCreateWithoutTagsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTagsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutTagsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTagsInput,
+    Prisma.UserUncheckedCreateWithoutTagsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTagsInput;
+  upsert?: Prisma.UserUpsertWithoutTagsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTagsInput, Prisma.UserUpdateWithoutTagsInput>,
+    Prisma.UserUncheckedUpdateWithoutTagsInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTasksInput,
+    Prisma.UserUncheckedCreateWithoutTasksInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTasksInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutTasksNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutTasksInput,
+    Prisma.UserUncheckedCreateWithoutTasksInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTasksInput;
+  upsert?: Prisma.UserUpsertWithoutTasksInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutTasksInput,
+      Prisma.UserUpdateWithoutTasksInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutTasksInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutLabelsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutLabelsInput,
+    Prisma.UserUncheckedCreateWithoutLabelsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLabelsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutLabelsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutLabelsInput,
+    Prisma.UserUncheckedCreateWithoutLabelsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLabelsInput;
+  upsert?: Prisma.UserUpsertWithoutLabelsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutLabelsInput,
+      Prisma.UserUpdateWithoutLabelsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutLabelsInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutEventsInput,
+    Prisma.UserUncheckedCreateWithoutEventsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutEventsInput,
+    Prisma.UserUncheckedCreateWithoutEventsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventsInput;
+  upsert?: Prisma.UserUpsertWithoutEventsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutEventsInput,
+      Prisma.UserUpdateWithoutEventsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutEventsInput
+  >;
+};
+
+export type UserCreateNestedOneWithoutHabitsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutHabitsInput,
+    Prisma.UserUncheckedCreateWithoutHabitsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutHabitsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutHabitsInput,
+    Prisma.UserUncheckedCreateWithoutHabitsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput;
+  upsert?: Prisma.UserUpsertWithoutHabitsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutHabitsInput,
+      Prisma.UserUpdateWithoutHabitsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutHabitsInput
+  >;
+};
+
 export type UserCreateWithoutSessionsInput = {
   id: string;
   name: string;
@@ -622,6 +850,13 @@ export type UserCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -639,6 +874,13 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -684,6 +926,13 @@ export type UserUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -701,6 +950,13 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutAccountsInput = {
@@ -718,6 +974,13 @@ export type UserCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -735,6 +998,13 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -780,6 +1050,13 @@ export type UserUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -797,6 +1074,13 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutSettingsInput = {
@@ -814,6 +1098,13 @@ export type UserCreateWithoutSettingsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutSettingsInput = {
@@ -831,6 +1122,13 @@ export type UserUncheckedCreateWithoutSettingsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutSettingsInput = {
@@ -876,6 +1174,13 @@ export type UserUpdateWithoutSettingsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutSettingsInput = {
@@ -893,6 +1198,13 @@ export type UserUncheckedUpdateWithoutSettingsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutNotificationsInput = {
@@ -910,6 +1222,13 @@ export type UserCreateWithoutNotificationsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -927,6 +1246,13 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -972,6 +1298,13 @@ export type UserUpdateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -989,6 +1322,863 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutFoldersInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutFoldersInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutFoldersInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutFoldersInput,
+    Prisma.UserUncheckedCreateWithoutFoldersInput
+  >;
+};
+
+export type UserUpsertWithoutFoldersInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutFoldersInput,
+    Prisma.UserUncheckedUpdateWithoutFoldersInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutFoldersInput,
+    Prisma.UserUncheckedCreateWithoutFoldersInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutFoldersInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutFoldersInput,
+    Prisma.UserUncheckedUpdateWithoutFoldersInput
+  >;
+};
+
+export type UserUpdateWithoutFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutNotesInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutNotesInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutNotesInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutNotesInput,
+    Prisma.UserUncheckedCreateWithoutNotesInput
+  >;
+};
+
+export type UserUpsertWithoutNotesInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutNotesInput,
+    Prisma.UserUncheckedUpdateWithoutNotesInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutNotesInput,
+    Prisma.UserUncheckedCreateWithoutNotesInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutNotesInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotesInput, Prisma.UserUncheckedUpdateWithoutNotesInput>;
+};
+
+export type UserUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutTagsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutTagsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutTagsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<Prisma.UserCreateWithoutTagsInput, Prisma.UserUncheckedCreateWithoutTagsInput>;
+};
+
+export type UserUpsertWithoutTagsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTagsInput, Prisma.UserUncheckedUpdateWithoutTagsInput>;
+  create: Prisma.XOR<Prisma.UserCreateWithoutTagsInput, Prisma.UserUncheckedCreateWithoutTagsInput>;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutTagsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTagsInput, Prisma.UserUncheckedUpdateWithoutTagsInput>;
+};
+
+export type UserUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutTagsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutTasksInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutTasksInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutTasksInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutTasksInput,
+    Prisma.UserUncheckedCreateWithoutTasksInput
+  >;
+};
+
+export type UserUpsertWithoutTasksInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutTasksInput,
+    Prisma.UserUncheckedUpdateWithoutTasksInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutTasksInput,
+    Prisma.UserUncheckedCreateWithoutTasksInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTasksInput, Prisma.UserUncheckedUpdateWithoutTasksInput>;
+};
+
+export type UserUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutLabelsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutLabelsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutLabelsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutLabelsInput,
+    Prisma.UserUncheckedCreateWithoutLabelsInput
+  >;
+};
+
+export type UserUpsertWithoutLabelsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutLabelsInput,
+    Prisma.UserUncheckedUpdateWithoutLabelsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutLabelsInput,
+    Prisma.UserUncheckedCreateWithoutLabelsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutLabelsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutLabelsInput,
+    Prisma.UserUncheckedUpdateWithoutLabelsInput
+  >;
+};
+
+export type UserUpdateWithoutLabelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutLabelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutEventsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutEventsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutEventsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutEventsInput,
+    Prisma.UserUncheckedCreateWithoutEventsInput
+  >;
+};
+
+export type UserUpsertWithoutEventsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutEventsInput,
+    Prisma.UserUncheckedUpdateWithoutEventsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutEventsInput,
+    Prisma.UserUncheckedCreateWithoutEventsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutEventsInput,
+    Prisma.UserUncheckedUpdateWithoutEventsInput
+  >;
+};
+
+export type UserUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutHabitsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutHabitsInput = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified?: boolean;
+  image?: string | null;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  role?: $Enums.Role;
+  banned?: boolean | null;
+  banReason?: string | null;
+  banExpires?: Date | string | null;
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput;
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput;
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput;
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput;
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutUserInput;
+  events?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutHabitsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutHabitsInput,
+    Prisma.UserUncheckedCreateWithoutHabitsInput
+  >;
+};
+
+export type UserUpsertWithoutHabitsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutHabitsInput,
+    Prisma.UserUncheckedUpdateWithoutHabitsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutHabitsInput,
+    Prisma.UserUncheckedCreateWithoutHabitsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutHabitsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutHabitsInput,
+    Prisma.UserUncheckedUpdateWithoutHabitsInput
+  >;
+};
+
+export type UserUpdateWithoutHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  banExpires?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput;
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput;
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput;
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput;
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutUserNestedInput;
+  events?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -999,6 +2189,13 @@ export type UserCountOutputType = {
   sessions: number;
   accounts: number;
   notifications: number;
+  folders: number;
+  notes: number;
+  tags: number;
+  tasks: number;
+  labels: number;
+  events: number;
+  habits: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -1007,6 +2204,13 @@ export type UserCountOutputTypeSelect<
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs;
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs;
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs;
+  folders?: boolean | UserCountOutputTypeCountFoldersArgs;
+  notes?: boolean | UserCountOutputTypeCountNotesArgs;
+  tags?: boolean | UserCountOutputTypeCountTagsArgs;
+  tasks?: boolean | UserCountOutputTypeCountTasksArgs;
+  labels?: boolean | UserCountOutputTypeCountLabelsArgs;
+  events?: boolean | UserCountOutputTypeCountEventsArgs;
+  habits?: boolean | UserCountOutputTypeCountHabitsArgs;
 };
 
 /**
@@ -1048,6 +2252,69 @@ export type UserCountOutputTypeCountNotificationsArgs<
   where?: Prisma.NotificationWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFoldersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.FolderWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.NoteWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTagsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.TagWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTasksArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.TaskWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLabelsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.LabelWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.CalendarEventWhereInput;
+};
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountHabitsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.HabitWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1067,6 +2334,13 @@ export type UserSelect<
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
     settings?: boolean | Prisma.User$settingsArgs<ExtArgs>;
     notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
+    folders?: boolean | Prisma.User$foldersArgs<ExtArgs>;
+    notes?: boolean | Prisma.User$notesArgs<ExtArgs>;
+    tags?: boolean | Prisma.User$tagsArgs<ExtArgs>;
+    tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>;
+    labels?: boolean | Prisma.User$labelsArgs<ExtArgs>;
+    events?: boolean | Prisma.User$eventsArgs<ExtArgs>;
+    habits?: boolean | Prisma.User$habitsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -1147,6 +2421,13 @@ export type UserInclude<
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
   settings?: boolean | Prisma.User$settingsArgs<ExtArgs>;
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
+  folders?: boolean | Prisma.User$foldersArgs<ExtArgs>;
+  notes?: boolean | Prisma.User$notesArgs<ExtArgs>;
+  tags?: boolean | Prisma.User$tagsArgs<ExtArgs>;
+  tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>;
+  labels?: boolean | Prisma.User$labelsArgs<ExtArgs>;
+  events?: boolean | Prisma.User$eventsArgs<ExtArgs>;
+  habits?: boolean | Prisma.User$habitsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -1165,6 +2446,13 @@ export type $UserPayload<
     accounts: Prisma.$AccountPayload<ExtArgs>[];
     settings: Prisma.$UserSettingsPayload<ExtArgs> | null;
     notifications: Prisma.$NotificationPayload<ExtArgs>[];
+    folders: Prisma.$FolderPayload<ExtArgs>[];
+    notes: Prisma.$NotePayload<ExtArgs>[];
+    tags: Prisma.$TagPayload<ExtArgs>[];
+    tasks: Prisma.$TaskPayload<ExtArgs>[];
+    labels: Prisma.$LabelPayload<ExtArgs>[];
+    events: Prisma.$CalendarEventPayload<ExtArgs>[];
+    habits: Prisma.$HabitPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1735,6 +3023,68 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  folders<T extends Prisma.User$foldersArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$foldersArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$FolderPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  notes<T extends Prisma.User$notesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$notesArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
+    | Null
+  >;
+  tags<T extends Prisma.User$tagsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$tagsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
+    | Null
+  >;
+  tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, 'findMany', GlobalOmitOptions>
+    | Null
+  >;
+  labels<T extends Prisma.User$labelsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$labelsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$LabelPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  events<T extends Prisma.User$eventsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$eventsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$CalendarEventPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  habits<T extends Prisma.User$habitsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$habitsArgs<ExtArgs>>
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$HabitPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2294,6 +3644,189 @@ export type User$notificationsArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[];
+};
+
+/**
+ * User.folders
+ */
+export type User$foldersArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Folder
+   */
+  select?: Prisma.FolderSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Folder
+   */
+  omit?: Prisma.FolderOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FolderInclude<ExtArgs> | null;
+  where?: Prisma.FolderWhereInput;
+  orderBy?: Prisma.FolderOrderByWithRelationInput | Prisma.FolderOrderByWithRelationInput[];
+  cursor?: Prisma.FolderWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.FolderScalarFieldEnum | Prisma.FolderScalarFieldEnum[];
+};
+
+/**
+ * User.notes
+ */
+export type User$notesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Note
+   */
+  select?: Prisma.NoteSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Note
+   */
+  omit?: Prisma.NoteOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NoteInclude<ExtArgs> | null;
+  where?: Prisma.NoteWhereInput;
+  orderBy?: Prisma.NoteOrderByWithRelationInput | Prisma.NoteOrderByWithRelationInput[];
+  cursor?: Prisma.NoteWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[];
+};
+
+/**
+ * User.tags
+ */
+export type User$tagsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Tag
+   */
+  select?: Prisma.TagSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Tag
+   */
+  omit?: Prisma.TagOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TagInclude<ExtArgs> | null;
+  where?: Prisma.TagWhereInput;
+  orderBy?: Prisma.TagOrderByWithRelationInput | Prisma.TagOrderByWithRelationInput[];
+  cursor?: Prisma.TagWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[];
+};
+
+/**
+ * User.tasks
+ */
+export type User$tasksArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Task
+   */
+  select?: Prisma.TaskSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Task
+   */
+  omit?: Prisma.TaskOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TaskInclude<ExtArgs> | null;
+  where?: Prisma.TaskWhereInput;
+  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[];
+  cursor?: Prisma.TaskWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[];
+};
+
+/**
+ * User.labels
+ */
+export type User$labelsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Label
+   */
+  select?: Prisma.LabelSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Label
+   */
+  omit?: Prisma.LabelOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LabelInclude<ExtArgs> | null;
+  where?: Prisma.LabelWhereInput;
+  orderBy?: Prisma.LabelOrderByWithRelationInput | Prisma.LabelOrderByWithRelationInput[];
+  cursor?: Prisma.LabelWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.LabelScalarFieldEnum | Prisma.LabelScalarFieldEnum[];
+};
+
+/**
+ * User.events
+ */
+export type User$eventsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the CalendarEvent
+   */
+  select?: Prisma.CalendarEventSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the CalendarEvent
+   */
+  omit?: Prisma.CalendarEventOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CalendarEventInclude<ExtArgs> | null;
+  where?: Prisma.CalendarEventWhereInput;
+  orderBy?:
+    Prisma.CalendarEventOrderByWithRelationInput | Prisma.CalendarEventOrderByWithRelationInput[];
+  cursor?: Prisma.CalendarEventWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.CalendarEventScalarFieldEnum | Prisma.CalendarEventScalarFieldEnum[];
+};
+
+/**
+ * User.habits
+ */
+export type User$habitsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Habit
+   */
+  select?: Prisma.HabitSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Habit
+   */
+  omit?: Prisma.HabitOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitInclude<ExtArgs> | null;
+  where?: Prisma.HabitWhereInput;
+  orderBy?: Prisma.HabitOrderByWithRelationInput | Prisma.HabitOrderByWithRelationInput[];
+  cursor?: Prisma.HabitWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.HabitScalarFieldEnum | Prisma.HabitScalarFieldEnum[];
 };
 
 /**

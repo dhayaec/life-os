@@ -46,3 +46,58 @@ export type UserSettings = Prisma.UserSettingsModel;
  *
  */
 export type Notification = Prisma.NotificationModel;
+/**
+ * Model Folder
+ *
+ */
+export type Folder = Prisma.FolderModel;
+/**
+ * Model Note
+ *
+ */
+export type Note = Prisma.NoteModel;
+/**
+ * Model Tag
+ *
+ */
+export type Tag = Prisma.TagModel;
+/**
+ * Model NoteTag
+ *
+ */
+export type NoteTag = Prisma.NoteTagModel;
+/**
+ * Model NoteVersion
+ *
+ */
+export type NoteVersion = Prisma.NoteVersionModel;
+/**
+ * Model Task
+ *
+ */
+export type Task = Prisma.TaskModel;
+/**
+ * Model Label
+ *
+ */
+export type Label = Prisma.LabelModel;
+/**
+ * Model TaskLabel
+ *
+ */
+export type TaskLabel = Prisma.TaskLabelModel;
+/**
+ * Model CalendarEvent
+ *
+ */
+export type CalendarEvent = Prisma.CalendarEventModel;
+/**
+ * Model Habit
+ *
+ */
+export type Habit = Prisma.HabitModel;
+/**
+ * Model HabitEntry
+ *
+ */
+export type HabitEntry = Prisma.HabitEntryModel;

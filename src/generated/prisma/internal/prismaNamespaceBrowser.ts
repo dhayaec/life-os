@@ -54,6 +54,17 @@ export const ModelName = {
   Verification: 'Verification',
   UserSettings: 'UserSettings',
   Notification: 'Notification',
+  Folder: 'Folder',
+  Note: 'Note',
+  Tag: 'Tag',
+  NoteTag: 'NoteTag',
+  NoteVersion: 'NoteVersion',
+  Task: 'Task',
+  Label: 'Label',
+  TaskLabel: 'TaskLabel',
+  CalendarEvent: 'CalendarEvent',
+  Habit: 'Habit',
+  HabitEntry: 'HabitEntry',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -157,6 +168,133 @@ export const NotificationScalarFieldEnum = {
 
 export type NotificationScalarFieldEnum =
   (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum];
+
+export const FolderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  parentId: 'parentId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type FolderScalarFieldEnum =
+  (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum];
+
+export const NoteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  folderId: 'folderId',
+  title: 'title',
+  content: 'content',
+  isFavorite: 'isFavorite',
+  archived: 'archived',
+  trashedAt: 'trashedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum];
+
+export const TagScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+} as const;
+
+export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum];
+
+export const NoteTagScalarFieldEnum = {
+  noteId: 'noteId',
+  tagId: 'tagId',
+} as const;
+
+export type NoteTagScalarFieldEnum =
+  (typeof NoteTagScalarFieldEnum)[keyof typeof NoteTagScalarFieldEnum];
+
+export const NoteVersionScalarFieldEnum = {
+  id: 'id',
+  noteId: 'noteId',
+  content: 'content',
+  createdAt: 'createdAt',
+} as const;
+
+export type NoteVersionScalarFieldEnum =
+  (typeof NoteVersionScalarFieldEnum)[keyof typeof NoteVersionScalarFieldEnum];
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  dueAt: 'dueAt',
+  completedAt: 'completedAt',
+  recurrence: 'recurrence',
+  reminderAt: 'reminderAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum];
+
+export const LabelScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  color: 'color',
+} as const;
+
+export type LabelScalarFieldEnum = (typeof LabelScalarFieldEnum)[keyof typeof LabelScalarFieldEnum];
+
+export const TaskLabelScalarFieldEnum = {
+  taskId: 'taskId',
+  labelId: 'labelId',
+} as const;
+
+export type TaskLabelScalarFieldEnum =
+  (typeof TaskLabelScalarFieldEnum)[keyof typeof TaskLabelScalarFieldEnum];
+
+export const CalendarEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  allDay: 'allDay',
+  location: 'location',
+  color: 'color',
+  recurrence: 'recurrence',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type CalendarEventScalarFieldEnum =
+  (typeof CalendarEventScalarFieldEnum)[keyof typeof CalendarEventScalarFieldEnum];
+
+export const HabitScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  frequency: 'frequency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type HabitScalarFieldEnum = (typeof HabitScalarFieldEnum)[keyof typeof HabitScalarFieldEnum];
+
+export const HabitEntryScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  date: 'date',
+  done: 'done',
+  createdAt: 'createdAt',
+} as const;
+
+export type HabitEntryScalarFieldEnum =
+  (typeof HabitEntryScalarFieldEnum)[keyof typeof HabitEntryScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

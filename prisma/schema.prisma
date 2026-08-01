@@ -28,6 +28,13 @@ model User {
   accounts      Account[]
   settings      UserSettings?
   notifications Notification[]
+  folders       Folder[]
+  notes         Note[]
+  tags          Tag[]
+  tasks         Task[]
+  labels        Label[]
+  events        CalendarEvent[]
+  habits        Habit[]
 
   @@index([role])
 }
@@ -95,4 +102,170 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@index([userId, read])
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  done
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+}
+
+enum HabitFrequency {
+  daily
+  weekly
+  monthly
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Folder[] @relation("FolderTree")
+  notes     Note[]
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@unique([userId, parentId, name])
+}
+
+model Note {
+  id         String        @id @default(uuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId   String?
+  folder     Folder?       @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  title      String        @default("Untitled")
+  content    String        @default("")
+  isFavorite Boolean       @default(false)
+  archived   Boolean       @default(false)
+  trashedAt  DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  tags       NoteTag[]
+  versions   NoteVersion[]
+
+  @@index([userId, trashedAt])
+  @@index([userId, folderId])
+  @@index([userId, isFavorite])
+}
+
+model Tag {
+  id     String    @id @default(uuid())
+  userId String
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name   String
+  notes  NoteTag[]
+
+  @@unique([userId, name])
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+  note   Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}
+
+model NoteVersion {
+  id        String   @id @default(uuid())
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([noteId, createdAt])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      TaskStatus   @default(todo)
+  priority    TaskPriority @default(medium)
+  dueAt       DateTime?
+  completedAt DateTime?
+  recurrence  String?
+  reminderAt  DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  labels      TaskLabel[]
+
+  @@index([userId, status])
+  @@index([userId, dueAt])
+}
+
+model Label {
+  id     String      @id @default(uuid())
+  userId String
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name   String
+  color  String      @default("#64748b")
+  tasks  TaskLabel[]
+
+  @@unique([userId, name])
+}
+
+model TaskLabel {
+  taskId  String
+  labelId String
+  task    Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label   Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+}
+
+model CalendarEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  description String?
+  startAt   DateTime
+  endAt     DateTime?
+  allDay    Boolean  @default(false)
+  location  String?
+  color     String   @default("#6366f1")
+  recurrence String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, startAt])
+}
+
+model Habit {
+  id        String         @id @default(uuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  frequency HabitFrequency @default(daily)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  entries   HabitEntry[]
+
+  @@index([userId])
+}
+
+model HabitEntry {
+  id       String   @id @default(uuid())
+  habitId  String
+  habit    Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date     DateTime @db.Date
+  done     Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, date])
 }
