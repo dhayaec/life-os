@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import {
@@ -69,17 +69,17 @@ export function NoteEditor({
     onUpdate: ({ editor }) => setContent(editor.getHTML()),
   });
 
-  useEffect(() => {
-    if (title === initialTitle && content === initialContent && tags === initialTagsString) {
-      return;
-    }
-    const timer = setTimeout(async () => {
+  // Holds the newest unsaved snapshot so a flush on unmount/pagehide can save it.
+  const pendingRef = useRef<{ title: string; content: string; tags: string } | null>(null);
+
+  const save = useCallback(
+    async (snapshot: { title: string; content: string; tags: string }) => {
       setSaveState('saving');
       const result = await updateNoteAction({
         id,
-        title,
-        content,
-        tagNames: tags
+        title: snapshot.title,
+        content: snapshot.content,
+        tagNames: snapshot.tags
           .split(',')
           .map((tag) => tag.trim())
           .filter(Boolean),
@@ -90,10 +90,48 @@ export function NoteEditor({
         return;
       }
       setSaveState('saved');
+    },
+    [id]
+  );
+
+  useEffect(() => {
+    if (title === initialTitle && content === initialContent && tags === initialTagsString) {
+      pendingRef.current = null;
+      return;
+    }
+    const snapshot = { title, content, tags };
+    pendingRef.current = snapshot;
+    const timer = setTimeout(async () => {
+      pendingRef.current = null;
+      await save(snapshot);
     }, 800);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, content, tags, id]);
+  }, [title, content, tags, id, save]);
+
+  // Flush pending edits on unmount so client-side navigation doesn't drop the
+  // debounced tail. Best-effort: a server action issued from a teardown may be
+  // aborted if the tab closes, hence the pagehide listener below.
+  useEffect(() => {
+    const flush = () => {
+      const pending = pendingRef.current;
+      if (!pending) return;
+      pendingRef.current = null;
+      void save(pending);
+    };
+    return () => flush();
+  }, [save]);
+
+  useEffect(() => {
+    const onPageHide = () => {
+      const pending = pendingRef.current;
+      if (!pending) return;
+      pendingRef.current = null;
+      void save(pending);
+    };
+    window.addEventListener('pagehide', onPageHide);
+    return () => window.removeEventListener('pagehide', onPageHide);
+  }, [save]);
 
   async function handleToggleFavorite() {
     const result = await toggleFavoriteAction({ id });
