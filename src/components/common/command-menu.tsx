@@ -43,6 +43,7 @@ export function CommandMenu() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchHit[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchSeq = useRef(0);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -59,9 +60,11 @@ export function CommandMenu() {
     if (timer.current) clearTimeout(timer.current);
     const q = query.trim();
     if (!q) return;
+    const seq = ++searchSeq.current;
     timer.current = setTimeout(async () => {
       const result = await globalSearchAction({ q });
-      if (result.ok && result.data) {
+      // Ignore stale responses: a newer query invalidates this one.
+      if (seq === searchSeq.current && result.ok && result.data) {
         setResults(result.data);
       }
     }, 250);
@@ -72,7 +75,11 @@ export function CommandMenu() {
 
   function handleQueryChange(value: string) {
     setQuery(value);
-    if (!value.trim()) setResults([]);
+    // Invalidate in-flight requests so a stale response can't repopulate results.
+    if (!value.trim()) {
+      searchSeq.current++;
+      setResults([]);
+    }
   }
 
   function go(href: string) {
