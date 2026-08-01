@@ -408,6 +408,8 @@ export const ModelName = {
   Habit: 'Habit',
   HabitEntry: 'HabitEntry',
   JournalEntry: 'JournalEntry',
+  Collection: 'Collection',
+  Bookmark: 'Bookmark',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -445,7 +447,9 @@ export type TypeMap<
       | 'calendarEvent'
       | 'habit'
       | 'habitEntry'
-      | 'journalEntry';
+      | 'journalEntry'
+      | 'collection'
+      | 'bookmark';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -1786,6 +1790,154 @@ export type TypeMap<
         };
       };
     };
+    Collection: {
+      payload: Prisma.$CollectionPayload<ExtArgs>;
+      fields: Prisma.CollectionFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.CollectionFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.CollectionFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        findFirst: {
+          args: Prisma.CollectionFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.CollectionFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        findMany: {
+          args: Prisma.CollectionFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>[];
+        };
+        create: {
+          args: Prisma.CollectionCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        createMany: {
+          args: Prisma.CollectionCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.CollectionCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>[];
+        };
+        delete: {
+          args: Prisma.CollectionDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        update: {
+          args: Prisma.CollectionUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        deleteMany: {
+          args: Prisma.CollectionDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.CollectionUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.CollectionUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>[];
+        };
+        upsert: {
+          args: Prisma.CollectionUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CollectionPayload>;
+        };
+        aggregate: {
+          args: Prisma.CollectionAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCollection>;
+        };
+        groupBy: {
+          args: Prisma.CollectionGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.CollectionGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.CollectionCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.CollectionCountAggregateOutputType> | number;
+        };
+      };
+    };
+    Bookmark: {
+      payload: Prisma.$BookmarkPayload<ExtArgs>;
+      fields: Prisma.BookmarkFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.BookmarkFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.BookmarkFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        findFirst: {
+          args: Prisma.BookmarkFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.BookmarkFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        findMany: {
+          args: Prisma.BookmarkFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>[];
+        };
+        create: {
+          args: Prisma.BookmarkCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        createMany: {
+          args: Prisma.BookmarkCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.BookmarkCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>[];
+        };
+        delete: {
+          args: Prisma.BookmarkDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        update: {
+          args: Prisma.BookmarkUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        deleteMany: {
+          args: Prisma.BookmarkDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.BookmarkUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.BookmarkUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>[];
+        };
+        upsert: {
+          args: Prisma.BookmarkUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BookmarkPayload>;
+        };
+        aggregate: {
+          args: Prisma.BookmarkAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBookmark>;
+        };
+        groupBy: {
+          args: Prisma.BookmarkGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.BookmarkGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.BookmarkCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.BookmarkCountAggregateOutputType> | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -2052,6 +2204,34 @@ export const JournalEntryScalarFieldEnum = {
 export type JournalEntryScalarFieldEnum =
   (typeof JournalEntryScalarFieldEnum)[keyof typeof JournalEntryScalarFieldEnum];
 
+export const CollectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  parentId: 'parentId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type CollectionScalarFieldEnum =
+  (typeof CollectionScalarFieldEnum)[keyof typeof CollectionScalarFieldEnum];
+
+export const BookmarkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collectionId: 'collectionId',
+  url: 'url',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type BookmarkScalarFieldEnum =
+  (typeof BookmarkScalarFieldEnum)[keyof typeof BookmarkScalarFieldEnum];
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
@@ -2174,6 +2354,22 @@ export type EnumJournalMoodFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumJournalMoodFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   'JournalMood[]'
+>;
+
+/**
+ * Reference to a field of type 'BookmarkType'
+ */
+export type EnumBookmarkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'BookmarkType'
+>;
+
+/**
+ * Reference to a field of type 'BookmarkType[]'
+ */
+export type ListEnumBookmarkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'BookmarkType[]'
 >;
 
 /**
@@ -2361,6 +2557,8 @@ export type GlobalOmitConfig = {
   habit?: Prisma.HabitOmit;
   habitEntry?: Prisma.HabitEntryOmit;
   journalEntry?: Prisma.JournalEntryOmit;
+  collection?: Prisma.CollectionOmit;
+  bookmark?: Prisma.BookmarkOmit;
 };
 
 /* Types for Logging */

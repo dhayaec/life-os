@@ -25,4 +25,6 @@ export type * from './models/CalendarEvent';
 export type * from './models/Habit';
 export type * from './models/HabitEntry';
 export type * from './models/JournalEntry';
+export type * from './models/Collection';
+export type * from './models/Bookmark';
 export type * from './commonInputTypes';

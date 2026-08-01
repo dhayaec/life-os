@@ -48,3 +48,12 @@ export const JournalMood = {
 } as const;
 
 export type JournalMood = (typeof JournalMood)[keyof typeof JournalMood];
+
+export const BookmarkType = {
+  article: 'article',
+  video: 'video',
+  repo: 'repo',
+  website: 'website',
+} as const;
+
+export type BookmarkType = (typeof BookmarkType)[keyof typeof BookmarkType];

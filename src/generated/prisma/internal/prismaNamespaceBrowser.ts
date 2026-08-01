@@ -66,6 +66,8 @@ export const ModelName = {
   Habit: 'Habit',
   HabitEntry: 'HabitEntry',
   JournalEntry: 'JournalEntry',
+  Collection: 'Collection',
+  Bookmark: 'Bookmark',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -310,6 +312,34 @@ export const JournalEntryScalarFieldEnum = {
 
 export type JournalEntryScalarFieldEnum =
   (typeof JournalEntryScalarFieldEnum)[keyof typeof JournalEntryScalarFieldEnum];
+
+export const CollectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  parentId: 'parentId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type CollectionScalarFieldEnum =
+  (typeof CollectionScalarFieldEnum)[keyof typeof CollectionScalarFieldEnum];
+
+export const BookmarkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collectionId: 'collectionId',
+  url: 'url',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type BookmarkScalarFieldEnum =
+  (typeof BookmarkScalarFieldEnum)[keyof typeof BookmarkScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

@@ -244,6 +244,23 @@ export type EnumJournalMoodWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
 };
 
+export type EnumBookmarkTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookmarkType | Prisma.EnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  in?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel> | $Enums.BookmarkType;
+};
+
+export type EnumBookmarkTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookmarkType | Prisma.EnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  in?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumBookmarkTypeWithAggregatesFilter<$PrismaModel> | $Enums.BookmarkType;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel>;
+};
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>;
@@ -487,4 +504,21 @@ export type NestedEnumJournalMoodWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumJournalMoodFilter<$PrismaModel>;
+};
+
+export type NestedEnumBookmarkTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookmarkType | Prisma.EnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  in?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel> | $Enums.BookmarkType;
+};
+
+export type NestedEnumBookmarkTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookmarkType | Prisma.EnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  in?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.BookmarkType[] | Prisma.ListEnumBookmarkTypeFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumBookmarkTypeWithAggregatesFilter<$PrismaModel> | $Enums.BookmarkType;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumBookmarkTypeFilter<$PrismaModel>;
 };

@@ -106,3 +106,13 @@ export type HabitEntry = Prisma.HabitEntryModel;
  *
  */
 export type JournalEntry = Prisma.JournalEntryModel;
+/**
+ * Model Collection
+ *
+ */
+export type Collection = Prisma.CollectionModel;
+/**
+ * Model Bookmark
+ *
+ */
+export type Bookmark = Prisma.BookmarkModel;
