@@ -12,7 +12,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,7 @@ type NotesSidebarProps = {
 export function NotesSidebar({ folders }: NotesSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const activeFolder = searchParams.get('folder');
   const [creating, setCreating] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
@@ -48,6 +49,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
     }
     setNewFolderName('');
     setCreating(false);
+    router.refresh();
   }
 
   async function handleCreateNote() {
