@@ -10,23 +10,32 @@ const UPLOAD_TOKEN_LIMIT = 30;
 const UPLOAD_TOKEN_WINDOW_MS = 10 * 60 * 1000;
 
 export async function POST(request: Request) {
-  const session = await getSession();
-  if (!session) {
-    return new Response('Unauthorized', { status: 401 });
-  }
-  const userId = session.user.id;
-
-  if (!rateLimit(`blob-upload:${userId}`, UPLOAD_TOKEN_LIMIT, UPLOAD_TOKEN_WINDOW_MS)) {
-    return new Response('Too many requests', { status: 429 });
-  }
-
   const body = (await request.json()) as HandleUploadBody;
+
+  // The upload-completed callback is a signed server-to-server request from
+  // Vercel Blob carrying no session cookie; only token generation needs auth.
+  if (body.type !== 'blob.upload-completed') {
+    const session = await getSession();
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    const userId = session.user.id;
+    if (!rateLimit(`blob-upload:${userId}`, UPLOAD_TOKEN_LIMIT, UPLOAD_TOKEN_WINDOW_MS)) {
+      return new Response('Too many requests', { status: 429 });
+    }
+  }
 
   try {
     const response = await handleUpload({
       body,
       request,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
+        const session = await getSession();
+        if (!session) {
+          throw new Error('Unauthorized');
+        }
+        const userId = session.user.id;
+
         if (!pathname.startsWith(`${userId}/`)) {
           throw new Error('Invalid upload pathname');
         }
@@ -36,6 +45,12 @@ export async function POST(request: Request) {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
+        // Session is unavailable here (the callback is authenticated by the
+        // x-vercel-signature); recover the owner from the user-scoped pathname
+        // that onBeforeGenerateToken enforced during token generation.
+        const userId = blob.pathname.split('/')[0];
+        if (!userId) return;
+
         let name = blob.pathname.split('/').pop() ?? 'Untitled';
         if (tokenPayload) {
           try {
