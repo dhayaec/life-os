@@ -77,7 +77,7 @@ export function NoteEditor({
       setSaveState('saving');
       const result = await updateNoteAction({
         id,
-        title: snapshot.title,
+        title: snapshot.title.trim() || 'Untitled',
         content: snapshot.content,
         tagNames: snapshot.tags
           .split(',')
