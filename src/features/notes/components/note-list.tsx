@@ -5,7 +5,7 @@ import { Archive, RotateCcw, Star, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
