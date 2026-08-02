@@ -122,7 +122,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
           return (
             <div
               key={key}
-              className={`flex min-h-24 flex-col gap-1 rounded-md border p-1 ${
+              className={`group flex min-h-24 flex-col gap-1 rounded-md border p-1 ${
                 isToday ? 'border-primary' : 'border-transparent hover:border-border'
               }`}
             >
