@@ -18,6 +18,7 @@ export default async function NotePage({ params }: { params: Promise<{ noteId: s
 
   return (
     <NoteEditor
+      key={note.id}
       id={note.id}
       title={note.title}
       content={note.content}

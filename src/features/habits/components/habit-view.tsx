@@ -141,7 +141,9 @@ export function HabitView({ month, habits }: { month: string; habits: HabitItem[
                           {habit.frequency}
                         </Badge>
                       </div>
-                      <div className="text-muted-foreground text-[10px]">{summary}</div>
+                      <div suppressHydrationWarning className="text-muted-foreground text-[10px]">
+                        {summary}
+                      </div>
                     </td>
                     {days.map((day) => {
                       const done = doneByDate.get(day.key) ?? false;
