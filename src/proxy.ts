@@ -5,9 +5,10 @@ const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password',
 
 // One fresh nonce per request. Next.js reads it from the Content-Security-Policy
 // header (forwarded on the request) during SSR and attaches it to its own inline
-// scripts, which lets script-src drop 'unsafe-inline'. style-src-attr keeps
-// 'unsafe-inline' because dynamic color swatches use inline style attributes,
-// which nonces can't cover; stylesheets and <style> blocks still need the nonce.
+// scripts, which lets script-src drop 'unsafe-inline'. style-src keeps
+// 'unsafe-inline' as a fallback because Next.js and Tailwind inject <style>
+// tags without the request nonce; CSS injection can't execute code, so this
+// doesn't meaningfully weaken security.
 function buildCsp(nonce: string, isProd: boolean) {
   const scriptSrc = [
     "'self'",
@@ -19,7 +20,7 @@ function buildCsp(nonce: string, isProd: boolean) {
   return [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'unsafe-inline' 'nonce-${nonce}'`,
     "style-src-attr 'unsafe-inline'",
     // img-src/connect-src: allow Vercel Blob (Documents) + OAuth provider avatars.
     "img-src 'self' data: blob: https://*.vercel-storage.com https://*.vercel-blob.com https://*.googleusercontent.com https://avatars.githubusercontent.com",
