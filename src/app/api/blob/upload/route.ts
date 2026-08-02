@@ -1,4 +1,4 @@
-import { del } from '@vercel/blob';
+import { del, head } from '@vercel/blob';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 import { getSession } from '@/server/session';
@@ -45,10 +45,11 @@ export async function POST(request: Request) {
           }
         }
         try {
+          const metadata = await head(blob.url).catch(() => null);
           await createDocument(userId, {
             name,
             type: blob.contentType,
-            size: blob.size,
+            size: metadata?.size ?? 0,
             url: blob.url,
             pathname: blob.pathname,
           });
