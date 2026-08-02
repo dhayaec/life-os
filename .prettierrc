@@ -17,6 +17,8 @@
   "endOfLine": "lf",
   "embeddedLanguageFormatting": "auto",
   "singleAttributePerLine": false,
+  "plugins": ["prettier-plugin-tailwindcss-canonical-classes"],
+  "tailwindcssCanonicalStylesheet": "./src/app/globals.css",
   "overrides": [
     {
       "files": "*.json",
