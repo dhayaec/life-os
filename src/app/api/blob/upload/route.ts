@@ -3,6 +3,7 @@ import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 import { getSession } from '@/server/session';
 import { rateLimit } from '@/server/rate-limit';
+import { toErrorMessage } from '@/server/action-result';
 import { createDocument } from '@/features/documents/services/documents-service';
 
 const UPLOAD_TOKEN_LIMIT = 30;
@@ -61,8 +62,6 @@ export async function POST(request: Request) {
     });
     return Response.json(response);
   } catch (error) {
-    return new Response(error instanceof Error ? error.message : 'Upload failed', {
-      status: 400,
-    });
+    return new Response(toErrorMessage(error), { status: 400 });
   }
 }
