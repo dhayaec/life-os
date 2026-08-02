@@ -100,7 +100,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       id: habit.id,
       name: habit.name,
       currentStreak: currentStreak(
-        habit.entries.map((entry) => toKey(entry.date)),
+        habit.entries.map((entry) => entry.date.toISOString().slice(0, 10)),
         todayKeyValue
       ),
     }))
