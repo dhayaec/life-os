@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

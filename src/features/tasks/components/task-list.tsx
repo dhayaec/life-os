@@ -2,7 +2,7 @@
 
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { deleteTaskAction, toggleTaskAction } from '@/features/tasks/actions';
