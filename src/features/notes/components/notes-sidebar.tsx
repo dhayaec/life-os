@@ -12,8 +12,8 @@ import {
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

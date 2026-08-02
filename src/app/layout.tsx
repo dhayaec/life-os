@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
+import { connection } from 'next/server';
 
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toast';
 import { AppProviders } from '@/providers/app-providers';
 import './globals.css';
 
@@ -41,11 +43,18 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Nonce-based CSP (src/proxy.ts) requires dynamic rendering: the nonce only
+  // exists at request time, so static pages would ship scripts with no nonce.
+  await connection();
+  // The proxy forwards the per-request nonce as x-nonce; pass it down so
+  // next-themes can nonce its inline theme script (Next doesn't nonce that one).
+  const nonce = (await headers()).get('x-nonce') ?? '';
+
   return (
     <html
       lang="en"
@@ -53,8 +62,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <AppProviders>{children}</AppProviders>
-        <Toaster position="bottom-right" richColors />
+        <AppProviders nonce={nonce}>{children}</AppProviders>
+        <Toaster />
       </body>
     </html>
   );
