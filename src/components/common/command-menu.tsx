@@ -19,6 +19,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandLoading,
   CommandSeparator,
 } from '@/components/ui/command';
 import { allNav } from '@/constants/navigation';
@@ -42,8 +43,11 @@ export function CommandMenu() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchHit[]>([]);
+  const [loadedQuery, setLoadedQuery] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchSeq = useRef(0);
+  // Loading while the input query hasn't been resolved by a finished search yet.
+  const isLoading = query.trim() !== '' && query.trim() !== loadedQuery;
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -64,8 +68,9 @@ export function CommandMenu() {
     timer.current = setTimeout(async () => {
       const result = await globalSearchAction({ q });
       // Ignore stale responses: a newer query invalidates this one.
-      if (seq === searchSeq.current && result.ok && result.data) {
-        setResults(result.data);
+      if (seq === searchSeq.current) {
+        if (result.ok && result.data) setResults(result.data);
+        setLoadedQuery(q);
       }
     }, 250);
     return () => {
@@ -79,6 +84,7 @@ export function CommandMenu() {
     if (!value.trim()) {
       searchSeq.current++;
       setResults([]);
+      setLoadedQuery('');
     }
   }
 
@@ -103,29 +109,33 @@ export function CommandMenu() {
       />
       <CommandList>
         {query.trim() ? (
-          <>
-            <CommandEmpty>No results found.</CommandEmpty>
-            {[...grouped.entries()].map(([group, hits]) => {
-              const Icon = groupIcons[group];
-              return (
-                <CommandGroup key={group} heading={group}>
-                  {hits.map((hit) => (
-                    <CommandItem key={`${group}-${hit.id}`} onSelect={() => go(hit.href)}>
-                      <Icon className="size-4" />
-                      <div className="flex min-w-0 flex-col">
-                        <span className="truncate">{hit.title}</span>
-                        {hit.subtitle ? (
-                          <span className="text-muted-foreground truncate text-xs">
-                            {hit.subtitle}
-                          </span>
-                        ) : null}
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              );
-            })}
-          </>
+          isLoading ? (
+            <CommandLoading>Searching…</CommandLoading>
+          ) : (
+            <>
+              <CommandEmpty>No results found.</CommandEmpty>
+              {[...grouped.entries()].map(([group, hits]) => {
+                const Icon = groupIcons[group];
+                return (
+                  <CommandGroup key={group} heading={group}>
+                    {hits.map((hit) => (
+                      <CommandItem key={`${group}-${hit.id}`} onSelect={() => go(hit.href)}>
+                        <Icon className="size-4" />
+                        <div className="flex min-w-0 flex-col">
+                          <span className="truncate">{hit.title}</span>
+                          {hit.subtitle ? (
+                            <span className="text-muted-foreground truncate text-xs">
+                              {hit.subtitle}
+                            </span>
+                          ) : null}
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                );
+              })}
+            </>
+          )
         ) : (
           <>
             <CommandEmpty>No results found.</CommandEmpty>
