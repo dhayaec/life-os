@@ -19,6 +19,8 @@ import { updateShoppingItemAction } from '@/features/shopping/actions';
 import { ItemDialog, type ItemInitial } from '@/features/shopping/components/item-dialog';
 import type { ShoppingItem } from '@/features/shopping/services/shopping-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export function ShoppingView({
   items,
   categories,
@@ -28,6 +30,7 @@ export function ShoppingView({
   categories: string[];
   category: string | null;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

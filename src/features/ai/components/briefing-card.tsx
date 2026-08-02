@@ -6,6 +6,8 @@ import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 type BriefingSnapshot = {
   agenda: { title: string; startAt: string }[];
   tasksDue: { title: string; dueAt: string | null }[];
@@ -15,6 +17,7 @@ type BriefingSnapshot = {
 };
 
 export function BriefingCard({ snapshot }: { snapshot: BriefingSnapshot }) {
+  useRouteLoadedSignal();
   const [briefing, setBriefing] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

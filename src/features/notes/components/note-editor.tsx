@@ -32,6 +32,8 @@ import {
   updateNoteAction,
 } from '@/features/notes/actions';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 type NoteTag = { tag: { id: string; name: string } };
 
 type NoteEditorProps = {
@@ -53,6 +55,7 @@ export function NoteEditor({
   trashedAt,
   tags: initialTags,
 }: NoteEditorProps) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const initialTagsString = initialTags.map(({ tag }) => tag.name).join(', ');
   const [title, setTitle] = useState(initialTitle || 'Untitled');

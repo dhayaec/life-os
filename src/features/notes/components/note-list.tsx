@@ -18,6 +18,8 @@ import {
   toggleFavoriteAction,
 } from '@/features/notes/actions';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export type NoteListItem = {
   id: string;
   title: string;
@@ -43,6 +45,7 @@ function stripHtml(html: string): string {
 }
 
 export function NoteList({ notes, trashed = false, initialNextCursor = null }: NoteListProps) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [items, setItems] = useState(notes);

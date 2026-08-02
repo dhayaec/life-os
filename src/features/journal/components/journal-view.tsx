@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { EntryDialog, type EntryInitial } from '@/features/journal/components/entry-dialog';
 import type { JournalEntryItem, JournalMood } from '@/features/journal/services/journal-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 const moodStyles: Record<JournalMood, { color: string; label: string }> = {
   terrible: { color: '#ef4444', label: 'Terrible' },
   bad: { color: '#f97316', label: 'Bad' },
@@ -16,6 +18,7 @@ const moodStyles: Record<JournalMood, { color: string; label: string }> = {
 };
 
 export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
+  useRouteLoadedSignal();
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; entry: JournalEntryItem } | null
   >(null);

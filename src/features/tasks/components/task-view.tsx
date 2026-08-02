@@ -9,6 +9,8 @@ import { TaskEditor } from '@/features/tasks/components/task-editor';
 import { TaskList } from '@/features/tasks/components/task-list';
 import type { TaskItem } from '@/features/tasks/services/task-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 const statuses = [
   { value: '', label: 'All' },
   { value: 'todo', label: 'To do' },
@@ -25,6 +27,7 @@ export function TaskView({
   initialStatus: string;
   initialSearch: string;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
