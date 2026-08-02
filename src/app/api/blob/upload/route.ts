@@ -1,3 +1,4 @@
+import { del, head } from '@vercel/blob';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 import { getSession } from '@/server/session';
@@ -36,23 +37,27 @@ export async function POST(request: Request) {
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         let name = blob.pathname.split('/').pop() ?? 'Untitled';
-        let size = 0;
         if (tokenPayload) {
           try {
-            const parsed = JSON.parse(tokenPayload) as { name?: string; size?: number };
+            const parsed = JSON.parse(tokenPayload) as { name?: string };
             if (parsed.name) name = parsed.name;
-            if (typeof parsed.size === 'number') size = parsed.size;
           } catch {
             // fall back to pathname-derived defaults
           }
         }
-        await createDocument(userId, {
-          name,
-          type: blob.contentType,
-          size,
-          url: blob.url,
-          pathname: blob.pathname,
-        });
+        try {
+          const metadata = await head(blob.url).catch(() => null);
+          await createDocument(userId, {
+            name,
+            type: blob.contentType,
+            size: metadata?.size ?? 0,
+            url: blob.url,
+            pathname: blob.pathname,
+          });
+        } catch (error) {
+          await del(blob.pathname).catch(() => {});
+          throw error;
+        }
       },
     });
     return Response.json(response);
