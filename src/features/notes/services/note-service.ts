@@ -59,8 +59,8 @@ export type NoteListOptions = {
   cursor?: string;
 };
 
-export async function getNotes(userId: string, options: NoteListOptions = {}) {
-  const where: Prisma.NoteWhereInput = {
+function buildNotesWhere(userId: string, options: NoteListOptions): Prisma.NoteWhereInput {
+  return {
     userId,
     trashedAt: options.trashed ? { not: null } : null,
     archived: options.archived ?? false,
@@ -76,14 +76,34 @@ export async function getNotes(userId: string, options: NoteListOptions = {}) {
       : {}),
     ...(options.tag ? { tags: { some: { tag: { name: options.tag } } } } : {}),
   };
+}
 
+export async function getNotes(userId: string, options: NoteListOptions = {}) {
   return db.note.findMany({
-    where,
+    where: buildNotesWhere(userId, options),
     include: { tags: { include: { tag: true } } },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
     take: options.take ?? 50,
     ...(options.cursor ? { skip: 1, cursor: { id: options.cursor } } : {}),
   });
+}
+
+const NOTES_PAGE_SIZE = 50;
+
+export async function getNotesPage(userId: string, options: NoteListOptions = {}) {
+  const limit = options.take ?? NOTES_PAGE_SIZE;
+  const rows = await db.note.findMany({
+    where: buildNotesWhere(userId, options),
+    include: { tags: { include: { tag: true } } },
+    orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
+    take: limit + 1,
+    ...(options.cursor ? { skip: 1, cursor: { id: options.cursor } } : {}),
+  });
+
+  const hasMore = rows.length > limit;
+  const items = hasMore ? rows.slice(0, limit) : rows;
+  const nextCursor = hasMore ? (items[items.length - 1]?.id ?? null) : null;
+  return { items, nextCursor };
 }
 
 export async function getNote(userId: string, id: string) {
