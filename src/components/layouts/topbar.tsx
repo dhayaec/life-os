@@ -3,7 +3,7 @@
 import { PanelLeft, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 
 import { ThemeToggle } from '@/components/common/theme-toggle';
 import { LifeLogo } from '@/components/common/logo';

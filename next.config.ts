@@ -9,34 +9,15 @@ const securityHeaders: Array<{ key: string; value: string }> = [
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
 ];
 
-// Bypassed in development: Next's Fast Refresh relies on eval + inline scripts.
-// Enforced in production (and Vercel previews, which build with NODE_ENV=production).
-const contentSecurityPolicy = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  // img-src/connect-src: allow Vercel Blob (Documents) + OAuth provider avatars.
-  "img-src 'self' data: blob: https://*.vercel-storage.com https://*.vercel-blob.com https://*.googleusercontent.com https://avatars.githubusercontent.com",
-  "font-src 'self'",
-  "connect-src 'self' https://*.vercel-storage.com https://*.vercel-blob.com",
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "object-src 'none'",
-].join('; ');
-
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The Content-Security-Policy header is generated per request in src/proxy.ts
+  // so it can carry a per-request nonce instead of 'unsafe-inline' for scripts.
   async headers() {
     return [
       {
         source: '/:path*',
-        headers: [
-          ...securityHeaders,
-          ...(process.env.NODE_ENV === 'production'
-            ? [{ key: 'Content-Security-Policy', value: contentSecurityPolicy }]
-            : []),
-        ],
+        headers: securityHeaders,
       },
     ];
   },
