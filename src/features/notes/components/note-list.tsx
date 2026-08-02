@@ -83,7 +83,9 @@ export function NoteList({ notes, trashed = false }: NoteListProps) {
                 </p>
               ) : null}
               <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}</span>
+                <span suppressHydrationWarning>
+                  {formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}
+                </span>
                 {note.tags.map(({ tag }) => (
                   <Badge key={tag.id} variant="secondary">
                     {tag.name}

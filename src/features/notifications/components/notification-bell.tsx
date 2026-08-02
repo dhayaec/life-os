@@ -49,7 +49,11 @@ export function NotificationBell() {
   }
 
   async function markOne(id: string) {
-    await markNotificationReadAction({ id });
+    const result = await markNotificationReadAction({ id });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
     await load();
   }
 
