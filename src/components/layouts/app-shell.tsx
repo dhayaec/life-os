@@ -1,4 +1,5 @@
 import { CommandMenu } from '@/components/common/command-menu';
+import { RouteLoadingBar } from '@/components/common/route-loading-bar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { LocaleProvider } from '@/providers/locale-provider';
 import { Sidebar } from './sidebar';
@@ -16,6 +17,7 @@ export function AppShell({
 }) {
   return (
     <LocaleProvider locale={locale}>
+      <RouteLoadingBar />
       <TooltipProvider delayDuration={200}>
         <a
           href="#main"
