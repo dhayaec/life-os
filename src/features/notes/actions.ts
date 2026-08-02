@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireUser } from '@/server/session';
+import { handle, type ActionResult } from '@/server/action-result';
 import {
   createFolder,
   createNote,
@@ -25,16 +26,6 @@ import {
   updateNoteSchema,
 } from '@/features/notes/validations';
 import type { NoteListItem } from '@/features/notes/components/note-list';
-
-type ActionResult<T = void> = { ok: true; data?: T } | { ok: false; error: string };
-
-async function handle<T>(run: () => Promise<T>): Promise<ActionResult<T>> {
-  try {
-    return { ok: true, data: await run() };
-  } catch (error) {
-    return { ok: false, error: error instanceof Error ? error.message : 'Something went wrong' };
-  }
-}
 
 export async function createFolderAction(input: unknown): Promise<ActionResult> {
   const user = await requireUser();
