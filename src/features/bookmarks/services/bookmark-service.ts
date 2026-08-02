@@ -22,6 +22,14 @@ export type CollectionItem = {
   parentId: string | null;
 };
 
+async function assertCollectionOwned(userId: string, collectionId: string) {
+  const collection = await db.collection.findFirst({
+    where: { id: collectionId, userId },
+    select: { id: true },
+  });
+  if (!collection) throw new Error('Collection not found');
+}
+
 type BookmarkRow = Bookmark;
 
 function serializeBookmark(bookmark: BookmarkRow): BookmarkItem {
@@ -81,6 +89,7 @@ export type BookmarkUpdateInput = {
 };
 
 export async function createBookmark(userId: string, input: BookmarkInput) {
+  if (input.collectionId) await assertCollectionOwned(userId, input.collectionId);
   const bookmark = await db.bookmark.create({
     data: {
       userId,
@@ -102,6 +111,7 @@ export async function updateBookmark(
 ): Promise<BookmarkItem | null> {
   const existing = await db.bookmark.findFirst({ where: { id, userId } });
   if (!existing) return null;
+  if (input.collectionId) await assertCollectionOwned(userId, input.collectionId);
 
   const data: Prisma.BookmarkUncheckedUpdateInput = {};
   if (input.url !== undefined) data.url = input.url;
@@ -126,6 +136,7 @@ export async function createCollection(
   userId: string,
   input: { name: string; parentId?: string | null | undefined }
 ): Promise<CollectionItem> {
+  if (input.parentId) await assertCollectionOwned(userId, input.parentId);
   const collection = await db.collection.create({
     data: { userId, name: input.name, parentId: input.parentId ?? null },
   });

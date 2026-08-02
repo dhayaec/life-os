@@ -14,6 +14,14 @@ export type FolderNode = {
   children: FolderNode[];
 };
 
+async function assertFolderOwned(userId: string, folderId: string) {
+  const folder = await db.folder.findFirst({
+    where: { id: folderId, userId },
+    select: { id: true },
+  });
+  if (!folder) throw new Error('Folder not found');
+}
+
 export async function getFolders(userId: string): Promise<FolderNode[]> {
   const folders = await db.folder.findMany({ where: { userId }, orderBy: { name: 'asc' } });
   const nodes = new Map<string, FolderNode>();
@@ -33,6 +41,7 @@ export async function getFolders(userId: string): Promise<FolderNode[]> {
 }
 
 export async function createFolder(userId: string, data: FolderInput) {
+  if (data.parentId) await assertFolderOwned(userId, data.parentId);
   return db.folder.create({ data: { userId, name: data.name, parentId: data.parentId ?? null } });
 }
 
@@ -127,6 +136,7 @@ async function setTags(userId: string, noteId: string, tagNames: string[]) {
 }
 
 export async function createNote(userId: string, input: NoteInput) {
+  if (input.folderId) await assertFolderOwned(userId, input.folderId);
   const note = await db.note.create({
     data: {
       userId,
@@ -148,6 +158,7 @@ export async function updateNote(userId: string, id: string, input: NoteInput) {
   if (!existing) return null;
 
   const { tagNames, ...rest } = input;
+  if (rest.folderId) await assertFolderOwned(userId, rest.folderId);
 
   const data: Prisma.NoteUncheckedUpdateInput = {};
   if (rest.title !== undefined) data.title = rest.title;
