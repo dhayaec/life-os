@@ -37,3 +37,11 @@ export const updateNoteSchema = z.object({
 export const noteIdSchema = z.object({
   id: idSchema,
 });
+
+export const getNotesPageSchema = z.object({
+  cursor: idSchema.nullable().optional(),
+  folderId: idSchema.nullable().optional(),
+  favorite: z.boolean().optional(),
+  search: z.string().trim().max(200).optional(),
+  trashed: z.boolean().optional(),
+});

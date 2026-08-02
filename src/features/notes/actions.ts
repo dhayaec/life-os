@@ -7,6 +7,7 @@ import {
   createFolder,
   createNote,
   deleteFolder,
+  getNotesPage,
   hardDeleteNote,
   renameFolder,
   restoreNote,
@@ -18,10 +19,12 @@ import {
   createFolderSchema,
   createNoteSchema,
   deleteFolderSchema,
+  getNotesPageSchema,
   noteIdSchema,
   updateFolderSchema,
   updateNoteSchema,
 } from '@/features/notes/validations';
+import type { NoteListItem } from '@/features/notes/components/note-list';
 
 type ActionResult<T = void> = { ok: true; data?: T } | { ok: false; error: string };
 
@@ -122,5 +125,33 @@ export async function hardDeleteNoteAction(input: unknown): Promise<ActionResult
   return handle(async () => {
     await hardDeleteNote(user.id, data.id);
     revalidatePath('/notes');
+  });
+}
+
+export async function getNotesPageAction(
+  input: unknown
+): Promise<ActionResult<{ items: NoteListItem[]; nextCursor: string | null }>> {
+  const user = await requireUser();
+  const data = getNotesPageSchema.parse(input);
+  return handle(async () => {
+    const { items, nextCursor } = await getNotesPage(user.id, {
+      ...(data.folderId ? { folderId: data.folderId } : {}),
+      ...(data.favorite !== undefined ? { favorite: data.favorite } : {}),
+      ...(data.search !== undefined ? { search: data.search } : {}),
+      ...(data.trashed !== undefined ? { trashed: data.trashed } : {}),
+      ...(data.cursor ? { cursor: data.cursor } : {}),
+    });
+    return {
+      items: items.map((note) => ({
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        isFavorite: note.isFavorite,
+        trashedAt: note.trashedAt?.toISOString() ?? null,
+        updatedAt: note.updatedAt.toISOString(),
+        tags: note.tags,
+      })),
+      nextCursor,
+    };
   });
 }
