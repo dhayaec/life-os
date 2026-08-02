@@ -50,6 +50,18 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
   const [busy, setBusy] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Re-sync the locally-held list to the server's fresh page after a
+  // router.refresh() (e.g. an inline favorite/trash/restore action), since
+  // useState only seeds once and the page isn't remounted on refresh. Adjusts
+  // state during render per React's documented "adjusting state when a prop
+  // changes" pattern.
+  const [seeded, setSeeded] = useState({ notes, cursor: initialNextCursor });
+  if (seeded.notes !== notes || seeded.cursor !== initialNextCursor) {
+    setSeeded({ notes, cursor: initialNextCursor });
+    setItems(notes);
+    setNextCursor(initialNextCursor);
+  }
+
   async function runAction(action: () => Promise<{ ok: boolean; error?: string }>, id: string) {
     setBusy(id);
     const result = await action();
