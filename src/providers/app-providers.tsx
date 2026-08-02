@@ -4,9 +4,9 @@ import { QueryProvider } from './query-provider';
 import { ReduxProvider } from './redux-provider';
 import { ThemeProvider } from './theme-provider';
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
+export function AppProviders({ children, nonce }: { children: React.ReactNode; nonce?: string }) {
   return (
-    <ThemeProvider>
+    <ThemeProvider {...(nonce ? { nonce } : {})}>
       <ReduxProvider>
         <QueryProvider>{children}</QueryProvider>
       </ReduxProvider>
