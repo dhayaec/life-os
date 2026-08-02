@@ -25,6 +25,8 @@ import type {
   CollectionItem,
 } from '@/features/bookmarks/services/bookmark-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 const typeConfig: Record<BookmarkTypeLiteral, { label: string; icon: LucideIcon }> = {
   article: { label: 'Article', icon: FileText },
   video: { label: 'Video', icon: Play },
@@ -41,6 +43,7 @@ export function BookmarkView({
   collections: CollectionItem[];
   collection: string | null;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

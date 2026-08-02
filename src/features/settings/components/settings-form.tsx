@@ -20,7 +20,10 @@ import { updateSettingsAction } from '@/features/settings/actions';
 import { LOCALES, THEMES, TIMEZONES, type ThemeLiteral } from '@/features/settings/validations';
 import type { UserSettingsData } from '@/features/settings/services/settings-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export function SettingsForm({ initial }: { initial: UserSettingsData }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const { setTheme } = useTheme();
   const [name, setName] = useState(initial.name);

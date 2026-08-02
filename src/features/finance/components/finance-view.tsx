@@ -19,6 +19,8 @@ import type {
   TransactionItem,
 } from '@/features/finance/services/finance-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 const CATEGORY_COLORS = [
   '#6366f1',
   '#ef4444',
@@ -41,6 +43,7 @@ export function FinanceView({
   budgets: BudgetItem[];
   month: string;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -8,9 +8,12 @@ import { Button } from '@/components/ui/button';
 import { EventDialog, type EventInitial } from '@/features/calendar/components/event-dialog';
 import type { CalendarEventItem } from '@/features/calendar/services/calendar-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export function CalendarView({ month, events }: { month: string; events: CalendarEventItem[] }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

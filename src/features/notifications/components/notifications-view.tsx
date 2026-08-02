@@ -12,6 +12,8 @@ import {
 } from '@/features/notifications/actions';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export function NotificationsView({
   items,
   unread,
@@ -19,6 +21,7 @@ export function NotificationsView({
   items: NotificationItem[];
   unread: number;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
 
   async function markAll() {

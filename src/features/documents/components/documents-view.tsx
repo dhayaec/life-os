@@ -28,6 +28,8 @@ import {
 } from '@/features/documents/actions';
 import type { DocumentItem } from '@/features/documents/services/documents-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export function DocumentsView({
   userId,
   documents,
@@ -37,6 +39,7 @@ export function DocumentsView({
   documents: DocumentItem[];
   trashed: boolean;
 }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
 

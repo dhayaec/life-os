@@ -11,7 +11,10 @@ import { setHabitEntryAction } from '@/features/habits/actions';
 import { HabitFormDialog, type HabitInitial } from '@/features/habits/components/habit-form-dialog';
 import type { HabitItem } from '@/features/habits/services/habit-service';
 
+import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+
 export function HabitView({ month, habits }: { month: string; habits: HabitItem[] }) {
+  useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
