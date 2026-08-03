@@ -25,11 +25,17 @@ describe('task validations', () => {
 });
 
 describe('note validations', () => {
-  it('applies defaults for title, content, and tags', () => {
-    const result = createNoteSchema.safeParse({});
+  it('requires a non-empty title', () => {
+    expect(createNoteSchema.safeParse({}).success).toBe(false);
+    expect(createNoteSchema.safeParse({ title: '' }).success).toBe(false);
+    expect(createNoteSchema.safeParse({ title: '   ' }).success).toBe(false);
+  });
+
+  it('applies defaults for content and tags', () => {
+    const result = createNoteSchema.safeParse({ title: 'Groceries' });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.title).toBe('Untitled');
+      expect(result.data.title).toBe('Groceries');
       expect(result.data.content).toBe('');
       expect(result.data.tagNames).toEqual([]);
     }
