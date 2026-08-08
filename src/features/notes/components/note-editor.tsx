@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import {
@@ -14,6 +14,7 @@ import {
   ListOrdered,
   Quote,
   RotateCcw,
+  Save,
   Sparkles,
   Star,
   Trash2,
@@ -26,6 +27,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
+  createNoteAction,
   restoreNoteAction,
   softDeleteNoteAction,
   toggleFavoriteAction,
@@ -57,8 +59,9 @@ export function NoteEditor({
 }: NoteEditorProps) {
   useRouteLoadedSignal();
   const router = useRouter();
+  const isNew = id === 'new';
   const initialTagsString = initialTags.map(({ tag }) => tag.name).join(', ');
-  const [title, setTitle] = useState(initialTitle || 'Untitled');
+  const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [tags, setTags] = useState(initialTagsString);
   const [favorite, setFavorite] = useState(isFavorite);
@@ -69,72 +72,49 @@ export function NoteEditor({
   const editor = useEditor({
     extensions: [StarterKit],
     content: initialContent,
-    onUpdate: ({ editor }) => setContent(editor.getHTML()),
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+      setSaveState('idle');
+    },
   });
 
-  // Holds the newest unsaved snapshot so a flush on unmount/pagehide can save it.
-  const pendingRef = useRef<{ title: string; content: string; tags: string } | null>(null);
+  const hasChanges =
+    title !== initialTitle || content !== initialContent || tags !== initialTagsString;
 
-  const save = useCallback(
-    async (snapshot: { title: string; content: string; tags: string }) => {
-      setSaveState('saving');
-      const result = await updateNoteAction({
-        id,
-        title: snapshot.title.trim() || 'Untitled',
-        content: snapshot.content,
-        tagNames: snapshot.tags
-          .split(',')
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-      });
+  async function handleSave() {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) {
+      toast.error('Title is required');
+      return;
+    }
+    setSaveState('saving');
+    const tagNames = tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    if (isNew) {
+      const result = await createNoteAction({ title: trimmedTitle, content, tagNames });
       if (!result.ok) {
         setSaveState('error');
         toast.error(result.error);
         return;
       }
-      setSaveState('saved');
-    },
-    [id]
-  );
-
-  useEffect(() => {
-    if (title === initialTitle && content === initialContent && tags === initialTagsString) {
-      pendingRef.current = null;
+      if (!result.data) {
+        setSaveState('error');
+        toast.error('Something went wrong');
+        return;
+      }
+      router.replace(`/notes/${result.data.id}`);
       return;
     }
-    const snapshot = { title, content, tags };
-    pendingRef.current = snapshot;
-    const timer = setTimeout(async () => {
-      pendingRef.current = null;
-      await save(snapshot);
-    }, 800);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, content, tags, id, save]);
-
-  // Flush pending edits on unmount so client-side navigation doesn't drop the
-  // debounced tail. Best-effort: a server action issued from a teardown may be
-  // aborted if the tab closes, hence the pagehide listener below.
-  useEffect(() => {
-    const flush = () => {
-      const pending = pendingRef.current;
-      if (!pending) return;
-      pendingRef.current = null;
-      void save(pending);
-    };
-    return () => flush();
-  }, [save]);
-
-  useEffect(() => {
-    const onPageHide = () => {
-      const pending = pendingRef.current;
-      if (!pending) return;
-      pendingRef.current = null;
-      void save(pending);
-    };
-    window.addEventListener('pagehide', onPageHide);
-    return () => window.removeEventListener('pagehide', onPageHide);
-  }, [save]);
+    const result = await updateNoteAction({ id, title: trimmedTitle, content, tagNames });
+    if (!result.ok) {
+      setSaveState('error');
+      toast.error(result.error);
+      return;
+    }
+    setSaveState('saved');
+  }
 
   async function handleToggleFavorite() {
     const result = await toggleFavoriteAction({ id });
@@ -254,50 +234,67 @@ export function NoteEditor({
                 : ''}
         </span>
         <div className="ml-auto flex items-center gap-1">
+          {!isNew ? (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1"
+                disabled={trashed || aiBusy === 'summarize'}
+                onClick={handleSummarize}
+              >
+                <Sparkles className="size-4" />
+                Summarize
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1"
+                disabled={trashed || aiBusy === 'tasks-from-note'}
+                onClick={handleGenerateTasks}
+              >
+                <Sparkles className="size-4" />
+                Tasks
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={favorite ? 'Remove favorite' : 'Add favorite'}
+                onClick={handleToggleFavorite}
+              >
+                <Star className={`size-4 ${favorite ? 'fill-amber-500 text-amber-500' : ''}`} />
+              </Button>
+              {trashed ? (
+                <Button variant="ghost" size="sm" onClick={handleRestore}>
+                  <RotateCcw className="size-4" />
+                  Restore
+                </Button>
+              ) : (
+                <Button variant="ghost" size="icon" aria-label="Delete note" onClick={handleDelete}>
+                  <Trash2 className="size-4" />
+                </Button>
+              )}
+            </>
+          ) : null}
           <Button
-            variant="ghost"
+            type="button"
             size="sm"
             className="gap-1"
-            disabled={trashed || aiBusy === 'summarize'}
-            onClick={handleSummarize}
+            onClick={handleSave}
+            disabled={saveState === 'saving' || trashed || (!isNew && !hasChanges)}
           >
-            <Sparkles className="size-4" />
-            Summarize
+            <Save className="size-4" />
+            {saveState === 'saving' ? 'Saving…' : 'Save'}
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1"
-            disabled={trashed || aiBusy === 'tasks-from-note'}
-            onClick={handleGenerateTasks}
-          >
-            <Sparkles className="size-4" />
-            Tasks
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={favorite ? 'Remove favorite' : 'Add favorite'}
-            onClick={handleToggleFavorite}
-          >
-            <Star className={`size-4 ${favorite ? 'fill-amber-500 text-amber-500' : ''}`} />
-          </Button>
-          {trashed ? (
-            <Button variant="ghost" size="sm" onClick={handleRestore}>
-              <RotateCcw className="size-4" />
-              Restore
-            </Button>
-          ) : (
-            <Button variant="ghost" size="icon" aria-label="Delete note" onClick={handleDelete}>
-              <Trash2 className="size-4" />
-            </Button>
-          )}
         </div>
       </div>
 
       <Input
         value={title}
-        onChange={(event) => setTitle(event.target.value)}
+        onChange={(event) => {
+          setTitle(event.target.value);
+          setSaveState('idle');
+        }}
         placeholder="Note title"
         aria-label="Note title"
         className="h-10 text-xl font-semibold"
@@ -306,7 +303,10 @@ export function NoteEditor({
 
       <Input
         value={tags}
-        onChange={(event) => setTags(event.target.value)}
+        onChange={(event) => {
+          setTags(event.target.value);
+          setSaveState('idle');
+        }}
         placeholder="Tags (comma separated)"
         aria-label="Tags"
         className="text-sm"

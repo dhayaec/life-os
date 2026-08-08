@@ -150,7 +150,7 @@ export function CommandMenu() {
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup heading="Actions">
-              <CommandItem onSelect={() => go('/notes')}>New note</CommandItem>
+              <CommandItem onSelect={() => go('/notes/new')}>New note</CommandItem>
               <CommandItem onSelect={() => go('/tasks')}>New task</CommandItem>
             </CommandGroup>
           </>

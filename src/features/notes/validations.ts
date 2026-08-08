@@ -18,7 +18,7 @@ export const deleteFolderSchema = z.object({
 });
 
 export const createNoteSchema = z.object({
-  title: z.string().trim().min(1).max(200).default('Untitled'),
+  title: z.string().trim().min(1).max(200),
   content: z.string().max(100_000).default(''),
   folderId: idSchema.nullable().optional(),
   tagNames: z.array(z.string().trim().min(1).max(50)).max(20).default([]),

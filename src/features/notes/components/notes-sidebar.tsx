@@ -17,7 +17,7 @@ import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createFolderAction, createNoteAction } from '@/features/notes/actions';
+import { createFolderAction } from '@/features/notes/actions';
 import type { FolderNode } from '@/features/notes/services/note-service';
 
 type NotesSidebarProps = {
@@ -53,15 +53,7 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
   }
 
   async function handleCreateNote() {
-    const result = await createNoteAction({});
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    if (!result.data) {
-      return;
-    }
-    window.location.href = `/notes/${result.data.id}`;
+    window.location.href = '/notes/new';
   }
 
   function renderFolder(node: FolderNode, depth: number) {

@@ -7,14 +7,15 @@ test('create, rename, and trash a note', async ({ page }) => {
 
   await page.goto('/notes');
   await page.getByRole('button', { name: 'New note' }).click();
-  await expect(page).toHaveURL(/\/notes\/[^/]+$/);
+  await expect(page).toHaveURL(/\/notes\/new$/);
   // "New note" navigates via window.location.href (full reload). Wait for the
   // page to settle so the fill isn't wiped by React hydration.
   await page.waitForLoadState('networkidle');
 
   const title = 'E2E Note';
   await page.getByLabel('Note title').fill(title);
-  await expect(page.getByText('Saved', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Save' }).click();
+  await expect(page).toHaveURL(/\/notes\/[0-9a-f-]{36}$/);
 
   await page.getByLabel('Back to notes').click();
   await expect(page).toHaveURL(/\/notes$/);

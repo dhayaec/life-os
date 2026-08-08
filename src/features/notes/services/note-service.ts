@@ -160,7 +160,7 @@ export async function createNote(userId: string, input: NoteInput) {
   const note = await db.note.create({
     data: {
       userId,
-      title: input.title ?? 'Untitled',
+      title: input.title ?? '',
       content: input.content ?? '',
       folderId: input.folderId ?? null,
     },
