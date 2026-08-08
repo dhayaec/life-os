@@ -83,17 +83,12 @@ export function TaskView({
   async function handleDelete(task: TaskItem) {
     if (pending === task.id) return;
     const snapshot = task;
-    const index = tasks.findIndex((t) => t.id === task.id);
     setPending(task.id);
     setTasks((prev) => prev.filter((t) => t.id !== task.id));
     const result = await deleteTaskAction({ id: task.id });
     setPending(null);
     if (!result.ok) {
-      setTasks((prev) => {
-        const next = [...prev];
-        next.splice(index, 0, snapshot);
-        return next;
-      });
+      setTasks((prev) => [...prev, snapshot]);
       toast.error(result.error);
       return;
     }

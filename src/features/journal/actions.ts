@@ -16,18 +16,18 @@ import {
 } from '@/features/journal/validations';
 
 export async function createJournalEntryAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = createJournalEntrySchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = createJournalEntrySchema.parse(input);
     await createJournalEntry(user.id, data);
     revalidatePath('/journal');
   });
 }
 
 export async function updateJournalEntryAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = updateJournalEntrySchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = updateJournalEntrySchema.parse(input);
     const { id, ...rest } = data;
     await updateJournalEntry(user.id, id, rest);
     revalidatePath('/journal');
@@ -35,9 +35,9 @@ export async function updateJournalEntryAction(input: unknown): Promise<ActionRe
 }
 
 export async function deleteJournalEntryAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = journalEntryIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = journalEntryIdSchema.parse(input);
     await deleteJournalEntry(user.id, data.id);
     revalidatePath('/journal');
   });

@@ -8,9 +8,9 @@ import { updateSettings } from '@/features/settings/services/settings-service';
 import { updateSettingsSchema } from '@/features/settings/validations';
 
 export async function updateSettingsAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = updateSettingsSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = updateSettingsSchema.parse(input);
     await updateSettings(user.id, data);
     revalidatePath('/settings');
   });

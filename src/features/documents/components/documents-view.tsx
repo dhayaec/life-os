@@ -90,17 +90,12 @@ export function DocumentsView({
   async function trash(doc: DocumentItem) {
     if (pending === doc.id) return;
     const snapshot = doc;
-    const index = documents.findIndex((d) => d.id === doc.id);
     setPending(doc.id);
     setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await trashDocumentAction({ id: doc.id });
     setPending(null);
     if (!result.ok) {
-      setDocuments((prev) => {
-        const next = [...prev];
-        next.splice(index, 0, snapshot);
-        return next;
-      });
+      setDocuments((prev) => [...prev, snapshot]);
       toast.error(result.error);
       return;
     }
@@ -110,17 +105,12 @@ export function DocumentsView({
   async function restore(doc: DocumentItem) {
     if (pending === doc.id) return;
     const snapshot = doc;
-    const index = documents.findIndex((d) => d.id === doc.id);
     setPending(doc.id);
     setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await restoreDocumentAction({ id: doc.id });
     setPending(null);
     if (!result.ok) {
-      setDocuments((prev) => {
-        const next = [...prev];
-        next.splice(index, 0, snapshot);
-        return next;
-      });
+      setDocuments((prev) => [...prev, snapshot]);
       toast.error(result.error);
       return;
     }
@@ -132,17 +122,12 @@ export function DocumentsView({
     if (!confirmed) return;
     if (pending === doc.id) return;
     const snapshot = doc;
-    const index = documents.findIndex((d) => d.id === doc.id);
     setPending(doc.id);
     setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await deleteDocumentAction({ id: doc.id });
     setPending(null);
     if (!result.ok) {
-      setDocuments((prev) => {
-        const next = [...prev];
-        next.splice(index, 0, snapshot);
-        return next;
-      });
+      setDocuments((prev) => [...prev, snapshot]);
       toast.error(result.error);
       return;
     }

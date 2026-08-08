@@ -20,18 +20,18 @@ import {
 } from '@/features/bookmarks/validations';
 
 export async function createBookmarkAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = createBookmarkSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = createBookmarkSchema.parse(input);
     await createBookmark(user.id, data);
     revalidatePath('/bookmarks');
   });
 }
 
 export async function updateBookmarkAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = updateBookmarkSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = updateBookmarkSchema.parse(input);
     const { id, ...rest } = data;
     await updateBookmark(user.id, id, rest);
     revalidatePath('/bookmarks');
@@ -39,27 +39,27 @@ export async function updateBookmarkAction(input: unknown): Promise<ActionResult
 }
 
 export async function deleteBookmarkAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = bookmarkIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = bookmarkIdSchema.parse(input);
     await deleteBookmark(user.id, data.id);
     revalidatePath('/bookmarks');
   });
 }
 
 export async function createCollectionAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = createCollectionSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = createCollectionSchema.parse(input);
     await createCollection(user.id, data);
     revalidatePath('/bookmarks');
   });
 }
 
 export async function deleteCollectionAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = collectionIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = collectionIdSchema.parse(input);
     await deleteCollection(user.id, data.id);
     revalidatePath('/bookmarks');
   });

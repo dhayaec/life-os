@@ -31,13 +31,15 @@ export function NotificationsView({
 
   async function markAll() {
     if (unread === 0) return;
-    const itemsSnapshot = items;
+    const unreadIds = new Set(items.filter((item) => !item.read).map((item) => item.id));
     const unreadSnapshot = unread;
     setItems((prev) => prev.map((item) => ({ ...item, read: true })));
     setUnread(0);
     const result = await markAllNotificationsReadAction();
     if (!result.ok) {
-      setItems(itemsSnapshot);
+      setItems((prev) =>
+        prev.map((item) => (unreadIds.has(item.id) ? { ...item, read: false } : item))
+      );
       setUnread(unreadSnapshot);
       toast.error(result.error);
       return;
@@ -61,18 +63,13 @@ export function NotificationsView({
   }
 
   async function remove(item: NotificationItem) {
-    const index = items.findIndex((n) => n.id === item.id);
-    if (index === -1) return;
+    if (!items.some((n) => n.id === item.id)) return;
     const wasUnread = !item.read;
     setItems((prev) => prev.filter((n) => n.id !== item.id));
     if (wasUnread) setUnread((prev) => Math.max(0, prev - 1));
     const result = await deleteNotificationAction({ id: item.id });
     if (!result.ok) {
-      setItems((prev) => {
-        const next = [...prev];
-        next.splice(index, 0, item);
-        return next;
-      });
+      setItems((prev) => [...prev, item]);
       if (wasUnread) setUnread((prev) => prev + 1);
       toast.error(result.error);
       return;
@@ -107,11 +104,18 @@ export function NotificationsView({
       ) : (
         <div className="flex flex-col">
           {items.map((item) => (
-            <button
+            <div
               key={item.id}
-              type="button"
+              role="button"
+              tabIndex={0}
               onClick={() => void markOne(item)}
-              className={`flex items-start justify-between gap-3 rounded-md border-b px-3 py-3 text-left last:border-b-0 hover:bg-accent/50 ${
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  void markOne(item);
+                }
+              }}
+              className={`flex cursor-pointer items-start justify-between gap-3 rounded-md border-b px-3 py-3 text-left last:border-b-0 hover:bg-accent/50 ${
                 item.read ? '' : 'bg-accent/20'
               }`}
             >
@@ -146,7 +150,7 @@ export function NotificationsView({
                   <Trash2 className="size-4" />
                 </Button>
               </span>
-            </button>
+            </div>
           ))}
         </div>
       )}

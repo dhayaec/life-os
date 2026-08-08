@@ -56,7 +56,6 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
     if (busy.has(id)) return;
     const snapshot = items.find((n) => n.id === id);
     if (!snapshot) return;
-    const index = items.findIndex((n) => n.id === id);
     setBusy((prev) => new Set(prev).add(id));
     const next = apply(snapshot);
     setItems((prev) =>
@@ -70,13 +69,7 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
     });
     if (!result.ok) {
       setItems((prev) =>
-        next === null
-          ? (() => {
-              const arr = [...prev];
-              arr.splice(index, 0, snapshot);
-              return arr;
-            })()
-          : prev.map((n) => (n.id === id ? snapshot : n))
+        next === null ? [...prev, snapshot] : prev.map((n) => (n.id === id ? snapshot : n))
       );
       toast.error(result.error ?? 'Something went wrong');
       return;
