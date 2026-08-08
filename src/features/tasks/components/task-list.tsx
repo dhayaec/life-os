@@ -4,6 +4,7 @@ import { Trash2 } from 'lucide-react';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import type { TaskItem } from '@/features/tasks/services/task-service';
+import { useMounted } from '@/hooks/use-mounted';
 
 const priorityStyles: Record<TaskItem['priority'], string> = {
   low: 'bg-slate-500/15 text-slate-600 dark:text-slate-300',
@@ -24,6 +25,8 @@ export function TaskList({
   onToggle: (task: TaskItem) => void;
   onDelete: (task: TaskItem) => void;
 }) {
+  const mounted = useMounted();
+
   if (tasks.length === 0) {
     return (
       <p className="text-muted-foreground py-8 text-center text-sm">No tasks yet. Add one above.</p>
@@ -70,12 +73,9 @@ export function TaskList({
             </button>
             <div className="flex shrink-0 items-center gap-1.5">
               {task.dueAt ? (
-                <span
-                  suppressHydrationWarning
-                  className={`text-xs ${overdue ? 'text-red-500' : 'text-muted-foreground'}`}
-                >
+                <span className={`text-xs ${overdue ? 'text-red-500' : 'text-muted-foreground'}`}>
                   {overdue ? <span className="sr-only">Overdue — </span> : null}
-                  {formatDue(task.dueAt)}
+                  {mounted ? formatDue(task.dueAt) : ''}
                 </span>
               ) : null}
               <span className={`rounded-full px-2 py-0.5 text-xs ${priorityStyles[task.priority]}`}>

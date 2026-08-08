@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { EntryDialog, type EntryInitial } from '@/features/journal/components/entry-dialog';
 import type { JournalEntryItem, JournalMood } from '@/features/journal/services/journal-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const moodStyles: Record<JournalMood, { color: string; label: string }> = {
@@ -19,6 +20,7 @@ const moodStyles: Record<JournalMood, { color: string; label: string }> = {
 
 export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
   useRouteLoadedSignal();
+  const mounted = useMounted();
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; entry: JournalEntryItem } | null
   >(null);
@@ -77,12 +79,12 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
                       style={{ backgroundColor: mood.color }}
                     />
                     <span className="sr-only">{mood.label}</span>
-                    <span suppressHydrationWarning className="font-medium">
-                      {entry.title || formatDateTime(entry.entryAt)}
+                    <span className="font-medium">
+                      {entry.title || (mounted ? formatDateTime(entry.entryAt) : '')}
                     </span>
                   </div>
-                  <span suppressHydrationWarning className="text-muted-foreground text-xs">
-                    {formatDateTime(entry.entryAt)}
+                  <span className="text-muted-foreground text-xs">
+                    {mounted ? formatDateTime(entry.entryAt) : ''}
                   </span>
                 </div>
                 <p className="text-muted-foreground line-clamp-2 text-sm whitespace-pre-wrap">
