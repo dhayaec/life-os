@@ -18,6 +18,7 @@ import {
   toggleFavoriteAction,
 } from '@/features/notes/actions';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export type NoteListItem = {
@@ -48,28 +49,41 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
   useRouteLoadedSignal();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [items, setItems] = useState(notes);
-  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
-  const [busy, setBusy] = useState<string | null>(null);
+  const [items, setItems] = useSyncedState(notes);
+  const [nextCursor, setNextCursor] = useSyncedState(initialNextCursor);
+  const [busy, setBusy] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
 
-  // Re-sync the locally-held list to the server's fresh page after a
-  // router.refresh() (e.g. an inline favorite/trash/restore action), since
-  // useState only seeds once and the page isn't remounted on refresh. Adjusts
-  // state during render per React's documented "adjusting state when a prop
-  // changes" pattern.
-  const [seeded, setSeeded] = useState({ notes, cursor: initialNextCursor });
-  if (seeded.notes !== notes || seeded.cursor !== initialNextCursor) {
-    setSeeded({ notes, cursor: initialNextCursor });
-    setItems(notes);
-    setNextCursor(initialNextCursor);
-  }
-
-  async function runAction(action: () => Promise<{ ok: boolean; error?: string }>, id: string) {
-    setBusy(id);
+  async function runAction(
+    action: () => Promise<{ ok: boolean; error?: string }>,
+    id: string,
+    apply: (snapshot: NoteListItem) => NoteListItem | null
+  ) {
+    if (busy.has(id)) return;
+    const snapshot = items.find((n) => n.id === id);
+    if (!snapshot) return;
+    const index = items.findIndex((n) => n.id === id);
+    setBusy((prev) => new Set(prev).add(id));
+    const next = apply(snapshot);
+    setItems((prev) =>
+      next === null ? prev.filter((n) => n.id !== id) : prev.map((n) => (n.id === id ? next : n))
+    );
     const result = await action();
-    setBusy(null);
+    setBusy((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
     if (!result.ok) {
+      setItems((prev) =>
+        next === null
+          ? (() => {
+              const arr = [...prev];
+              arr.splice(index, 0, snapshot);
+              return arr;
+            })()
+          : prev.map((n) => (n.id === id ? snapshot : n))
+      );
       toast.error(result.error ?? 'Something went wrong');
       return;
     }
@@ -150,8 +164,14 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Restore"
-                    disabled={busy === note.id}
-                    onClick={() => runAction(() => restoreNoteAction({ id: note.id }), note.id)}
+                    disabled={busy.has(note.id)}
+                    onClick={() =>
+                      runAction(
+                        () => restoreNoteAction({ id: note.id }),
+                        note.id,
+                        () => null
+                      )
+                    }
                   >
                     <RotateCcw className="size-4" />
                   </Button>
@@ -159,8 +179,14 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Delete forever"
-                    disabled={busy === note.id}
-                    onClick={() => runAction(() => hardDeleteNoteAction({ id: note.id }), note.id)}
+                    disabled={busy.has(note.id)}
+                    onClick={() =>
+                      runAction(
+                        () => hardDeleteNoteAction({ id: note.id }),
+                        note.id,
+                        () => null
+                      )
+                    }
                   >
                     <X className="size-4" />
                   </Button>
@@ -171,8 +197,14 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Toggle favorite"
-                    disabled={busy === note.id}
-                    onClick={() => runAction(() => toggleFavoriteAction({ id: note.id }), note.id)}
+                    disabled={busy.has(note.id)}
+                    onClick={() =>
+                      runAction(
+                        () => toggleFavoriteAction({ id: note.id }),
+                        note.id,
+                        (n) => ({ ...n, isFavorite: !n.isFavorite })
+                      )
+                    }
                   >
                     <Star
                       className={`size-4 ${note.isFavorite ? 'fill-amber-500 text-amber-500' : ''}`}
@@ -182,8 +214,14 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Move to trash"
-                    disabled={busy === note.id}
-                    onClick={() => runAction(() => softDeleteNoteAction({ id: note.id }), note.id)}
+                    disabled={busy.has(note.id)}
+                    onClick={() =>
+                      runAction(
+                        () => softDeleteNoteAction({ id: note.id }),
+                        note.id,
+                        () => null
+                      )
+                    }
                   >
                     <Trash2 className="size-4" />
                   </Button>
