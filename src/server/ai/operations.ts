@@ -7,8 +7,8 @@ import { complete } from '@/server/ai/ai-service';
 const ASSISTANT = 'You are LifeOS, a personal productivity assistant.';
 
 const taskSuggestionSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().optional(),
+  title: z.string().min(1).max(300),
+  description: z.string().max(1000).optional(),
 });
 
 export type TaskSuggestion = z.infer<typeof taskSuggestionSchema>;
