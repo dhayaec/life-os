@@ -298,7 +298,7 @@ export type NoteScalarWhereWithAggregatesInput = {
 
 export type NoteCreateInput = {
   id?: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -315,7 +315,7 @@ export type NoteUncheckedCreateInput = {
   id?: string;
   userId: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -360,7 +360,7 @@ export type NoteCreateManyInput = {
   id?: string;
   userId: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -638,7 +638,7 @@ export type NoteUpdateOneRequiredWithoutVersionsNestedInput = {
 
 export type NoteCreateWithoutUserInput = {
   id?: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -653,7 +653,7 @@ export type NoteCreateWithoutUserInput = {
 export type NoteUncheckedCreateWithoutUserInput = {
   id?: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -711,7 +711,7 @@ export type NoteScalarWhereInput = {
 
 export type NoteCreateWithoutFolderInput = {
   id?: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -726,7 +726,7 @@ export type NoteCreateWithoutFolderInput = {
 export type NoteUncheckedCreateWithoutFolderInput = {
   id?: string;
   userId: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -780,7 +780,7 @@ export type NoteUpdateManyWithWhereWithoutFolderInput = {
 
 export type NoteCreateWithoutTagsInput = {
   id?: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -796,7 +796,7 @@ export type NoteUncheckedCreateWithoutTagsInput = {
   id?: string;
   userId: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -852,7 +852,7 @@ export type NoteUncheckedUpdateWithoutTagsInput = {
 
 export type NoteCreateWithoutVersionsInput = {
   id?: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -868,7 +868,7 @@ export type NoteUncheckedCreateWithoutVersionsInput = {
   id?: string;
   userId: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -937,7 +937,7 @@ export type NoteUncheckedUpdateWithoutVersionsInput = {
 export type NoteCreateManyUserInput = {
   id?: string;
   folderId?: string | null;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
@@ -989,7 +989,7 @@ export type NoteUncheckedUpdateManyWithoutUserInput = {
 export type NoteCreateManyFolderInput = {
   id?: string;
   userId: string;
-  title?: string;
+  title: string;
   content?: string;
   isFavorite?: boolean;
   archived?: boolean;
