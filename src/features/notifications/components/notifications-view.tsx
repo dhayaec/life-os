@@ -12,6 +12,7 @@ import {
 } from '@/features/notifications/actions';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
@@ -26,6 +27,7 @@ export function NotificationsView({
   const router = useRouter();
   const [items, setItems] = useSyncedState(initialItems);
   const [unread, setUnread] = useSyncedState(initialUnread);
+  const mounted = useMounted();
 
   async function markAll() {
     if (unread === 0) return;
@@ -126,8 +128,8 @@ export function NotificationsView({
                   {item.body ? (
                     <span className="text-muted-foreground text-xs">{item.body}</span>
                   ) : null}
-                  <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
-                    {new Date(item.createdAt).toLocaleString()}
+                  <span className="text-muted-foreground text-[10px]">
+                    {mounted ? new Date(item.createdAt).toLocaleString() : ''}
                   </span>
                 </span>
               </span>

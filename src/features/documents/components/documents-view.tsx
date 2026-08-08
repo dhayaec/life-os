@@ -28,6 +28,7 @@ import {
 } from '@/features/documents/actions';
 import type { DocumentItem } from '@/features/documents/services/documents-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
@@ -41,6 +42,7 @@ export function DocumentsView({
   trashed: boolean;
 }) {
   useRouteLoadedSignal();
+  const mounted = useMounted();
   const router = useRouter();
   const [documents, setDocuments] = useSyncedState(initialDocuments);
   const [pending, setPending] = useState<string | null>(null);
@@ -206,8 +208,9 @@ export function DocumentsView({
                   >
                     {doc.name}
                   </a>
-                  <span suppressHydrationWarning className="text-muted-foreground text-xs">
-                    {formatSize(doc.size)} · {new Date(doc.createdAt).toLocaleDateString()}
+                  <span className="text-muted-foreground text-xs">
+                    {formatSize(doc.size)}
+                    {mounted ? ` · ${new Date(doc.createdAt).toLocaleDateString()}` : ''}
                   </span>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">

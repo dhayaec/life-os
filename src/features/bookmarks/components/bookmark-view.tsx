@@ -25,6 +25,7 @@ import type {
   CollectionItem,
 } from '@/features/bookmarks/services/bookmark-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const typeConfig: Record<BookmarkTypeLiteral, { label: string; icon: LucideIcon }> = {
@@ -148,6 +149,7 @@ export function BookmarkView({
 }
 
 function BookmarkCard({ bookmark, onEdit }: { bookmark: BookmarkItem; onEdit: () => void }) {
+  const mounted = useMounted();
   const type = typeConfig[bookmark.type];
   const Icon = type.icon;
   return (
@@ -178,8 +180,8 @@ function BookmarkCard({ bookmark, onEdit }: { bookmark: BookmarkItem; onEdit: ()
         <span className="text-muted-foreground ml-auto text-[10px]">{hostOf(bookmark.url)}</span>
       </div>
       <div className="flex items-center justify-between">
-        <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
-          {formatDate(bookmark.createdAt)}
+        <span className="text-muted-foreground text-[10px]">
+          {mounted ? formatDate(bookmark.createdAt) : ''}
         </span>
         <Button variant="ghost" size="sm" onClick={onEdit}>
           Edit

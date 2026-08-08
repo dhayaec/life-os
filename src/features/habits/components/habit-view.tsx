@@ -11,6 +11,7 @@ import { setHabitEntryAction } from '@/features/habits/actions';
 import { HabitFormDialog, type HabitInitial } from '@/features/habits/components/habit-form-dialog';
 import type { HabitEntryItem, HabitItem } from '@/features/habits/services/habit-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
@@ -22,6 +23,7 @@ export function HabitView({
   habits: HabitItem[];
 }) {
   useRouteLoadedSignal();
+  const mounted = useMounted();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -101,11 +103,13 @@ export function HabitView({
           <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
             <ChevronRight className="size-4" />
           </Button>
-          <h1 suppressHydrationWarning className="text-lg font-semibold">
-            {new Date(year, month0, 1).toLocaleDateString(undefined, {
-              month: 'long',
-              year: 'numeric',
-            })}
+          <h1 className="text-lg font-semibold">
+            {mounted
+              ? new Date(year, month0, 1).toLocaleDateString(undefined, {
+                  month: 'long',
+                  year: 'numeric',
+                })
+              : ''}
           </h1>
         </div>
         <Button size="sm" onClick={() => setDialog({ mode: 'create' })}>
@@ -133,7 +137,7 @@ export function HabitView({
                   <th
                     key={day.key}
                     className={`px-0.5 py-2 text-center text-xs font-medium ${
-                      day.key === todayKey ? 'text-primary' : 'text-muted-foreground'
+                      mounted && day.key === todayKey ? 'text-primary' : 'text-muted-foreground'
                     }`}
                   >
                     {day.day}
@@ -164,13 +168,13 @@ export function HabitView({
                           {habit.frequency}
                         </Badge>
                       </div>
-                      <div suppressHydrationWarning className="text-muted-foreground text-[10px]">
-                        {summary}
+                      <div className="text-muted-foreground text-[10px]">
+                        {mounted ? summary : ''}
                       </div>
                     </td>
                     {days.map((day) => {
                       const done = doneByDate.get(day.key) ?? false;
-                      const isFuture = day.key > todayKey;
+                      const isFuture = mounted && day.key > todayKey;
                       return (
                         <td key={day.key} className="border-t px-0.5 py-2 text-center">
                           <button

@@ -19,6 +19,7 @@ import type {
   TransactionItem,
 } from '@/features/finance/services/finance-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const CATEGORY_COLORS = [
@@ -44,6 +45,7 @@ export function FinanceView({
   month: string;
 }) {
   useRouteLoadedSignal();
+  const mounted = useMounted();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -141,9 +143,7 @@ export function FinanceView({
           <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
             <ChevronRight className="size-4" />
           </Button>
-          <h1 suppressHydrationWarning className="text-lg font-semibold">
-            {monthLabel(month)}
-          </h1>
+          <h1 className="text-lg font-semibold">{mounted ? monthLabel(month) : ''}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setBudgetDialog({ mode: 'create' })}>

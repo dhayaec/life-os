@@ -18,6 +18,7 @@ import {
   toggleFavoriteAction,
 } from '@/features/notes/actions';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
@@ -53,6 +54,7 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
   const [nextCursor, setNextCursor] = useSyncedState(initialNextCursor);
   const [busy, setBusy] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const mounted = useMounted();
 
   async function runAction(
     action: () => Promise<{ ok: boolean; error?: string }>,
@@ -146,8 +148,10 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                   </p>
                 ) : null}
                 <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                  <span suppressHydrationWarning>
-                    {formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}
+                  <span>
+                    {mounted
+                      ? formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })
+                      : ''}
                   </span>
                   {note.tags.map(({ tag }) => (
                     <Badge key={tag.id} variant="secondary">

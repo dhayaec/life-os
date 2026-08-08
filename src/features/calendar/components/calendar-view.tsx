@@ -8,12 +8,14 @@ import { Button } from '@/components/ui/button';
 import { EventDialog, type EventInitial } from '@/features/calendar/components/event-dialog';
 import type { CalendarEventItem } from '@/features/calendar/services/calendar-service';
 
+import { useMounted } from '@/hooks/use-mounted';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export function CalendarView({ month, events }: { month: string; events: CalendarEventItem[] }) {
   useRouteLoadedSignal();
+  const mounted = useMounted();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -103,8 +105,10 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
         <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
           <ChevronRight className="size-4" />
         </Button>
-        <h1 suppressHydrationWarning className="text-lg font-semibold">
-          {firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+        <h1 className="text-lg font-semibold">
+          {mounted
+            ? firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+            : ''}
         </h1>
       </div>
 
@@ -121,7 +125,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
           const date = new Date(year, month0, cell.day);
           const key = toDateKey(date);
           const dayEvents = eventsByDate.get(key) ?? [];
-          const isToday = key === toDateKey(today);
+          const isToday = mounted && key === toDateKey(today);
           return (
             <div
               key={key}
@@ -149,7 +153,6 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
                   key={event.id}
                   type="button"
                   onClick={() => setDialog({ mode: 'edit', event })}
-                  suppressHydrationWarning
                   className="flex items-center gap-1 truncate rounded px-1 py-0.5 text-left text-[10px]"
                   style={{ backgroundColor: `${event.color}22`, color: event.color }}
                 >
@@ -157,7 +160,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
                     className="size-1.5 shrink-0 rounded-full"
                     style={{ backgroundColor: event.color }}
                   />
-                  {event.allDay ? null : `${toTime(event.startAt)} `}
+                  {event.allDay ? null : mounted ? `${toTime(event.startAt)} ` : ' '}
                   <span className="truncate">{event.title}</span>
                 </button>
               ))}

@@ -22,7 +22,10 @@ import {
 } from '@/features/notifications/actions';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
+import { useMounted } from '@/hooks/use-mounted';
+
 export function NotificationBell() {
+  const mounted = useMounted();
   const router = useRouter();
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [unread, setUnread] = useState(0);
@@ -134,8 +137,8 @@ export function NotificationBell() {
                 {item.body ? (
                   <span className="text-muted-foreground line-clamp-2 text-xs">{item.body}</span>
                 ) : null}
-                <span suppressHydrationWarning className="text-muted-foreground text-[10px]">
-                  {timeAgo(item.createdAt)}
+                <span className="text-muted-foreground text-[10px]">
+                  {mounted ? timeAgo(item.createdAt) : ''}
                 </span>
               </span>
               <Button
