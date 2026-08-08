@@ -1,11 +1,8 @@
 'use client';
 
 import { Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from '@/components/ui/toast';
 
 import { Checkbox } from '@/components/ui/checkbox';
-import { deleteTaskAction, toggleTaskAction } from '@/features/tasks/actions';
 import type { TaskItem } from '@/features/tasks/services/task-service';
 
 const priorityStyles: Record<TaskItem['priority'], string> = {
@@ -16,31 +13,17 @@ const priorityStyles: Record<TaskItem['priority'], string> = {
 
 export function TaskList({
   tasks,
+  pending,
   onEdit,
+  onToggle,
+  onDelete,
 }: {
   tasks: TaskItem[];
+  pending: string | null;
   onEdit: (task: TaskItem) => void;
+  onToggle: (task: TaskItem) => void;
+  onDelete: (task: TaskItem) => void;
 }) {
-  const router = useRouter();
-
-  async function handleToggle(task: TaskItem) {
-    const result = await toggleTaskAction({ id: task.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
-  }
-
-  async function handleDelete(task: TaskItem) {
-    const result = await deleteTaskAction({ id: task.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
-  }
-
   if (tasks.length === 0) {
     return (
       <p className="text-muted-foreground py-8 text-center text-sm">No tasks yet. Add one above.</p>
@@ -56,7 +39,8 @@ export function TaskList({
           <li key={task.id} className="group flex items-center gap-3 rounded-md border px-3 py-2">
             <Checkbox
               checked={done}
-              onCheckedChange={() => handleToggle(task)}
+              disabled={pending === task.id}
+              onCheckedChange={() => onToggle(task)}
               aria-label={done ? 'Mark incomplete' : 'Mark complete'}
             />
             <button
@@ -99,8 +83,9 @@ export function TaskList({
               </span>
               <button
                 type="button"
-                onClick={() => handleDelete(task)}
-                className="text-muted-foreground hover:text-destructive rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                onClick={() => onDelete(task)}
+                disabled={pending === task.id}
+                className="text-muted-foreground hover:text-destructive rounded p-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
                 aria-label="Delete task"
               >
                 <Trash2 className="size-4" />

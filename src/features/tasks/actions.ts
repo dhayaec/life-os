@@ -9,15 +9,18 @@ import {
   deleteTask,
   toggleTask,
   updateTask,
+  type TaskItem,
 } from '@/features/tasks/services/task-service';
 import { createTaskSchema, taskIdSchema, updateTaskSchema } from '@/features/tasks/validations';
 
-export async function createTaskAction(input: unknown): Promise<ActionResult> {
+export async function createTaskAction(input: unknown): Promise<ActionResult<TaskItem>> {
   const user = await requireUser();
   const data = createTaskSchema.parse(input);
   return handle(async () => {
-    await createTask(user.id, data);
+    const task = await createTask(user.id, data);
     revalidatePath('/tasks');
+    if (!task) throw new Error('Created task could not be loaded');
+    return task;
   });
 }
 

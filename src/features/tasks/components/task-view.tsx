@@ -3,12 +3,15 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { toast } from '@/components/ui/toast';
 
 import { TaskComposer } from '@/features/tasks/components/task-composer';
 import { TaskEditor } from '@/features/tasks/components/task-editor';
 import { TaskList } from '@/features/tasks/components/task-list';
+import { deleteTaskAction, toggleTaskAction } from '@/features/tasks/actions';
 import type { TaskItem } from '@/features/tasks/services/task-service';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const statuses = [
@@ -19,7 +22,7 @@ const statuses = [
 ];
 
 export function TaskView({
-  tasks,
+  tasks: initialTasks,
   initialStatus,
   initialSearch,
 }: {
@@ -33,6 +36,8 @@ export function TaskView({
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(initialSearch);
   const [editing, setEditing] = useState<TaskItem | null>(null);
+  const [tasks, setTasks] = useSyncedState(initialTasks);
+  const [pending, setPending] = useState<string | null>(null);
 
   function setStatus(value: string) {
     const params = new URLSearchParams(searchParams);
@@ -49,9 +54,55 @@ export function TaskView({
     router.push(`${pathname}?${params.toString()}`);
   }
 
+  function handleCreated(task: TaskItem) {
+    setTasks((prev) => [task, ...prev]);
+  }
+
+  async function handleToggle(task: TaskItem) {
+    if (pending === task.id) return;
+    const snapshot = task;
+    const next = task.status === 'done' ? 'todo' : 'done';
+    setPending(task.id);
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === task.id
+          ? { ...t, status: next, completedAt: next === 'done' ? new Date().toISOString() : null }
+          : t
+      )
+    );
+    const result = await toggleTaskAction({ id: task.id });
+    setPending(null);
+    if (!result.ok) {
+      setTasks((prev) => prev.map((t) => (t.id === task.id ? snapshot : t)));
+      toast.error(result.error);
+      return;
+    }
+    router.refresh();
+  }
+
+  async function handleDelete(task: TaskItem) {
+    if (pending === task.id) return;
+    const snapshot = task;
+    const index = tasks.findIndex((t) => t.id === task.id);
+    setPending(task.id);
+    setTasks((prev) => prev.filter((t) => t.id !== task.id));
+    const result = await deleteTaskAction({ id: task.id });
+    setPending(null);
+    if (!result.ok) {
+      setTasks((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, snapshot);
+        return next;
+      });
+      toast.error(result.error);
+      return;
+    }
+    router.refresh();
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      <TaskComposer />
+      <TaskComposer onCreated={handleCreated} />
       <div className="flex flex-wrap items-center gap-2">
         {statuses.map((item) => (
           <button
@@ -79,7 +130,13 @@ export function TaskView({
           />
         </form>
       </div>
-      <TaskList tasks={tasks} onEdit={setEditing} />
+      <TaskList
+        tasks={tasks}
+        pending={pending}
+        onEdit={setEditing}
+        onToggle={handleToggle}
+        onDelete={handleDelete}
+      />
       <TaskEditor
         key={editing?.id ?? 'none'}
         task={editing}
