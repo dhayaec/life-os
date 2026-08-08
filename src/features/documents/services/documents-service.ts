@@ -50,6 +50,7 @@ export async function getDocuments(
       userId,
       ...(trashed ? { trashedAt: { not: null } } : { trashedAt: null }),
     },
+    take: 200,
     orderBy: [{ isFavorite: 'desc' }, { createdAt: 'desc' }],
   });
   return rows.map((row) => ({

@@ -60,6 +60,7 @@ export async function getCollections(userId: string): Promise<CollectionItem[]> 
 export async function getBookmarks(userId: string, collectionId?: string): Promise<BookmarkItem[]> {
   const bookmarks = await db.bookmark.findMany({
     where: { userId, ...(collectionId ? { collectionId } : {}) },
+    take: 200,
     orderBy: { createdAt: 'desc' },
   });
   return bookmarks.map(serializeBookmark);

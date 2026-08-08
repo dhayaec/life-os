@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { db } from '@/server/db';
-import { getFinanceOverview } from '@/features/finance/services/finance-service';
+import { getFinanceSummary } from '@/features/finance/services/finance-service';
 import { currentStreak, toKey } from '@/features/dashboard/services/streak';
 
 export type AgendaEvent = {
@@ -76,7 +76,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       orderBy: { createdAt: 'desc' },
       take: 50,
     }),
-    getFinanceOverview(userId, now.getFullYear(), now.getMonth() + 1),
+    getFinanceSummary(userId, now.getFullYear(), now.getMonth() + 1),
   ]);
 
   const serializeEvent = (event: (typeof todayEvents)[number]): AgendaEvent => ({
@@ -125,10 +125,6 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
       updatedAt: note.updatedAt.toISOString(),
     })),
     habitStreaks,
-    finance: {
-      income: finance.summary.income,
-      expense: finance.summary.expense,
-      balance: finance.summary.balance,
-    },
+    finance,
   };
 }

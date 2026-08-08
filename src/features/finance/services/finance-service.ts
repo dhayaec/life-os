@@ -107,6 +107,28 @@ export type FinanceOverview = {
   month: string;
 };
 
+export async function getFinanceSummary(
+  userId: string,
+  year: number,
+  month: number
+): Promise<{ income: number; expense: number; balance: number }> {
+  const from = new Date(year, month - 1, 1);
+  const to = new Date(year, month, 1);
+  const rows = await db.financeTransaction.groupBy({
+    by: ['type'],
+    where: { userId, date: { gte: from, lt: to } },
+    _sum: { amount: true },
+  });
+  let income = 0;
+  let expense = 0;
+  for (const row of rows) {
+    const amount = Number(row._sum.amount ?? 0);
+    if (row.type === 'income') income = amount;
+    else expense = amount;
+  }
+  return { income, expense, balance: income - expense };
+}
+
 export async function getFinanceOverview(
   userId: string,
   year: number,

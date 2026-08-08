@@ -87,6 +87,15 @@ function buildNotesWhere(userId: string, options: NoteListOptions): Prisma.NoteW
   };
 }
 
+export function noteExcerpt(content: string, maxLength = 160): string {
+  const plain = content
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return plain.length > maxLength ? `${plain.slice(0, maxLength)}…` : plain;
+}
+
 export async function getNotes(userId: string, options: NoteListOptions = {}) {
   return db.note.findMany({
     where: buildNotesWhere(userId, options),

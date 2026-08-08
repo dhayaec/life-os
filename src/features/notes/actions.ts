@@ -10,6 +10,7 @@ import {
   deleteFolder,
   getNotesPage,
   hardDeleteNote,
+  noteExcerpt,
   renameFolder,
   restoreNote,
   softDeleteNote,
@@ -136,7 +137,7 @@ export async function getNotesPageAction(
       items: items.map((note) => ({
         id: note.id,
         title: note.title,
-        content: note.content,
+        content: noteExcerpt(note.content),
         isFavorite: note.isFavorite,
         trashedAt: note.trashedAt?.toISOString() ?? null,
         updatedAt: note.updatedAt.toISOString(),

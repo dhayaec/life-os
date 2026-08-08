@@ -38,14 +38,6 @@ type NoteListProps = {
   initialNextCursor?: string | null;
 };
 
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 export function NoteList({ notes, trashed = false, initialNextCursor = null }: NoteListProps) {
   useRouteLoadedSignal();
   const router = useRouter();
@@ -144,7 +136,7 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                 </h3>
                 {note.content ? (
                   <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
-                    {stripHtml(note.content)}
+                    {note.content}
                   </p>
                 ) : null}
                 <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
