@@ -12,21 +12,31 @@ import {
 } from '@/features/notifications/actions';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function NotificationsView({
-  items,
-  unread,
+  items: initialItems,
+  unread: initialUnread,
 }: {
   items: NotificationItem[];
   unread: number;
 }) {
   useRouteLoadedSignal();
   const router = useRouter();
+  const [items, setItems] = useSyncedState(initialItems);
+  const [unread, setUnread] = useSyncedState(initialUnread);
 
   async function markAll() {
+    if (unread === 0) return;
+    const itemsSnapshot = items;
+    const unreadSnapshot = unread;
+    setItems((prev) => prev.map((item) => ({ ...item, read: true })));
+    setUnread(0);
     const result = await markAllNotificationsReadAction();
     if (!result.ok) {
+      setItems(itemsSnapshot);
+      setUnread(unreadSnapshot);
       toast.error(result.error);
       return;
     }
@@ -35,8 +45,13 @@ export function NotificationsView({
 
   async function markOne(item: NotificationItem) {
     if (item.read) return;
+    const snapshot = item;
+    setItems((prev) => prev.map((n) => (n.id === item.id ? { ...n, read: true } : n)));
+    setUnread((prev) => Math.max(0, prev - 1));
     const result = await markNotificationReadAction({ id: item.id });
     if (!result.ok) {
+      setItems((prev) => prev.map((n) => (n.id === item.id ? snapshot : n)));
+      setUnread((prev) => prev + 1);
       toast.error(result.error);
       return;
     }
@@ -44,8 +59,19 @@ export function NotificationsView({
   }
 
   async function remove(item: NotificationItem) {
+    const index = items.findIndex((n) => n.id === item.id);
+    if (index === -1) return;
+    const wasUnread = !item.read;
+    setItems((prev) => prev.filter((n) => n.id !== item.id));
+    if (wasUnread) setUnread((prev) => Math.max(0, prev - 1));
     const result = await deleteNotificationAction({ id: item.id });
     if (!result.ok) {
+      setItems((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, item);
+        return next;
+      });
+      if (wasUnread) setUnread((prev) => prev + 1);
       toast.error(result.error);
       return;
     }

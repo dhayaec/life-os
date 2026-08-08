@@ -107,22 +107,21 @@ export function NoteEditor({
       router.replace(`/notes/${result.data.id}`);
       return;
     }
+    setSaveState('saved');
     const result = await updateNoteAction({ id, title: trimmedTitle, content, tagNames });
     if (!result.ok) {
       setSaveState('error');
       toast.error(result.error);
-      return;
     }
-    setSaveState('saved');
   }
 
   async function handleToggleFavorite() {
+    setFavorite((prev) => !prev);
     const result = await toggleFavoriteAction({ id });
     if (!result.ok) {
+      setFavorite((prev) => !prev);
       toast.error(result.error);
-      return;
     }
-    setFavorite((prev) => !prev);
   }
 
   async function handleDelete() {

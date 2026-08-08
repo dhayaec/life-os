@@ -9,15 +9,24 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { setHabitEntryAction } from '@/features/habits/actions';
 import { HabitFormDialog, type HabitInitial } from '@/features/habits/components/habit-form-dialog';
-import type { HabitItem } from '@/features/habits/services/habit-service';
+import type { HabitEntryItem, HabitItem } from '@/features/habits/services/habit-service';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
-export function HabitView({ month, habits }: { month: string; habits: HabitItem[] }) {
+export function HabitView({
+  month,
+  habits: initialHabits,
+}: {
+  month: string;
+  habits: HabitItem[];
+}) {
   useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [habits, setHabits] = useSyncedState(initialHabits);
+  const [pending, setPending] = useState<string | null>(null);
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; habit: HabitItem } | null
   >(null);
@@ -41,8 +50,19 @@ export function HabitView({ month, habits }: { month: string; habits: HabitItem[
   }
 
   async function toggle(habitId: string, date: string, done: boolean) {
-    const result = await setHabitEntryAction({ habitId, date, done: !done });
+    const lock = `${habitId}:${date}`;
+    if (pending === lock) return;
+    const snapshot = habits.find((h) => h.id === habitId);
+    if (!snapshot) return;
+    const next = !done;
+    setPending(lock);
+    setHabits((prev) =>
+      prev.map((h) => (h.id === habitId ? { ...h, entries: applyEntry(h.entries, date, next) } : h))
+    );
+    const result = await setHabitEntryAction({ habitId, date, done: next });
+    setPending(null);
     if (!result.ok) {
+      setHabits((prev) => prev.map((h) => (h.id === habitId ? snapshot : h)));
       toast.error(result.error);
       return;
     }
@@ -155,7 +175,7 @@ export function HabitView({ month, habits }: { month: string; habits: HabitItem[
                         <td key={day.key} className="border-t px-0.5 py-2 text-center">
                           <button
                             type="button"
-                            disabled={isFuture}
+                            disabled={isFuture || pending === `${habit.id}:${day.key}`}
                             aria-label={`Mark ${habit.name} ${done ? 'not done' : 'done'} on ${day.key}`}
                             aria-pressed={done}
                             onClick={() => toggle(habit.id, day.key, done)}
@@ -188,6 +208,11 @@ export function HabitView({ month, habits }: { month: string; habits: HabitItem[
       />
     </div>
   );
+}
+
+function applyEntry(entries: HabitEntryItem[], date: string, done: boolean): HabitEntryItem[] {
+  if (!entries.some((e) => e.date === date)) return [...entries, { date, done }];
+  return entries.map((e) => (e.date === date ? { ...e, done } : e));
 }
 
 function toKey(date: Date) {

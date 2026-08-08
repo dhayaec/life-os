@@ -8,8 +8,9 @@ import { toast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createTaskAction } from '@/features/tasks/actions';
+import type { TaskItem } from '@/features/tasks/services/task-service';
 
-export function TaskComposer() {
+export function TaskComposer({ onCreated }: { onCreated: (task: TaskItem) => void }) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [pending, setPending] = useState(false);
@@ -26,6 +27,7 @@ export function TaskComposer() {
       return;
     }
     setTitle('');
+    if (result.data) onCreated(result.data);
     router.refresh();
   }
 

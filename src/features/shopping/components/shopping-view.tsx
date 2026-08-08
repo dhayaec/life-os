@@ -19,10 +19,11 @@ import { updateShoppingItemAction } from '@/features/shopping/actions';
 import { ItemDialog, type ItemInitial } from '@/features/shopping/components/item-dialog';
 import type { ShoppingItem } from '@/features/shopping/services/shopping-service';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function ShoppingView({
-  items,
+  items: initialItems,
   categories,
   category,
 }: {
@@ -34,6 +35,8 @@ export function ShoppingView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [items, setItems] = useSyncedState(initialItems);
+  const [pending, setPending] = useState<string | null>(null);
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; item: ShoppingItem } | null
   >(null);
@@ -52,11 +55,17 @@ export function ShoppingView({
   }
 
   async function toggle(item: ShoppingItem) {
+    if (pending === item.id) return;
+    const snapshot = item;
+    setPending(item.id);
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, completed: !i.completed } : i)));
     const result = await updateShoppingItemAction({
       id: item.id,
       completed: !item.completed,
     });
+    setPending(null);
     if (!result.ok) {
+      setItems((prev) => prev.map((i) => (i.id === item.id ? snapshot : i)));
       toast.error(result.error);
       return;
     }
@@ -129,6 +138,7 @@ export function ShoppingView({
                   >
                     <Checkbox
                       checked={item.completed}
+                      disabled={pending === item.id}
                       onCheckedChange={() => toggle(item)}
                       aria-label={`Mark ${item.name} as ${item.completed ? 'not purchased' : 'purchased'}`}
                     />
