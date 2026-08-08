@@ -28,11 +28,12 @@ import {
 } from '@/features/documents/actions';
 import type { DocumentItem } from '@/features/documents/services/documents-service';
 
+import { useSyncedState } from '@/hooks/use-synced-state';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function DocumentsView({
   userId,
-  documents,
+  documents: initialDocuments,
   trashed,
 }: {
   userId: string;
@@ -41,6 +42,8 @@ export function DocumentsView({
 }) {
   useRouteLoadedSignal();
   const router = useRouter();
+  const [documents, setDocuments] = useSyncedState(initialDocuments);
+  const [pending, setPending] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   async function handleFiles(files: FileList | null) {
@@ -66,8 +69,16 @@ export function DocumentsView({
   }
 
   async function favorite(doc: DocumentItem) {
+    if (pending === doc.id) return;
+    const snapshot = doc;
+    setPending(doc.id);
+    setDocuments((prev) =>
+      prev.map((d) => (d.id === doc.id ? { ...d, isFavorite: !d.isFavorite } : d))
+    );
     const result = await toggleDocumentFavoriteAction({ id: doc.id });
+    setPending(null);
     if (!result.ok) {
+      setDocuments((prev) => prev.map((d) => (d.id === doc.id ? snapshot : d)));
       toast.error(result.error);
       return;
     }
@@ -75,8 +86,19 @@ export function DocumentsView({
   }
 
   async function trash(doc: DocumentItem) {
+    if (pending === doc.id) return;
+    const snapshot = doc;
+    const index = documents.findIndex((d) => d.id === doc.id);
+    setPending(doc.id);
+    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await trashDocumentAction({ id: doc.id });
+    setPending(null);
     if (!result.ok) {
+      setDocuments((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, snapshot);
+        return next;
+      });
       toast.error(result.error);
       return;
     }
@@ -84,8 +106,19 @@ export function DocumentsView({
   }
 
   async function restore(doc: DocumentItem) {
+    if (pending === doc.id) return;
+    const snapshot = doc;
+    const index = documents.findIndex((d) => d.id === doc.id);
+    setPending(doc.id);
+    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await restoreDocumentAction({ id: doc.id });
+    setPending(null);
     if (!result.ok) {
+      setDocuments((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, snapshot);
+        return next;
+      });
       toast.error(result.error);
       return;
     }
@@ -95,8 +128,19 @@ export function DocumentsView({
   async function remove(doc: DocumentItem) {
     const confirmed = window.confirm(`Permanently delete "${doc.name}"?`);
     if (!confirmed) return;
+    if (pending === doc.id) return;
+    const snapshot = doc;
+    const index = documents.findIndex((d) => d.id === doc.id);
+    setPending(doc.id);
+    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
     const result = await deleteDocumentAction({ id: doc.id });
+    setPending(null);
     if (!result.ok) {
+      setDocuments((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, snapshot);
+        return next;
+      });
       toast.error(result.error);
       return;
     }
@@ -173,6 +217,7 @@ export function DocumentsView({
                         variant="ghost"
                         size="icon"
                         aria-label={doc.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        disabled={pending === doc.id}
                         onClick={() => void favorite(doc)}
                       >
                         <Star
@@ -183,6 +228,7 @@ export function DocumentsView({
                         variant="ghost"
                         size="icon"
                         aria-label={`Move ${doc.name} to trash`}
+                        disabled={pending === doc.id}
                         onClick={() => void trash(doc)}
                       >
                         <Trash2 className="size-4" />
@@ -194,6 +240,7 @@ export function DocumentsView({
                         variant="ghost"
                         size="icon"
                         aria-label={`Restore ${doc.name}`}
+                        disabled={pending === doc.id}
                         onClick={() => void restore(doc)}
                       >
                         <RotateCcw className="size-4" />
@@ -202,6 +249,7 @@ export function DocumentsView({
                         variant="ghost"
                         size="icon"
                         aria-label={`Permanently delete ${doc.name}`}
+                        disabled={pending === doc.id}
                         onClick={() => void remove(doc)}
                       >
                         <Trash2 className="text-destructive size-4" />
