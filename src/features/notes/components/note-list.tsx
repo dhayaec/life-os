@@ -124,7 +124,7 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                   {note.isFavorite ? (
                     <Star className="text-amber-500 size-3.5 fill-current" />
                   ) : null}
-                  {note.title || 'Untitled note'}
+                  {note.title}
                 </h3>
                 {note.content ? (
                   <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">

@@ -281,7 +281,7 @@ function RecentNotesCard({ notes }: { notes: { id: string; title: string; update
               className="flex items-center gap-2 text-sm hover:underline"
             >
               <FilePlus2 className="text-muted-foreground size-4 shrink-0" />
-              <span className="truncate font-medium">{note.title || 'Untitled note'}</span>
+              <span className="truncate font-medium">{note.title}</span>
               <span className="text-muted-foreground ml-auto shrink-0 text-xs">
                 {timeAgo(note.updatedAt)}
               </span>
