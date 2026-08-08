@@ -28,42 +28,62 @@ export function NotificationBell() {
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    void load();
-  }, []);
-
-  async function load() {
-    const result = await getNotificationsAction();
-    if (result.ok && result.data) {
+    let cancelled = false;
+    getNotificationsAction().then((result) => {
+      if (cancelled || !result.ok || !result.data) return;
       setItems(result.data.items);
       setUnread(result.data.unread);
-    }
-  }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function markAll() {
+    if (unread === 0) return;
+    const itemsSnapshot = items;
+    const unreadSnapshot = unread;
+    setItems((prev) => prev.map((item) => ({ ...item, read: true })));
+    setUnread(0);
     const result = await markAllNotificationsReadAction();
     if (!result.ok) {
+      setItems(itemsSnapshot);
+      setUnread(unreadSnapshot);
       toast.error(result.error);
-      return;
     }
-    await load();
   }
 
   async function markOne(id: string) {
+    const snapshot = items.find((item) => item.id === id);
+    if (!snapshot || snapshot.read) return;
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, read: true } : item)));
+    setUnread((prev) => Math.max(0, prev - 1));
     const result = await markNotificationReadAction({ id });
     if (!result.ok) {
+      setItems((prev) => prev.map((item) => (item.id === id ? snapshot : item)));
+      setUnread((prev) => prev + 1);
       toast.error(result.error);
-      return;
     }
-    await load();
   }
 
   async function remove(id: string) {
+    const index = items.findIndex((item) => item.id === id);
+    if (index === -1) return;
+    const snapshot = items[index];
+    if (!snapshot) return;
+    const wasUnread = !snapshot.read;
+    setItems((prev) => prev.filter((item) => item.id !== id));
+    if (wasUnread) setUnread((prev) => Math.max(0, prev - 1));
     const result = await deleteNotificationAction({ id });
     if (!result.ok) {
+      setItems((prev) => {
+        const next = [...prev];
+        next.splice(index, 0, snapshot);
+        return next;
+      });
+      if (wasUnread) setUnread((prev) => prev + 1);
       toast.error(result.error);
-      return;
     }
-    await load();
   }
 
   return (
