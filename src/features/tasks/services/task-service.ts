@@ -70,6 +70,7 @@ export async function getTasks(userId: string, options: TaskListOptions = {}) {
   const tasks = await db.task.findMany({
     where,
     include: { labels: { include: { label: true } } },
+    take: 200,
     orderBy: [
       { completedAt: { sort: 'asc', nulls: 'first' } },
       { dueAt: { sort: 'asc', nulls: 'last' } },

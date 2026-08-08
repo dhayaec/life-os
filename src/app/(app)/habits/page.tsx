@@ -22,7 +22,8 @@ export default async function HabitsPage({
       ? Number(match[2])
       : now.getMonth() + 1;
 
-  const habits = await getHabits(user.id);
+  const monthKey = `${year}-${String(month).padStart(2, '0')}`;
+  const habits = await getHabits(user.id, monthKey);
 
-  return <HabitView month={`${year}-${String(month).padStart(2, '0')}`} habits={habits} />;
+  return <HabitView month={monthKey} habits={habits} />;
 }

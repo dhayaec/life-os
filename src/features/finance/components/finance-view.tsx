@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
@@ -32,6 +32,14 @@ const CATEGORY_COLORS = [
   '#8b5cf6',
   '#14b8a6',
 ];
+
+const SpendingChart = dynamic(
+  () => import('@/features/finance/components/spending-chart').then((m) => m.SpendingChart),
+  {
+    ssr: false,
+    loading: () => <div className="size-full animate-pulse rounded-md bg-muted" />,
+  }
+);
 
 export function FinanceView({
   transactions,
@@ -173,23 +181,7 @@ export function FinanceView({
             <div className="rounded-md border p-4">
               <h2 className="text-sm font-semibold">Spending by category</h2>
               <div className="h-52">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      dataKey="value"
-                      nameKey="name"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={2}
-                    >
-                      {pieData.map((entry) => (
-                        <Cell key={entry.name} fill={entry.fill} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value) => formatCurrency(Number(value), locale)} />
-                  </PieChart>
-                </ResponsiveContainer>
+                <SpendingChart data={pieData} locale={locale} />
               </div>
               <div className="mt-2 flex flex-col gap-1">
                 {summary.byCategory.map((item) => (

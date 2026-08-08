@@ -16,18 +16,18 @@ import {
 } from '@/features/shopping/validations';
 
 export async function createShoppingItemAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = createShoppingItemSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = createShoppingItemSchema.parse(input);
     await createShoppingItem(user.id, data);
     revalidatePath('/shopping');
   });
 }
 
 export async function updateShoppingItemAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = updateShoppingItemSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = updateShoppingItemSchema.parse(input);
     const { id, ...rest } = data;
     await updateShoppingItem(user.id, id, rest);
     revalidatePath('/shopping');
@@ -35,9 +35,9 @@ export async function updateShoppingItemAction(input: unknown): Promise<ActionRe
 }
 
 export async function deleteShoppingItemAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = shoppingItemIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = shoppingItemIdSchema.parse(input);
     await deleteShoppingItem(user.id, data.id);
     revalidatePath('/shopping');
   });

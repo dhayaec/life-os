@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { requireUser } from '@/server/session';
-import { getNotesPage } from '@/features/notes/services/note-service';
+import { getNotesPage, noteExcerpt } from '@/features/notes/services/note-service';
 import { NoteList, type NoteListItem } from '@/features/notes/components/note-list';
 
 export const metadata: Metadata = { title: 'Trash' };
@@ -13,7 +13,7 @@ export default async function TrashPage() {
   const noteItems: NoteListItem[] = items.map((note) => ({
     id: note.id,
     title: note.title,
-    content: note.content,
+    content: noteExcerpt(note.content),
     isFavorite: note.isFavorite,
     trashedAt: note.trashedAt?.toISOString() ?? null,
     updatedAt: note.updatedAt.toISOString(),

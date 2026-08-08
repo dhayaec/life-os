@@ -10,6 +10,7 @@ import {
   deleteFolder,
   getNotesPage,
   hardDeleteNote,
+  noteExcerpt,
   renameFolder,
   restoreNote,
   softDeleteNote,
@@ -28,8 +29,8 @@ import {
 import type { NoteListItem } from '@/features/notes/components/note-list';
 
 export async function createFolderAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = createFolderSchema.parse(input);
     await createFolder(user.id, { name: data.name, parentId: data.parentId ?? null });
     revalidatePath('/notes');
@@ -37,8 +38,8 @@ export async function createFolderAction(input: unknown): Promise<ActionResult> 
 }
 
 export async function renameFolderAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = updateFolderSchema.parse(input);
     await renameFolder(user.id, data.id, data.name);
     revalidatePath('/notes');
@@ -46,8 +47,8 @@ export async function renameFolderAction(input: unknown): Promise<ActionResult> 
 }
 
 export async function deleteFolderAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = deleteFolderSchema.parse(input);
     await deleteFolder(user.id, data.id);
     revalidatePath('/notes');
@@ -55,8 +56,8 @@ export async function deleteFolderAction(input: unknown): Promise<ActionResult> 
 }
 
 export async function createNoteAction(input: unknown): Promise<ActionResult<{ id: string }>> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = createNoteSchema.parse(input);
     const note = await createNote(user.id, { ...data, folderId: data.folderId ?? null });
     revalidatePath('/notes');
@@ -66,8 +67,8 @@ export async function createNoteAction(input: unknown): Promise<ActionResult<{ i
 }
 
 export async function updateNoteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = updateNoteSchema.parse(input);
     const { id, ...rest } = data;
     await updateNote(user.id, id, {
@@ -84,8 +85,8 @@ export async function updateNoteAction(input: unknown): Promise<ActionResult> {
 }
 
 export async function toggleFavoriteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = noteIdSchema.parse(input);
     await toggleFavorite(user.id, data.id);
     revalidatePath('/notes');
@@ -93,8 +94,8 @@ export async function toggleFavoriteAction(input: unknown): Promise<ActionResult
 }
 
 export async function softDeleteNoteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = noteIdSchema.parse(input);
     await softDeleteNote(user.id, data.id);
     revalidatePath('/notes');
@@ -102,8 +103,8 @@ export async function softDeleteNoteAction(input: unknown): Promise<ActionResult
 }
 
 export async function restoreNoteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = noteIdSchema.parse(input);
     await restoreNote(user.id, data.id);
     revalidatePath('/notes');
@@ -111,8 +112,8 @@ export async function restoreNoteAction(input: unknown): Promise<ActionResult> {
 }
 
 export async function hardDeleteNoteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = noteIdSchema.parse(input);
     await hardDeleteNote(user.id, data.id);
     revalidatePath('/notes');
@@ -122,8 +123,8 @@ export async function hardDeleteNoteAction(input: unknown): Promise<ActionResult
 export async function getNotesPageAction(
   input: unknown
 ): Promise<ActionResult<{ items: NoteListItem[]; nextCursor: string | null }>> {
-  const user = await requireUser();
   return handle(async () => {
+    const user = await requireUser();
     const data = getNotesPageSchema.parse(input);
     const { items, nextCursor } = await getNotesPage(user.id, {
       ...(data.folderId ? { folderId: data.folderId } : {}),
@@ -136,7 +137,7 @@ export async function getNotesPageAction(
       items: items.map((note) => ({
         id: note.id,
         title: note.title,
-        content: note.content,
+        content: noteExcerpt(note.content),
         isFavorite: note.isFavorite,
         trashedAt: note.trashedAt?.toISOString() ?? null,
         updatedAt: note.updatedAt.toISOString(),

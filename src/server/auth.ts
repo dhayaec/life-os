@@ -28,6 +28,21 @@ export const auth = betterAuth({
       });
     },
   },
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 100,
+    customRules: {
+      '/sign-in/email': { window: 60, max: 5 },
+      '/sign-in/magic-link': { window: 60, max: 5 },
+      '/sign-up/email': { window: 60, max: 5 },
+      '/sign-in/social': { window: 60, max: 5 },
+      '/request-password-reset': { window: 60, max: 5 },
+      '/forget-password': { window: 60, max: 5 },
+      '/reset-password': { window: 60, max: 5 },
+      '/verify-email': { window: 60, max: 5 },
+    },
+  },
   emailVerification: {
     sendVerificationEmail: async ({ url, user }) => {
       await sendEmail({

@@ -37,7 +37,8 @@ export function TaskList({
     <ul className="flex flex-col gap-1">
       {tasks.map((task) => {
         const done = task.status === 'done';
-        const overdue = !done && task.dueAt !== null && new Date(task.dueAt) < new Date();
+        const overdue =
+          mounted && !done && task.dueAt !== null && new Date(task.dueAt) < new Date();
         return (
           <li key={task.id} className="group flex items-center gap-3 rounded-md border px-3 py-2">
             <Checkbox

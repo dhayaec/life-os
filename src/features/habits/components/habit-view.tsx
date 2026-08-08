@@ -54,8 +54,7 @@ export function HabitView({
   async function toggle(habitId: string, date: string, done: boolean) {
     const lock = `${habitId}:${date}`;
     if (pending === lock) return;
-    const snapshot = habits.find((h) => h.id === habitId);
-    if (!snapshot) return;
+    if (!habits.some((h) => h.id === habitId)) return;
     const next = !done;
     setPending(lock);
     setHabits((prev) =>
@@ -64,7 +63,11 @@ export function HabitView({
     const result = await setHabitEntryAction({ habitId, date, done: next });
     setPending(null);
     if (!result.ok) {
-      setHabits((prev) => prev.map((h) => (h.id === habitId ? snapshot : h)));
+      setHabits((prev) =>
+        prev.map((h) =>
+          h.id === habitId ? { ...h, entries: applyEntry(h.entries, date, done) } : h
+        )
+      );
       toast.error(result.error);
       return;
     }

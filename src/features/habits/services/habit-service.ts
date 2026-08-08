@@ -33,10 +33,20 @@ function serializeHabit(habit: HabitRow): HabitItem {
   };
 }
 
-export async function getHabits(userId: string): Promise<HabitItem[]> {
+export async function getHabits(userId: string, month: string): Promise<HabitItem[]> {
+  const match = /^(\d{4})-(\d{2})$/.exec(month);
+  const year = match ? Number(match[1]) : new Date().getFullYear();
+  const monthNum = match ? Number(match[2]) : new Date().getMonth() + 1;
+  const start = new Date(Date.UTC(year, monthNum - 1, 1));
+  const end = new Date(Date.UTC(year, monthNum, 1));
   const habits = await db.habit.findMany({
     where: { userId },
-    include: { entries: true },
+    include: {
+      entries: {
+        where: { date: { gte: start, lt: end } },
+        orderBy: { date: 'asc' },
+      },
+    },
     orderBy: { createdAt: 'desc' },
   });
   return habits.map(serializeHabit);

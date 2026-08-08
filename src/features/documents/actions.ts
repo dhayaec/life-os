@@ -13,9 +13,9 @@ import {
 import { documentIdSchema } from '@/features/documents/validations';
 
 export async function toggleDocumentFavoriteAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = documentIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = documentIdSchema.parse(input);
     await toggleDocumentFavorite(user.id, data.id);
     revalidatePath('/documents');
     revalidatePath('/documents/trash');
@@ -23,9 +23,9 @@ export async function toggleDocumentFavoriteAction(input: unknown): Promise<Acti
 }
 
 export async function trashDocumentAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = documentIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = documentIdSchema.parse(input);
     await trashDocument(user.id, data.id);
     revalidatePath('/documents');
     revalidatePath('/documents/trash');
@@ -33,9 +33,9 @@ export async function trashDocumentAction(input: unknown): Promise<ActionResult>
 }
 
 export async function restoreDocumentAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = documentIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = documentIdSchema.parse(input);
     await restoreDocument(user.id, data.id);
     revalidatePath('/documents');
     revalidatePath('/documents/trash');
@@ -43,9 +43,9 @@ export async function restoreDocumentAction(input: unknown): Promise<ActionResul
 }
 
 export async function deleteDocumentAction(input: unknown): Promise<ActionResult> {
-  const user = await requireUser();
-  const data = documentIdSchema.parse(input);
   return handle(async () => {
+    const user = await requireUser();
+    const data = documentIdSchema.parse(input);
     await deleteDocument(user.id, data.id);
     revalidatePath('/documents');
     revalidatePath('/documents/trash');
