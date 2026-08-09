@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { setHabitEntryAction } from '@/features/habits/actions';
@@ -90,36 +91,35 @@ export function HabitView({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => goToMonth(0)}>
-            Today
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Previous month"
-            onClick={() => goToMonth(-1)}
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
-            <ChevronRight className="size-4" />
-          </Button>
-          <h1 className="text-lg font-semibold">
-            {mounted
-              ? new Date(year, month0, 1).toLocaleDateString(undefined, {
-                  month: 'long',
-                  year: 'numeric',
-                })
-              : ''}
-          </h1>
-        </div>
+      <PageHeader
+        title={
+          mounted
+            ? new Date(year, month0, 1).toLocaleDateString(undefined, {
+                month: 'long',
+                year: 'numeric',
+              })
+            : ''
+        }
+      >
+        <Button variant="outline" size="sm" onClick={() => goToMonth(0)}>
+          Today
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Previous month"
+          onClick={() => goToMonth(-1)}
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
+          <ChevronRight className="size-4" />
+        </Button>
         <Button size="sm" onClick={() => setDialog({ mode: 'create' })}>
           <Plus className="size-4" />
           New habit
         </Button>
-      </div>
+      </PageHeader>
 
       {habits.length === 0 ? (
         <div className="text-muted-foreground flex flex-col items-center gap-3 rounded-md border border-dashed p-12 text-sm">

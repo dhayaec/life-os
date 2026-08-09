@@ -5,6 +5,7 @@ import { FileText, FolderGit2, FolderPlus, Globe, Play, Plus } from 'lucide-reac
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -84,32 +85,29 @@ export function BookmarkView({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-lg font-semibold">Bookmarks</h1>
-        <div className="flex flex-wrap items-center gap-2">
-          <Select value={collection ?? ''} onValueChange={onCollectionChange}>
-            <SelectTrigger className="w-44">
-              <SelectValue placeholder="All bookmarks" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All bookmarks</SelectItem>
-              {collections.map((item) => (
-                <SelectItem key={item.id} value={item.id}>
-                  {item.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" size="sm" onClick={() => setCollectionDialog(true)}>
-            <FolderPlus className="size-4" />
-            Collection
-          </Button>
-          <Button size="sm" onClick={() => setBookmarkDialog({ mode: 'create' })}>
-            <Plus className="size-4" />
-            Bookmark
-          </Button>
-        </div>
-      </div>
+      <PageHeader title="Bookmarks">
+        <Select value={collection ?? ''} onValueChange={onCollectionChange}>
+          <SelectTrigger className="w-44">
+            <SelectValue placeholder="All bookmarks" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All bookmarks</SelectItem>
+            {collections.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button variant="outline" size="sm" onClick={() => setCollectionDialog(true)}>
+          <FolderPlus className="size-4" />
+          Collection
+        </Button>
+        <Button size="sm" onClick={() => setBookmarkDialog({ mode: 'create' })}>
+          <Plus className="size-4" />
+          Bookmark
+        </Button>
+      </PageHeader>
 
       {bookmarks.length === 0 ? (
         <div className="text-muted-foreground flex flex-col items-center gap-3 rounded-md border border-dashed p-12 text-sm">

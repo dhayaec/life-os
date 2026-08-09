@@ -44,6 +44,41 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard
+          icon={ListTodo}
+          label="Due tasks"
+          value={String(data.dueTasks.length)}
+          color="text-amber-600 dark:text-amber-400"
+          bg="bg-amber-500/10"
+        />
+        <StatCard
+          icon={Flame}
+          label="Top streak"
+          value={`${data.habitStreaks[0]?.currentStreak ?? 0}d`}
+          color="text-orange-600 dark:text-orange-400"
+          bg="bg-orange-500/10"
+        />
+        <StatCard
+          icon={StickyNote}
+          label="Recent notes"
+          value={String(data.recentNotes.length)}
+          color="text-blue-600 dark:text-blue-400"
+          bg="bg-blue-500/10"
+        />
+        <StatCard
+          icon={Wallet}
+          label="Balance"
+          value={currency(data.finance.balance, locale)}
+          color={
+            data.finance.balance >= 0
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : 'text-red-600 dark:text-red-400'
+          }
+          bg={data.finance.balance >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10'}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
         <div className="lg:col-span-2">
           <BriefingCard
@@ -337,6 +372,36 @@ function Stat({ label, value, className }: { label: string; value: string; class
     <div className="flex items-center justify-between gap-6 text-sm">
       <span className="text-muted-foreground">{label}</span>
       <span className={`font-semibold ${className ?? ''}`}>{value}</span>
+    </div>
+  );
+}
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  color,
+  bg,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  color: string;
+  bg: string;
+}) {
+  return (
+    <div className="rounded-xl border bg-card p-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <div
+          className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${bg} ${color}`}
+        >
+          <Icon className="size-5" />
+        </div>
+        <div>
+          <p className="text-muted-foreground text-sm">{label}</p>
+          <p className="text-2xl font-semibold">{value}</p>
+        </div>
+      </div>
     </div>
   );
 }

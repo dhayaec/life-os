@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
 import { useLocale } from '@/providers/locale-provider';
@@ -135,35 +136,30 @@ export function FinanceView({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={goToToday}>
-            Today
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Previous month"
-            onClick={() => goToMonth(-1)}
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
-            <ChevronRight className="size-4" />
-          </Button>
-          <h1 className="text-lg font-semibold">{mounted ? monthLabel(month) : ''}</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setBudgetDialog({ mode: 'create' })}>
-            <Plus className="size-4" />
-            Budget
-          </Button>
-          <Button size="sm" onClick={() => setTxDialog({ mode: 'create' })}>
-            <Plus className="size-4" />
-            Transaction
-          </Button>
-        </div>
-      </div>
+      <PageHeader title={mounted ? monthLabel(month) : ''}>
+        <Button variant="outline" size="sm" onClick={goToToday}>
+          Today
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Previous month"
+          onClick={() => goToMonth(-1)}
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
+          <ChevronRight className="size-4" />
+        </Button>
+        <Button variant="outline" size="sm" onClick={() => setBudgetDialog({ mode: 'create' })}>
+          <Plus className="size-4" />
+          Budget
+        </Button>
+        <Button size="sm" onClick={() => setTxDialog({ mode: 'create' })}>
+          <Plus className="size-4" />
+          Transaction
+        </Button>
+      </PageHeader>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard label="Income" value={summary.income} className="text-emerald-600" />

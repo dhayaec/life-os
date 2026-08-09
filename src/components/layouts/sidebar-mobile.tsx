@@ -9,7 +9,7 @@ import { LifeIcon } from '@/components/common/logo';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { allNav } from '@/constants/navigation';
+import { footerNav, mainNavGroups } from '@/constants/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
 import { setMobileNavOpen } from '@/store/redux/slices/ui-slice';
 import { cn } from '@/lib/utils';
@@ -46,26 +46,55 @@ export function MobileSidebar() {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 p-2" aria-label="Primary">
-          {allNav.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => dispatch(setMobileNavOpen(false))}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  active
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                )}
-              >
-                <item.icon className="size-4 shrink-0" />
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
+          {mainNavGroups.map((group) => (
+            <div key={group.label}>
+              <p className="text-muted-foreground/70 mb-1 mt-4 px-3 text-[11px] font-semibold uppercase tracking-wider first:mt-2">
+                {group.label}
+              </p>
+              {group.items.map((item) => {
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => dispatch(setMobileNavOpen(false))}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                      active
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground'
+                    )}
+                  >
+                    <item.icon className="size-4 shrink-0" />
+                    <span>{item.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+          <div className="mt-2 border-t pt-2">
+            {footerNav.map((item) => {
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => dispatch(setMobileNavOpen(false))}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    active
+                      ? 'bg-accent text-accent-foreground'
+                      : 'text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground'
+                  )}
+                >
+                  <item.icon className="size-4 shrink-0" />
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })}
+          </div>
         </nav>
       </SheetContent>
     </Sheet>
