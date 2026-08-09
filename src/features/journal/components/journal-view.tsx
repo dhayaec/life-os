@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
 import { EntryDialog, type EntryInitial } from '@/features/journal/components/entry-dialog';
 import type { JournalEntryItem, JournalMood } from '@/features/journal/services/journal-service';
@@ -45,13 +46,12 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">Journal</h1>
+      <PageHeader title="Journal">
         <Button size="sm" onClick={() => setDialog({ mode: 'create' })}>
           <Plus className="size-4" />
           New entry
         </Button>
-      </div>
+      </PageHeader>
 
       {entries.length === 0 ? (
         <div className="text-muted-foreground flex flex-col items-center gap-3 rounded-md border border-dashed p-12 text-sm">

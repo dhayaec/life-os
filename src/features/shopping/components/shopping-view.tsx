@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Pencil, Plus } from 'lucide-react';
 import { toast } from '@/components/ui/toast';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -94,28 +95,25 @@ export function ShoppingView({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold">Shopping</h1>
-          <Select value={category ?? 'all'} onValueChange={selectCategory}>
-            <SelectTrigger className="w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All categories</SelectItem>
-              {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <PageHeader title="Shopping">
+        <Select value={category ?? 'all'} onValueChange={selectCategory}>
+          <SelectTrigger className="w-44">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All categories</SelectItem>
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button size="sm" onClick={() => setDialog({ mode: 'create' })}>
           <Plus className="size-4" />
           Add item
         </Button>
-      </div>
+      </PageHeader>
 
       {items.length === 0 ? (
         <p className="text-muted-foreground text-sm">

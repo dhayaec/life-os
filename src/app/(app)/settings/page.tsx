@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { PageHeader } from '@/components/common/page-header';
 import { requireUser } from '@/server/session';
 import { SettingsForm } from '@/features/settings/components/settings-form';
 import { getSettings } from '@/features/settings/services/settings-service';
@@ -12,7 +13,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold">Settings</h1>
+      <PageHeader title="Settings" />
       <SettingsForm key={initial.name + initial.theme} initial={initial} />
     </div>
   );

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { CheckCheck, Trash2 } from 'lucide-react';
 import { toast } from '@/components/ui/toast';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
 import {
   deleteNotificationAction,
@@ -79,22 +80,17 @@ export function NotificationsView({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <h1 className="text-lg font-semibold">Notifications</h1>
-          {unread > 0 ? (
-            <span className="bg-destructive text-destructive-foreground rounded-full px-2 py-0.5 text-xs font-semibold">
-              {unread} unread
-            </span>
-          ) : null}
-        </div>
+      <PageHeader
+        title="Notifications"
+        {...(unread > 0 ? { description: `${unread} unread` } : {})}
+      >
         {unread > 0 ? (
           <Button variant="outline" size="sm" onClick={markAll}>
             <CheckCheck className="size-4" />
             Mark all read
           </Button>
         ) : null}
-      </div>
+      </PageHeader>
 
       {items.length === 0 ? (
         <div className="text-muted-foreground flex flex-col items-center gap-2 rounded-md border border-dashed py-16 text-sm">

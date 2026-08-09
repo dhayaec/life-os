@@ -33,7 +33,7 @@ export function AppShell({
             <div className="flex min-w-0 flex-1 flex-col">
               <Topbar user={user} />
               <main id="main" className="flex-1 p-4 md:p-6 lg:p-8">
-                <div className="mx-auto w-full max-w-5xl">{children}</div>
+                <div className="mx-auto w-full max-w-7xl">{children}</div>
               </main>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { PageHeader } from '@/components/common/page-header';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
@@ -97,6 +98,7 @@ export function TaskView({
 
   return (
     <div className="flex flex-col gap-4">
+      <PageHeader title="Tasks" />
       <TaskComposer onCreated={handleCreated} />
       <div className="flex flex-wrap items-center gap-2">
         {statuses.map((item) => (

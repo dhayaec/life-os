@@ -58,3 +58,11 @@ export const footerNav: NavItem[] = [
 ];
 
 export const allNav = [...mainNav, ...footerNav];
+
+export type NavGroup = { label: string; items: NavItem[] };
+
+export const mainNavGroups: NavGroup[] = [
+  { label: 'Overview', items: mainNav.slice(0, 1) },
+  { label: 'Content', items: mainNav.slice(1, 6) },
+  { label: 'Manage', items: mainNav.slice(6, 10) },
+];

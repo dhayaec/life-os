@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
 import { EventDialog, type EventInitial } from '@/features/calendar/components/event-dialog';
 import type { CalendarEventItem } from '@/features/calendar/services/calendar-service';
@@ -90,7 +91,11 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2">
+      <PageHeader
+        title={
+          mounted ? firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : ''
+        }
+      >
         <Button variant="outline" size="sm" onClick={goToToday}>
           Today
         </Button>
@@ -105,12 +110,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
         <Button variant="ghost" size="icon" aria-label="Next month" onClick={() => goToMonth(1)}>
           <ChevronRight className="size-4" />
         </Button>
-        <h1 className="text-lg font-semibold">
-          {mounted
-            ? firstDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
-            : ''}
-        </h1>
-      </div>
+      </PageHeader>
 
       <div className="grid grid-cols-7 gap-1">
         {WEEKDAYS.map((day) => (
