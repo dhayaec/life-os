@@ -1,10 +1,16 @@
+import type { CSSProperties } from 'react';
 import { ThemeToggle } from '@/components/common/theme-toggle';
 import { LifeLogo } from '@/components/common/logo';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-      <div className="absolute top-4 right-4">
+    <main
+      className="bg-brand-gradient flex min-h-screen flex-col items-center justify-center gap-6 p-4"
+      // The gradient is bright, so the logo wordmark must use dark ink
+      // regardless of theme (dark mode otherwise renders it near-white).
+      style={{ '--logo-ink': '#0f172a' } as CSSProperties}
+    >
+      <div className="absolute top-4 right-4 text-slate-900">
         <ThemeToggle />
       </div>
       <div className="w-full max-w-sm space-y-6">
