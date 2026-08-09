@@ -119,4 +119,28 @@
   .bg-brand-gradient {
     background: linear-gradient(90deg, #07aeea 0%, #2bf598 100%);
   }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-muted);
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-accent) 55%, transparent),
+      transparent
+    );
+    animation: shimmer 1.8s infinite;
+  }
 }

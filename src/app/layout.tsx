@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { connection } from 'next/server';
 
 import { Toaster } from '@/components/ui/toast';
+import { ZoomBlocker } from '@/components/common/zoom-blocker';
 import { AppProviders } from '@/providers/app-providers';
 import './globals.css';
 
@@ -41,6 +42,8 @@ export const viewport: Viewport = {
   themeColor: '#0F172A',
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default async function RootLayout({
@@ -63,6 +66,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <AppProviders nonce={nonce}>{children}</AppProviders>
+        <ZoomBlocker />
         <Toaster />
       </body>
     </html>
