@@ -6,7 +6,6 @@ import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 import { LifeIcon } from '@/components/common/logo';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { footerNav, mainNav } from '@/constants/navigation';
@@ -100,7 +99,7 @@ export function Sidebar() {
         </Button>
       )}
 
-      <ScrollArea className="flex-1">
+      <div className="no-scrollbar overflow-y-auto flex-1">
         <nav className="flex flex-col gap-1 p-2" aria-label="Primary">
           {mainNav.map((item) => (
             <NavItemLink
@@ -112,7 +111,7 @@ export function Sidebar() {
             />
           ))}
         </nav>
-      </ScrollArea>
+      </div>
 
       <div className="flex flex-col gap-1 border-t p-2">
         {footerNav.map((item) => (
