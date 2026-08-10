@@ -11,6 +11,8 @@ type ToastItem = {
   message: string;
   description?: string;
   duration: number;
+  /** Persistent toasts stay until dismissed instead of auto-closing. */
+  persistent?: boolean;
 };
 
 type ToastStore = {
@@ -25,31 +27,30 @@ const useToastStore = create<ToastStore>((set) => ({
   remove: (id) => set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
 }));
 
-function push(
-  type: ToastType,
-  message: string,
-  options?: { description?: string; duration?: number }
-) {
+type ToastOptions = { description?: string; duration?: number; persistent?: boolean };
+
+function push(type: ToastType, message: string, options?: ToastOptions): string {
   const toast: ToastItem = {
     id: crypto.randomUUID(),
     type,
     message,
     ...(options?.description !== undefined ? { description: options.description } : {}),
     duration: options?.duration ?? 4000,
+    ...(options?.persistent ? { persistent: true } : {}),
   };
   useToastStore.getState().add(toast);
-  setTimeout(() => useToastStore.getState().remove(toast.id), toast.duration);
+  if (!toast.persistent) {
+    setTimeout(() => useToastStore.getState().remove(toast.id), toast.duration);
+  }
+  return toast.id;
 }
 
 export const toast = {
-  success: (message: string, options?: { description?: string; duration?: number }) =>
-    push('success', message, options),
-  error: (message: string, options?: { description?: string; duration?: number }) =>
-    push('error', message, options),
-  info: (message: string, options?: { description?: string; duration?: number }) =>
-    push('info', message, options),
-  message: (message: string, options?: { description?: string; duration?: number }) =>
-    push('info', message, options),
+  success: (message: string, options?: ToastOptions) => push('success', message, options),
+  error: (message: string, options?: ToastOptions) => push('error', message, options),
+  info: (message: string, options?: ToastOptions) => push('info', message, options),
+  message: (message: string, options?: ToastOptions) => push('info', message, options),
+  dismiss: (id: string) => useToastStore.getState().remove(id),
 };
 
 export function Toaster() {
