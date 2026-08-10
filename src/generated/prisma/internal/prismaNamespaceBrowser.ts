@@ -72,6 +72,9 @@ export const ModelName = {
   Budget: 'Budget',
   ShoppingItem: 'ShoppingItem',
   Document: 'Document',
+  SyncState: 'SyncState',
+  SyncOp: 'SyncOp',
+  SyncTombstone: 'SyncTombstone',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -173,6 +176,7 @@ export const NotificationScalarFieldEnum = {
   body: 'body',
   read: 'read',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
 } as const;
 
 export type NotificationScalarFieldEnum =
@@ -300,6 +304,7 @@ export const HabitEntryScalarFieldEnum = {
   date: 'date',
   done: 'done',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
 } as const;
 
 export type HabitEntryScalarFieldEnum =
@@ -407,12 +412,53 @@ export const DocumentScalarFieldEnum = {
 export type DocumentScalarFieldEnum =
   (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum];
 
+export const SyncStateScalarFieldEnum = {
+  userId: 'userId',
+  watermark: 'watermark',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type SyncStateScalarFieldEnum =
+  (typeof SyncStateScalarFieldEnum)[keyof typeof SyncStateScalarFieldEnum];
+
+export const SyncOpScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  opId: 'opId',
+  domain: 'domain',
+  opType: 'opType',
+  result: 'result',
+  createdAt: 'createdAt',
+} as const;
+
+export type SyncOpScalarFieldEnum =
+  (typeof SyncOpScalarFieldEnum)[keyof typeof SyncOpScalarFieldEnum];
+
+export const SyncTombstoneScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  domain: 'domain',
+  recordId: 'recordId',
+  deletedAt: 'deletedAt',
+} as const;
+
+export type SyncTombstoneScalarFieldEnum =
+  (typeof SyncTombstoneScalarFieldEnum)[keyof typeof SyncTombstoneScalarFieldEnum];
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
 } as const;
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const;
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
 
 export const QueryMode = {
   default: 'default',
@@ -427,3 +473,11 @@ export const NullsOrder = {
 } as const;
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const;
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];

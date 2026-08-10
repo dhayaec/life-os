@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bell, CheckCheck, Trash2 } from 'lucide-react';
-import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,77 +12,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  deleteNotificationAction,
-  getNotificationsAction,
-  markAllNotificationsReadAction,
-  markNotificationReadAction,
-} from '@/features/notifications/actions';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
 import { useMounted } from '@/hooks/use-mounted';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 export function NotificationBell() {
   const mounted = useMounted();
   const router = useRouter();
-  const [items, setItems] = useState<NotificationItem[]>([]);
-  const [unread, setUnread] = useState(0);
+  const { rows } = useLocalQuery<NotificationItem>('notifications', (all) =>
+    [...all].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  );
+  const { enqueue } = useSyncMutation('notifications');
+  const items = rows ?? [];
+  const unread = items.filter((item) => !item.read).length;
 
-  useEffect(() => {
-    let cancelled = false;
-    getNotificationsAction()
-      .then((result) => {
-        if (cancelled || !result.ok || !result.data) return;
-        setItems(result.data.items);
-        setUnread(result.data.unread);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function markAll() {
+  function markAll() {
     if (unread === 0) return;
-    const unreadIds = new Set(items.filter((item) => !item.read).map((item) => item.id));
-    const unreadSnapshot = unread;
-    setItems((prev) => prev.map((item) => ({ ...item, read: true })));
-    setUnread(0);
-    const result = await markAllNotificationsReadAction();
-    if (!result.ok) {
-      setItems((prev) =>
-        prev.map((item) => (unreadIds.has(item.id) ? { ...item, read: false } : item))
-      );
-      setUnread(unreadSnapshot);
-      toast.error(result.error);
+    const now = new Date().toISOString();
+    for (const item of items) {
+      if (!item.read) {
+        void enqueue('update', { id: item.id, read: true, updatedAt: now });
+      }
     }
   }
 
-  async function markOne(id: string) {
-    const snapshot = items.find((item) => item.id === id);
-    if (!snapshot || snapshot.read) return;
-    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, read: true } : item)));
-    setUnread((prev) => Math.max(0, prev - 1));
-    const result = await markNotificationReadAction({ id });
-    if (!result.ok) {
-      setItems((prev) => prev.map((item) => (item.id === id ? snapshot : item)));
-      setUnread((prev) => prev + 1);
-      toast.error(result.error);
-    }
+  function markOne(id: string) {
+    const target = items.find((item) => item.id === id);
+    if (!target || target.read) return;
+    void enqueue('update', { id, read: true, updatedAt: new Date().toISOString() });
   }
 
-  async function remove(id: string) {
-    const snapshot = items.find((item) => item.id === id);
-    if (!snapshot) return;
-    const wasUnread = !snapshot.read;
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    if (wasUnread) setUnread((prev) => Math.max(0, prev - 1));
-    const result = await deleteNotificationAction({ id });
-    if (!result.ok) {
-      setItems((prev) => [...prev, snapshot]);
-      if (wasUnread) setUnread((prev) => prev + 1);
-      toast.error(result.error);
-    }
+  function remove(id: string) {
+    void enqueue('delete', { id, deletedAt: new Date().toISOString() });
   }
 
   return (

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { FinanceTransaction, Prisma } from '@/generated/prisma/client';
+import type { Budget, FinanceTransaction, Prisma } from '@/generated/prisma/client';
 import { db } from '@/server/db';
 
 export type TransactionTypeLiteral = 'income' | 'expense';
@@ -12,6 +12,7 @@ export type TransactionItem = {
   category: string;
   date: string;
   note: string | null;
+  updatedAt: string;
 };
 
 export type CategoryTotal = {
@@ -32,11 +33,12 @@ export type BudgetItem = {
   amount: number;
   month: string;
   spent: number;
+  updatedAt: string;
 };
 
 type TransactionRow = FinanceTransaction;
 
-function serializeTransaction(tx: TransactionRow): TransactionItem {
+export function serializeTransaction(tx: TransactionRow): TransactionItem {
   return {
     id: tx.id,
     amount: Number(tx.amount),
@@ -44,6 +46,18 @@ function serializeTransaction(tx: TransactionRow): TransactionItem {
     category: tx.category,
     date: tx.date.toISOString().slice(0, 10),
     note: tx.note,
+    updatedAt: tx.updatedAt.toISOString(),
+  };
+}
+
+export function serializeBudget(budget: Budget, spent: number): BudgetItem {
+  return {
+    id: budget.id,
+    category: budget.category,
+    amount: Number(budget.amount),
+    month: budget.month,
+    spent,
+    updatedAt: budget.updatedAt.toISOString(),
   };
 }
 
@@ -91,13 +105,7 @@ export async function getBudgets(
     where: { userId, month },
     orderBy: { category: 'asc' },
   });
-  return budgets.map((budget) => ({
-    id: budget.id,
-    category: budget.category,
-    amount: Number(budget.amount),
-    month: budget.month,
-    spent: byCategory.get(budget.category) ?? 0,
-  }));
+  return budgets.map((budget) => serializeBudget(budget, byCategory.get(budget.category) ?? 0));
 }
 
 export type FinanceOverview = {
@@ -160,7 +168,10 @@ export type TransactionUpdateInput = {
   note?: string | null | undefined;
 };
 
-export async function createTransaction(userId: string, input: TransactionInput) {
+export async function createTransaction(
+  userId: string,
+  input: TransactionInput
+): Promise<TransactionItem> {
   const tx = await db.financeTransaction.create({
     data: {
       userId,
@@ -232,13 +243,7 @@ export async function createBudget(userId: string, input: BudgetInput): Promise<
       month: input.month,
     },
   });
-  return {
-    id: budget.id,
-    category: budget.category,
-    amount: Number(budget.amount),
-    month: budget.month,
-    spent: await spentForCategory(userId, budget.category, budget.month),
-  };
+  return serializeBudget(budget, await spentForCategory(userId, budget.category, budget.month));
 }
 
 export async function updateBudget(
@@ -260,13 +265,7 @@ export async function updateBudget(
 
   const updated = await db.budget.findFirst({ where: { id, userId } });
   if (!updated) return null;
-  return {
-    id: updated.id,
-    category: updated.category,
-    amount: Number(updated.amount),
-    month: updated.month,
-    spent: await spentForCategory(userId, updated.category, updated.month),
-  };
+  return serializeBudget(updated, await spentForCategory(userId, updated.category, updated.month));
 }
 
 export async function deleteBudget(userId: string, id: string) {

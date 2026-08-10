@@ -11,6 +11,7 @@ export type ShoppingItem = {
   note: string | null;
   completed: boolean;
   createdAt: string;
+  updatedAt: string;
 };
 
 export type ShoppingGroup = {
@@ -18,7 +19,7 @@ export type ShoppingGroup = {
   items: ShoppingItem[];
 };
 
-function serializeItem(item: ShoppingItemRecord): ShoppingItem {
+export function serializeShoppingItem(item: ShoppingItemRecord): ShoppingItem {
   return {
     id: item.id,
     name: item.name,
@@ -27,6 +28,7 @@ function serializeItem(item: ShoppingItemRecord): ShoppingItem {
     note: item.note,
     completed: item.completed,
     createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
   };
 }
 
@@ -66,7 +68,7 @@ export async function getShoppingItems(
   });
 
   return {
-    items: records.map(serializeItem),
+    items: records.map(serializeShoppingItem),
     categories: allCategories.map((row) => row.category),
   };
 }
@@ -84,7 +86,7 @@ export async function createShoppingItem(
     completed: input.completed ?? false,
   };
   const item = await db.shoppingItem.create({ data });
-  return serializeItem(item);
+  return serializeShoppingItem(item);
 }
 
 export async function updateShoppingItem(
@@ -103,7 +105,7 @@ export async function updateShoppingItem(
     where: { id, userId },
     data,
   });
-  return serializeItem(item);
+  return serializeShoppingItem(item);
 }
 
 export async function deleteShoppingItem(userId: string, id: string): Promise<void> {

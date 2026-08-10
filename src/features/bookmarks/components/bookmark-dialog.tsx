@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -22,13 +21,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  createBookmarkAction,
-  deleteBookmarkAction,
-  updateBookmarkAction,
-} from '@/features/bookmarks/actions';
 import type { CollectionItem } from '@/features/bookmarks/services/bookmark-service';
 import type { BookmarkTypeLiteral } from '@/features/bookmarks/services/bookmark-service';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 export type BookmarkInitial = {
   id: string | null;
@@ -58,19 +53,19 @@ export function BookmarkDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [url, setUrl] = useState(initial?.url ?? '');
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [type, setType] = useState<BookmarkTypeLiteral>(initial?.type ?? 'website');
   const [collectionId, setCollectionId] = useState(initial?.collectionId ?? '');
   const [tags, setTags] = useState(initial?.tags ?? '');
+  const { enqueue } = useSyncMutation('bookmarks');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!title.trim() || !url.trim()) {
       toast.error('Title and URL are required');
@@ -87,26 +82,27 @@ export function BookmarkDialog({
         .map((tag) => tag.trim())
         .filter(Boolean),
     };
-    const result = isEdit
-      ? await updateBookmarkAction({ id: current.id, ...payload })
-      : await createBookmarkAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteBookmarkAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

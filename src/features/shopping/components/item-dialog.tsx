@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -14,11 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  createShoppingItemAction,
-  deleteShoppingItemAction,
-  updateShoppingItemAction,
-} from '@/features/shopping/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 export type ItemInitial = {
   id: string | null;
@@ -39,17 +34,17 @@ export function ItemDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [name, setName] = useState(initial?.name ?? '');
   const [category, setCategory] = useState(initial?.category ?? '');
   const [quantity, setQuantity] = useState(initial?.quantity?.toString() ?? '1');
   const [note, setNote] = useState(initial?.note ?? '');
+  const { enqueue } = useSyncMutation('shoppingItems');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim()) {
       toast.error('Name is required');
@@ -66,26 +61,28 @@ export function ItemDialog({
       quantity: parsed,
       note: note.trim() || null,
     };
-    const result = isEdit
-      ? await updateShoppingItemAction({ id: current.id, ...payload })
-      : await createShoppingItemAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        completed: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteShoppingItemAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

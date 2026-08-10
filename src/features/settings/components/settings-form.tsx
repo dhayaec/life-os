@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import {
   Select,
@@ -16,41 +16,75 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { updateSettingsAction } from '@/features/settings/actions';
 import { LOCALES, THEMES, TIMEZONES, type ThemeLiteral } from '@/features/settings/validations';
 import type { UserSettingsData } from '@/features/settings/services/settings-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function SettingsForm({ initial }: { initial: UserSettingsData }) {
   useRouteLoadedSignal();
-  const router = useRouter();
   const { setTheme } = useTheme();
-  const [name, setName] = useState(initial.name);
-  const [theme, setThemeValue] = useState<ThemeLiteral>(initial.theme as ThemeLiteral);
-  const [timezone, setTimezone] = useState(initial.timezone);
-  const [locale, setLocale] = useState(initial.locale);
-  const [emailNotifications, setEmailNotifications] = useState(initial.emailNotifications);
-  const [saving, setSaving] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent) {
+  const { rows, hydrated } = useLocalQuery<UserSettingsData>('settings', undefined, []);
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('settings', initial ? [initial] : []);
+  }, [initial]);
+
+  const settings = rows?.[0];
+
+  const [name, setName] = useState(settings?.name ?? initial.name);
+  const [theme, setThemeValue] = useState<ThemeLiteral>(
+    (settings?.theme ?? initial.theme) as ThemeLiteral
+  );
+  const [timezone, setTimezone] = useState(settings?.timezone ?? initial.timezone);
+  const [locale, setLocale] = useState(settings?.locale ?? initial.locale);
+  const [emailNotifications, setEmailNotifications] = useState(
+    settings?.emailNotifications ?? initial.emailNotifications
+  );
+  const { enqueue } = useSyncMutation('settings');
+
+  // useState above seeds from the RSC prop. Adopt the store row once it
+  // hydrates so an offline edit committed before mount isn't shadowed by the
+  // (stale) server prop on the next visit.
+  const adopted = useRef(false);
+  useEffect(() => {
+    if (adopted.current || !settings) return;
+    adopted.current = true;
+    setName(settings.name);
+    setThemeValue(settings.theme as ThemeLiteral);
+    setTimezone(settings.timezone);
+    setLocale(settings.locale);
+    setEmailNotifications(settings.emailNotifications);
+  }, [settings]);
+
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setSaving(true);
-    const result = await updateSettingsAction({
+    void enqueue('update', {
+      id: settings?.id ?? initial.id,
       name,
       theme,
       timezone,
       locale,
       emailNotifications,
+      updatedAt: new Date().toISOString(),
     });
-    setSaving(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
     setTheme(theme);
     toast.success('Settings saved');
-    router.refresh();
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-20 w-full" />
+      </div>
+    );
   }
 
   return (
@@ -72,7 +106,7 @@ export function SettingsForm({ initial }: { initial: UserSettingsData }) {
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="settings-email">Email</Label>
-            <Input id="settings-email" value={initial.email} disabled />
+            <Input id="settings-email" value={settings?.email ?? initial.email} disabled />
           </div>
         </div>
       </section>
@@ -163,9 +197,7 @@ export function SettingsForm({ initial }: { initial: UserSettingsData }) {
       </section>
 
       <div className="flex items-center gap-2">
-        <Button type="submit" disabled={saving}>
-          {saving ? 'Saving…' : 'Save changes'}
-        </Button>
+        <Button type="submit">Save changes</Button>
       </div>
     </form>
   );

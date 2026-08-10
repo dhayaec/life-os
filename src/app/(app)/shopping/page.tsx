@@ -14,10 +14,8 @@ export default async function ShoppingPage({
   const user = await requireUser();
   const { category: categoryParam } = await searchParams;
 
-  const categories = await getShoppingItems(user.id).then((data) => data.categories);
+  const { items, categories } = await getShoppingItems(user.id);
   const category = categoryParam && categories.includes(categoryParam) ? categoryParam : null;
 
-  const data = await getShoppingItems(user.id, category);
-
-  return <ShoppingView {...data} category={category} />;
+  return <ShoppingView items={items} category={category} />;
 }

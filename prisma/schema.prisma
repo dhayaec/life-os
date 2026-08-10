@@ -109,6 +109,7 @@ model Notification {
   body      String?
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId, read])
 }
@@ -269,12 +270,13 @@ model Habit {
 }
 
 model HabitEntry {
-  id       String   @id @default(uuid())
-  habitId  String
-  habit    Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
-  date     DateTime @db.Date
-  done     Boolean  @default(true)
+  id        String   @id @default(uuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  done      Boolean  @default(true)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([habitId, date])
 }
@@ -407,4 +409,36 @@ model Document {
 
   @@index([userId, trashedAt])
   @@index([userId, isFavorite])
+}
+
+// --- Sync infrastructure ---
+
+model SyncState {
+  userId    String   @id
+  watermark DateTime @db.Timestamp(3) @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SyncOp {
+  id        String   @id @default(uuid())
+  userId    String
+  opId      String
+  domain    String
+  opType    String
+  result    Json?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, opId])
+  @@index([userId, createdAt])
+}
+
+model SyncTombstone {
+  id        String   @id @default(uuid())
+  userId    String
+  domain    String
+  recordId  String
+  deletedAt DateTime @db.Timestamp(3)
+
+  @@unique([userId, domain, recordId])
+  @@index([userId, domain, deletedAt])
 }

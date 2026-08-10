@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LifeOS — Offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0F172A;
+      color: #E2E8F0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      max-width: 400px;
+      text-align: center;
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+    }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+    p { color: #94A3B8; font-size: 0.875rem; line-height: 1.5; }
+    button {
+      margin-top: 1.5rem;
+      background: #6366F1;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.625rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover { background: #4F46E5; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">&#9729;</div>
+    <h1>You're offline</h1>
+    <p>LifeOS works offline once you've loaded data at least once. Reconnect to the internet and try again.</p>
+    <button onclick="location.reload()">Retry</button>
+  </div>
+</body>
+</html>

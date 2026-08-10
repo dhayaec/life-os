@@ -3,103 +3,66 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Archive, RotateCcw, Star, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from '@/components/ui/toast';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/common/empty-state';
-import {
-  getNotesPageAction,
-  hardDeleteNoteAction,
-  restoreNoteAction,
-  softDeleteNoteAction,
-  toggleFavoriteAction,
-} from '@/features/notes/actions';
+import type { SyncNote } from '@/features/notes/services/note-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
 import { useMounted } from '@/hooks/use-mounted';
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
-export type NoteListItem = {
-  id: string;
-  title: string;
-  content: string;
-  isFavorite: boolean;
-  trashedAt: string | null;
-  updatedAt: string;
-  tags: { tag: { id: string; name: string } }[];
-};
+const NOTES_PAGE_SIZE = 50;
 
 type NoteListProps = {
-  notes: NoteListItem[];
+  notes: SyncNote[];
   trashed?: boolean;
-  initialNextCursor?: string | null;
 };
 
-export function NoteList({ notes, trashed = false, initialNextCursor = null }: NoteListProps) {
+export function NoteList({ notes: initialNotes, trashed = false }: NoteListProps) {
   useRouteLoadedSignal();
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [items, setItems] = useSyncedState(notes);
-  const [nextCursor, setNextCursor] = useSyncedState(initialNextCursor);
-  const [busy, setBusy] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(false);
+  const folder = searchParams.get('folder');
+  const favorite = searchParams.get('favorite');
+  const search = searchParams.get('search');
+  const [page, setPage] = useState(1);
   const mounted = useMounted();
+  const { enqueue } = useSyncMutation('notes');
 
-  async function runAction(
-    action: () => Promise<{ ok: boolean; error?: string }>,
-    id: string,
-    apply: (snapshot: NoteListItem) => NoteListItem | null
-  ) {
-    if (busy.has(id)) return;
-    const snapshot = items.find((n) => n.id === id);
-    if (!snapshot) return;
-    setBusy((prev) => new Set(prev).add(id));
-    const next = apply(snapshot);
-    setItems((prev) =>
-      next === null ? prev.filter((n) => n.id !== id) : prev.map((n) => (n.id === id ? next : n))
-    );
-    const result = await action();
-    setBusy((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    if (!result.ok) {
-      setItems((prev) =>
-        next === null ? [...prev, snapshot] : prev.map((n) => (n.id === id ? snapshot : n))
-      );
-      toast.error(result.error ?? 'Something went wrong');
-      return;
-    }
-    router.refresh();
-  }
+  const { rows, hydrated } = useLocalQuery<SyncNote>(
+    'notes',
+    (all) => selectNotes(all, trashed, folder, favorite, search),
+    [trashed, folder, favorite, search]
+  );
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('notes', initialNotes);
+  }, [initialNotes]);
+
+  const all = rows ?? [];
+  const items = all.slice(0, page * NOTES_PAGE_SIZE);
 
   async function loadMore() {
-    if (loading || !nextCursor) return;
-    setLoading(true);
-    try {
-      const favorite = searchParams.get('favorite');
-      const result = await getNotesPageAction({
-        cursor: nextCursor,
-        folderId: searchParams.get('folder') ?? undefined,
-        favorite: favorite ? favorite === '1' : undefined,
-        search: searchParams.get('search') ?? undefined,
-        trashed,
-      });
-      if (!result.ok) {
-        toast.error(result.error ?? 'Something went wrong');
-        return;
-      }
-      const data = result.data;
-      if (!data) return;
-      setItems((prev) => [...prev, ...data.items]);
-      setNextCursor(data.nextCursor);
-    } finally {
-      setLoading(false);
-    }
+    if (all.length <= page * NOTES_PAGE_SIZE) return;
+    setPage((prev) => prev + 1);
+  }
+
+  if (!hydrated) {
+    return (
+      <ul className="divide-y">
+        {[0, 1, 2, 3].map((i) => (
+          <li key={i} className="py-3">
+            <div className="bg-muted h-4 w-1/3 animate-pulse rounded" />
+            <div className="bg-muted mt-2 h-3 w-2/3 animate-pulse rounded" />
+          </li>
+        ))}
+      </ul>
+    );
   }
 
   if (items.length === 0) {
@@ -129,7 +92,7 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                 </h3>
                 {note.content ? (
                   <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
-                    {note.content}
+                    {noteExcerptClient(note.content)}
                   </p>
                 ) : null}
                 <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
@@ -138,9 +101,9 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                       ? formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })
                       : ''}
                   </span>
-                  {note.tags.map(({ tag }) => (
-                    <Badge key={tag.id} variant="secondary">
-                      {tag.name}
+                  {note.tagNames.map((name) => (
+                    <Badge key={name} variant="secondary">
+                      {name}
                     </Badge>
                   ))}
                 </div>
@@ -153,13 +116,12 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Restore"
-                    disabled={busy.has(note.id)}
                     onClick={() =>
-                      runAction(
-                        () => restoreNoteAction({ id: note.id }),
-                        note.id,
-                        () => null
-                      )
+                      enqueue('update', {
+                        id: note.id,
+                        trashedAt: null,
+                        updatedAt: new Date().toISOString(),
+                      })
                     }
                   >
                     <RotateCcw className="size-4" />
@@ -168,13 +130,8 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Delete forever"
-                    disabled={busy.has(note.id)}
                     onClick={() =>
-                      runAction(
-                        () => hardDeleteNoteAction({ id: note.id }),
-                        note.id,
-                        () => null
-                      )
+                      enqueue('delete', { id: note.id, deletedAt: new Date().toISOString() })
                     }
                   >
                     <X className="size-4" />
@@ -186,13 +143,12 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Toggle favorite"
-                    disabled={busy.has(note.id)}
                     onClick={() =>
-                      runAction(
-                        () => toggleFavoriteAction({ id: note.id }),
-                        note.id,
-                        (n) => ({ ...n, isFavorite: !n.isFavorite })
-                      )
+                      enqueue('update', {
+                        id: note.id,
+                        isFavorite: !note.isFavorite,
+                        updatedAt: new Date().toISOString(),
+                      })
                     }
                   >
                     <Star
@@ -203,13 +159,13 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
                     variant="ghost"
                     size="icon"
                     aria-label="Move to trash"
-                    disabled={busy.has(note.id)}
                     onClick={() =>
-                      runAction(
-                        () => softDeleteNoteAction({ id: note.id }),
-                        note.id,
-                        () => null
-                      )
+                      enqueue('update', {
+                        id: note.id,
+                        trashedAt: new Date().toISOString(),
+                        archived: false,
+                        updatedAt: new Date().toISOString(),
+                      })
                     }
                   >
                     <Trash2 className="size-4" />
@@ -220,13 +176,55 @@ export function NoteList({ notes, trashed = false, initialNextCursor = null }: N
           </li>
         ))}
       </ul>
-      {nextCursor ? (
+      {all.length > page * NOTES_PAGE_SIZE ? (
         <div className="mt-4 flex justify-center">
-          <Button variant="outline" onClick={loadMore} disabled={loading}>
-            {loading ? 'Loading…' : 'Load more'}
+          <Button variant="outline" onClick={loadMore}>
+            Load more
           </Button>
         </div>
       ) : null}
     </>
   );
+}
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function noteExcerptClient(content: string): string {
+  const plain = stripHtml(content);
+  return plain.length > 160 ? `${plain.slice(0, 160)}…` : plain;
+}
+
+function selectNotes(
+  notes: SyncNote[],
+  trashed: boolean,
+  folder: string | null,
+  favorite: string | null,
+  search: string | null
+): SyncNote[] {
+  let result = notes;
+  if (trashed) {
+    result = result.filter((n) => n.trashedAt !== null);
+  } else {
+    result = result.filter((n) => n.trashedAt === null && !n.archived);
+    if (folder) result = result.filter((n) => n.folderId === folder);
+    if (favorite === '1') result = result.filter((n) => n.isFavorite);
+  }
+  if (search) {
+    const query = search.toLowerCase();
+    result = result.filter(
+      (n) =>
+        n.title.toLowerCase().includes(query) || stripHtml(n.content).toLowerCase().includes(query)
+    );
+  }
+  return [...result].sort((a, b) => {
+    const byUpdated = b.updatedAt.localeCompare(a.updatedAt);
+    if (byUpdated !== 0) return byUpdated;
+    return b.id.localeCompare(a.id);
+  });
 }

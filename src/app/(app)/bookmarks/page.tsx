@@ -19,7 +19,7 @@ export default async function BookmarksPage({
     collectionParam && collections.some((item) => item.id === collectionParam)
       ? collectionParam
       : null;
-  const bookmarks = await getBookmarks(user.id, selected ?? undefined);
+  const bookmarks = await getBookmarks(user.id);
 
   return <BookmarkView bookmarks={bookmarks} collections={collections} collection={selected} />;
 }

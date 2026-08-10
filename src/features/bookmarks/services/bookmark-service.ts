@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { Bookmark, Prisma } from '@/generated/prisma/client';
+import type { Bookmark, Collection, Prisma } from '@/generated/prisma/client';
 import { db } from '@/server/db';
 
 export type BookmarkTypeLiteral = 'article' | 'video' | 'repo' | 'website';
@@ -14,12 +14,14 @@ export type BookmarkItem = {
   collectionId: string | null;
   tags: string[];
   createdAt: string;
+  updatedAt: string;
 };
 
 export type CollectionItem = {
   id: string;
   name: string;
   parentId: string | null;
+  updatedAt: string;
 };
 
 async function assertCollectionOwned(userId: string, collectionId: string) {
@@ -32,7 +34,7 @@ async function assertCollectionOwned(userId: string, collectionId: string) {
 
 type BookmarkRow = Bookmark;
 
-function serializeBookmark(bookmark: BookmarkRow): BookmarkItem {
+export function serializeBookmark(bookmark: BookmarkRow): BookmarkItem {
   return {
     id: bookmark.id,
     url: bookmark.url,
@@ -42,6 +44,16 @@ function serializeBookmark(bookmark: BookmarkRow): BookmarkItem {
     collectionId: bookmark.collectionId,
     tags: bookmark.tags,
     createdAt: bookmark.createdAt.toISOString(),
+    updatedAt: bookmark.updatedAt.toISOString(),
+  };
+}
+
+export function serializeCollection(collection: Collection): CollectionItem {
+  return {
+    id: collection.id,
+    name: collection.name,
+    parentId: collection.parentId,
+    updatedAt: collection.updatedAt.toISOString(),
   };
 }
 
@@ -50,11 +62,7 @@ export async function getCollections(userId: string): Promise<CollectionItem[]> 
     where: { userId },
     orderBy: { name: 'asc' },
   });
-  return collections.map((collection) => ({
-    id: collection.id,
-    name: collection.name,
-    parentId: collection.parentId,
-  }));
+  return collections.map(serializeCollection);
 }
 
 export async function getBookmarks(userId: string, collectionId?: string): Promise<BookmarkItem[]> {
@@ -141,7 +149,7 @@ export async function createCollection(
   const collection = await db.collection.create({
     data: { userId, name: input.name, parentId: input.parentId ?? null },
   });
-  return { id: collection.id, name: collection.name, parentId: collection.parentId };
+  return serializeCollection(collection);
 }
 
 export async function deleteCollection(userId: string, id: string) {

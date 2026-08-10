@@ -8,6 +8,7 @@ export type HabitFrequency = 'daily' | 'weekly' | 'monthly';
 export type HabitEntryItem = {
   date: string;
   done: boolean;
+  updatedAt: string;
 };
 
 export type HabitItem = {
@@ -15,21 +16,28 @@ export type HabitItem = {
   name: string;
   frequency: HabitFrequency;
   createdAt: string;
+  updatedAt: string;
   entries: HabitEntryItem[];
 };
 
 type HabitRow = Habit & { entries: HabitEntry[] };
 
-function serializeHabit(habit: HabitRow): HabitItem {
+export function serializeHabitEntry(entry: HabitEntry): HabitEntryItem {
+  return {
+    date: entry.date.toISOString().slice(0, 10),
+    done: entry.done,
+    updatedAt: entry.updatedAt.toISOString(),
+  };
+}
+
+export function serializeHabit(habit: HabitRow): HabitItem {
   return {
     id: habit.id,
     name: habit.name,
     frequency: habit.frequency,
     createdAt: habit.createdAt.toISOString(),
-    entries: habit.entries.map((entry) => ({
-      date: entry.date.toISOString().slice(0, 10),
-      done: entry.done,
-    })),
+    updatedAt: habit.updatedAt.toISOString(),
+    entries: habit.entries.map(serializeHabitEntry),
   };
 }
 
@@ -86,9 +94,9 @@ export async function updateHabit(
   userId: string,
   id: string,
   input: HabitUpdateInput
-): Promise<HabitItem | null> {
+): Promise<HabitItem> {
   const existing = await db.habit.findFirst({ where: { id, userId } });
-  if (!existing) return null;
+  if (!existing) throw new Error('Habit not found');
 
   const data: Prisma.HabitUncheckedUpdateInput = {};
   if (input.name !== undefined) data.name = input.name;
@@ -98,7 +106,12 @@ export async function updateHabit(
     await db.habit.update({ where: { id }, data });
   }
 
-  return getHabit(userId, id);
+  const habit = await db.habit.findUnique({
+    where: { id },
+    include: { entries: true },
+  });
+  if (!habit) throw new Error('Habit not found');
+  return serializeHabit(habit);
 }
 
 export async function deleteHabit(userId: string, id: string) {
@@ -110,9 +123,9 @@ export async function setHabitEntry(
   habitId: string,
   date: string,
   done: boolean
-): Promise<HabitEntryItem | null> {
+): Promise<HabitEntryItem> {
   const habit = await db.habit.findFirst({ where: { id: habitId, userId } });
-  if (!habit) return null;
+  if (!habit) throw new Error('Habit not found');
 
   const dateUtc = new Date(`${date}T00:00:00Z`);
   const entry = await db.habitEntry.upsert({
@@ -120,5 +133,5 @@ export async function setHabitEntry(
     create: { habitId, date: dateUtc, done },
     update: { done },
   });
-  return { date: entry.date.toISOString().slice(0, 10), done: entry.done };
+  return serializeHabitEntry(entry);
 }

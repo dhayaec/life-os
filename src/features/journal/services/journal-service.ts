@@ -12,11 +12,12 @@ export type JournalEntryItem = {
   mood: JournalMood;
   entryAt: string;
   createdAt: string;
+  updatedAt: string;
 };
 
 type JournalEntryRow = JournalEntry;
 
-function serializeEntry(entry: JournalEntryRow): JournalEntryItem {
+export function serializeEntry(entry: JournalEntryRow): JournalEntryItem {
   return {
     id: entry.id,
     title: entry.title,
@@ -24,6 +25,7 @@ function serializeEntry(entry: JournalEntryRow): JournalEntryItem {
     mood: entry.mood,
     entryAt: entry.entryAt.toISOString(),
     createdAt: entry.createdAt.toISOString(),
+    updatedAt: entry.updatedAt.toISOString(),
   };
 }
 
@@ -58,7 +60,10 @@ export type JournalEntryUpdateInput = {
   entryAt?: string | undefined;
 };
 
-export async function createJournalEntry(userId: string, input: JournalEntryInput) {
+export async function createJournalEntry(
+  userId: string,
+  input: JournalEntryInput
+): Promise<JournalEntryItem> {
   const entry = await db.journalEntry.create({
     data: {
       userId,
