@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Pencil, Plus } from 'lucide-react';
-import { toast } from '@/components/ui/toast';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
@@ -16,32 +14,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { updateShoppingItemAction } from '@/features/shopping/actions';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ItemDialog, type ItemInitial } from '@/features/shopping/components/item-dialog';
 import type { ShoppingItem } from '@/features/shopping/services/shopping-service';
 
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function ShoppingView({
   items: initialItems,
-  categories,
   category,
 }: {
   items: ShoppingItem[];
-  categories: string[];
   category: string | null;
 }) {
   useRouteLoadedSignal();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [items, setItems] = useSyncedState(initialItems);
   const [pending, setPending] = useState<string | null>(null);
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; item: ShoppingItem } | null
   >(null);
 
+  const { rows, hydrated } = useLocalQuery<ShoppingItem>(
+    'shoppingItems',
+    (all) => selectItems(all, category),
+    [category]
+  );
+  const { enqueue } = useSyncMutation('shoppingItems');
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('shoppingItems', initialItems);
+  }, [initialItems]);
+
+  const categories = [...new Set((rows ?? []).map((i) => i.category))].sort();
+  const items = rows ?? [];
   const done = items.filter((item) => item.completed).length;
 
   function selectCategory(next: string) {
@@ -55,22 +66,14 @@ export function ShoppingView({
     router.push(query ? `${pathname}?${query}` : pathname);
   }
 
-  async function toggle(item: ShoppingItem) {
+  function toggle(item: ShoppingItem) {
     if (pending === item.id) return;
-    const snapshot = item;
     setPending(item.id);
-    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, completed: !i.completed } : i)));
-    const result = await updateShoppingItemAction({
+    void enqueue('update', {
       id: item.id,
       completed: !item.completed,
-    });
-    setPending(null);
-    if (!result.ok) {
-      setItems((prev) => prev.map((i) => (i.id === item.id ? snapshot : i)));
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
   const groups = new Map<string, ShoppingItem[]>();
@@ -92,6 +95,19 @@ export function ShoppingView({
         }
       : { id: null, name: '', category: category ?? '', quantity: 1, note: '' }
     : null;
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Shopping" />
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -182,4 +198,13 @@ export function ShoppingView({
       />
     </div>
   );
+}
+
+function selectItems(items: ShoppingItem[], category: string | null): ShoppingItem[] {
+  let result = items;
+  if (category) result = result.filter((i) => i.category === category);
+  return [...result].sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    return a.createdAt < b.createdAt ? -1 : 1;
+  });
 }

@@ -1,20 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EventDialog, type EventInitial } from '@/features/calendar/components/event-dialog';
 import type { CalendarEventItem } from '@/features/calendar/services/calendar-service';
 
 import { useMounted } from '@/hooks/use-mounted';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export function CalendarView({ month, events }: { month: string; events: CalendarEventItem[] }) {
+// Stable keys for the pre-hydration shimmer grid (not entity rows, so no
+// meaningful ids exist to key on).
+const SKELETON_KEYS = Array.from({ length: 28 }, (_, i) => `shimmer-${i}`);
+
+export function CalendarView({
+  month,
+  events: initialEvents,
+}: {
+  month: string;
+  events: CalendarEventItem[];
+}) {
   useRouteLoadedSignal();
   const mounted = useMounted();
   const router = useRouter();
@@ -23,6 +36,18 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
   const [dialog, setDialog] = useState<
     { mode: 'create'; date: string } | { mode: 'edit'; event: CalendarEventItem } | null
   >(null);
+
+  const { rows, hydrated } = useLocalQuery<CalendarEventItem>(
+    'calendarEvents',
+    (all) => selectEvents(all, month),
+    [month]
+  );
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('calendarEvents', initialEvents);
+  }, [initialEvents]);
+
+  const events = rows ?? [];
 
   const parts = month.split('-').map(Number);
   const year = parts[0] ?? new Date().getFullYear();
@@ -88,6 +113,24 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
           color: '#6366f1',
         }
     : null;
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-3">
+        <PageHeader title="Calendar" />
+        <div className="grid grid-cols-7 gap-1">
+          {WEEKDAYS.map((day) => (
+            <div key={day} className="text-muted-foreground py-1 text-center text-xs font-medium">
+              {day}
+            </div>
+          ))}
+          {SKELETON_KEYS.map((key) => (
+            <Skeleton key={key} className="min-h-24 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -192,4 +235,20 @@ function toDateKey(date: Date) {
 
 function toTime(iso: string) {
   return new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+
+function selectEvents(events: CalendarEventItem[], month: string): CalendarEventItem[] {
+  const parts = month.split('-').map(Number);
+  const year = parts[0] ?? new Date().getFullYear();
+  const monthIndex = parts[1] ?? new Date().getMonth() + 1;
+  const from = new Date(year, monthIndex - 1, 1).getTime();
+  const to = new Date(year, monthIndex, 1).getTime();
+  const filtered = events.filter((event) => {
+    const time = new Date(event.startAt).getTime();
+    return time >= from && time < to;
+  });
+  return filtered.sort((a, b) => {
+    if (a.allDay !== b.allDay) return a.allDay ? 1 : -1;
+    return a.startAt < b.startAt ? -1 : 1;
+  });
 }

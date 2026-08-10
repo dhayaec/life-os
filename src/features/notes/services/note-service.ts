@@ -8,6 +8,8 @@ type FolderInput = {
   parentId?: string | null;
 };
 
+type FolderRecord = Prisma.FolderGetPayload<Record<string, never>>;
+
 export type FolderNode = {
   id: string;
   name: string;
@@ -40,16 +42,43 @@ export async function getFolders(userId: string): Promise<FolderNode[]> {
   return roots;
 }
 
-export async function createFolder(userId: string, data: FolderInput) {
-  if (data.parentId) await assertFolderOwned(userId, data.parentId);
-  return db.folder.create({ data: { userId, name: data.name, parentId: data.parentId ?? null } });
+export type SyncFolder = {
+  id: string;
+  name: string;
+  parentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export function serializeFolder(folder: FolderRecord): SyncFolder {
+  return {
+    id: folder.id,
+    name: folder.name,
+    parentId: folder.parentId,
+    createdAt: folder.createdAt.toISOString(),
+    updatedAt: folder.updatedAt.toISOString(),
+  };
 }
 
-export async function renameFolder(userId: string, id: string, name: string) {
-  return db.folder.update({
+export async function createFolder(userId: string, data: FolderInput): Promise<SyncFolder> {
+  if (data.parentId) await assertFolderOwned(userId, data.parentId);
+  const folder = await db.folder.create({
+    data: { userId, name: data.name, parentId: data.parentId ?? null },
+  });
+  return serializeFolder(folder);
+}
+
+export async function renameFolder(userId: string, id: string, name: string): Promise<SyncFolder> {
+  const folder = await db.folder.update({
     where: { id, userId },
     data: { name },
   });
+  return serializeFolder(folder);
+}
+
+export async function getFolderRows(userId: string): Promise<SyncFolder[]> {
+  const folders = await db.folder.findMany({ where: { userId }, orderBy: { name: 'asc' } });
+  return folders.map(serializeFolder);
 }
 
 export async function deleteFolder(userId: string, id: string) {
@@ -85,15 +114,6 @@ function buildNotesWhere(userId: string, options: NoteListOptions): Prisma.NoteW
       : {}),
     ...(options.tag ? { tags: { some: { tag: { name: options.tag } } } } : {}),
   };
-}
-
-export function noteExcerpt(content: string, maxLength = 160): string {
-  const plain = content
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return plain.length > maxLength ? `${plain.slice(0, maxLength)}…` : plain;
 }
 
 export async function getNotes(userId: string, options: NoteListOptions = {}) {
@@ -147,16 +167,53 @@ type NoteInput = {
   tagNames?: string[];
 };
 
-async function setTags(userId: string, noteId: string, tagNames: string[]) {
-  await db.noteTag.deleteMany({ where: { noteId } });
+type NoteRecord = Prisma.NoteGetPayload<{
+  include: { tags: { include: { tag: true } } };
+}>;
+
+export type SyncNote = {
+  id: string;
+  title: string;
+  content: string;
+  folderId: string | null;
+  isFavorite: boolean;
+  archived: boolean;
+  trashedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  tagNames: string[];
+};
+
+export function serializeNote(note: NoteRecord): SyncNote {
+  return {
+    id: note.id,
+    title: note.title,
+    content: note.content,
+    folderId: note.folderId,
+    isFavorite: note.isFavorite,
+    archived: note.archived,
+    trashedAt: note.trashedAt?.toISOString() ?? null,
+    createdAt: note.createdAt.toISOString(),
+    updatedAt: note.updatedAt.toISOString(),
+    tagNames: note.tags.map(({ tag }) => tag.name),
+  };
+}
+
+export async function setTags(
+  client: Prisma.TransactionClient,
+  userId: string,
+  noteId: string,
+  tagNames: string[]
+) {
+  await client.noteTag.deleteMany({ where: { noteId } });
 
   for (const name of tagNames) {
-    const tag = await db.tag.upsert({
+    const tag = await client.tag.upsert({
       where: { userId_name: { userId, name } },
       update: {},
       create: { userId, name },
     });
-    await db.noteTag.upsert({
+    await client.noteTag.upsert({
       where: { noteId_tagId: { noteId, tagId: tag.id } },
       update: {},
       create: { noteId, tagId: tag.id },
@@ -164,7 +221,7 @@ async function setTags(userId: string, noteId: string, tagNames: string[]) {
   }
 }
 
-export async function createNote(userId: string, input: NoteInput) {
+export async function createNote(userId: string, input: NoteInput): Promise<SyncNote | null> {
   if (input.folderId) await assertFolderOwned(userId, input.folderId);
   const note = await db.note.create({
     data: {
@@ -176,13 +233,18 @@ export async function createNote(userId: string, input: NoteInput) {
   });
 
   if (input.tagNames?.length) {
-    await setTags(userId, note.id, input.tagNames);
+    await setTags(db, userId, note.id, input.tagNames);
   }
 
-  return getNote(userId, note.id);
+  const created = await getNote(userId, note.id);
+  return created ? serializeNote(created) : null;
 }
 
-export async function updateNote(userId: string, id: string, input: NoteInput) {
+export async function updateNote(
+  userId: string,
+  id: string,
+  input: NoteInput
+): Promise<SyncNote | null> {
   const existing = await db.note.findFirst({ where: { id, userId } });
   if (!existing) return null;
 
@@ -204,27 +266,35 @@ export async function updateNote(userId: string, id: string, input: NoteInput) {
   }
 
   if (tagNames) {
-    await setTags(userId, id, tagNames);
+    await setTags(db, userId, id, tagNames);
   }
 
-  return getNote(userId, id);
+  const updated = await getNote(userId, id);
+  return updated ? serializeNote(updated) : null;
 }
 
-export async function toggleFavorite(userId: string, id: string) {
+export async function toggleFavorite(userId: string, id: string): Promise<SyncNote | null> {
   const note = await db.note.findFirst({ where: { id, userId } });
   if (!note) return null;
-  return db.note.update({ where: { id }, data: { isFavorite: !note.isFavorite } });
+  await db.note.update({ where: { id }, data: { isFavorite: !note.isFavorite } });
+  const updated = await getNote(userId, id);
+  return updated ? serializeNote(updated) : null;
 }
 
-export async function softDeleteNote(userId: string, id: string) {
-  return db.note.update({
-    where: { id, userId },
-    data: { trashedAt: new Date(), archived: false },
-  });
+export async function softDeleteNote(userId: string, id: string): Promise<SyncNote | null> {
+  const note = await db.note.findFirst({ where: { id, userId } });
+  if (!note) return null;
+  await db.note.update({ where: { id }, data: { trashedAt: new Date(), archived: false } });
+  const updated = await getNote(userId, id);
+  return updated ? serializeNote(updated) : null;
 }
 
-export async function restoreNote(userId: string, id: string) {
-  return db.note.update({ where: { id, userId }, data: { trashedAt: null } });
+export async function restoreNote(userId: string, id: string): Promise<SyncNote | null> {
+  const note = await db.note.findFirst({ where: { id, userId } });
+  if (!note) return null;
+  await db.note.update({ where: { id }, data: { trashedAt: null } });
+  const updated = await getNote(userId, id);
+  return updated ? serializeNote(updated) : null;
 }
 
 export async function hardDeleteNote(userId: string, id: string) {

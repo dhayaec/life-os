@@ -38,6 +38,7 @@ const row = {
   isFavorite: false,
   trashedAt: null as Date | null,
   createdAt: new Date('2026-08-01T00:00:00Z'),
+  updatedAt: new Date('2026-08-02T00:00:00Z'),
 };
 
 describe('documents-service', () => {
@@ -82,6 +83,7 @@ describe('documents-service', () => {
 
   it('toggles favorite off when currently favorited', async () => {
     mocks.findUniqueOrThrow.mockResolvedValue({ ...row, isFavorite: true });
+    mocks.update.mockResolvedValue({ ...row, isFavorite: false });
     await toggleDocumentFavorite('user-1', 'doc-1');
     expect(mocks.update).toHaveBeenCalledWith(
       expect.objectContaining({

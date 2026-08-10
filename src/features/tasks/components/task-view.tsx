@@ -1,18 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { PageHeader } from '@/components/common/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from '@/components/ui/toast';
 
 import { TaskComposer } from '@/features/tasks/components/task-composer';
 import { TaskEditor } from '@/features/tasks/components/task-editor';
 import { TaskList } from '@/features/tasks/components/task-list';
-import { deleteTaskAction, toggleTaskAction } from '@/features/tasks/actions';
 import type { TaskItem } from '@/features/tasks/services/task-service';
 
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const statuses = [
@@ -37,8 +38,18 @@ export function TaskView({
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(initialSearch);
   const [editing, setEditing] = useState<TaskItem | null>(null);
-  const [tasks, setTasks] = useSyncedState(initialTasks);
   const [pending, setPending] = useState<string | null>(null);
+
+  const { rows, hydrated } = useLocalQuery<TaskItem>(
+    'tasks',
+    (all) => selectTasks(all, initialStatus, search),
+    [initialStatus, search]
+  );
+  const { enqueue } = useSyncMutation('tasks');
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('tasks', initialTasks);
+  }, [initialTasks]);
 
   function setStatus(value: string) {
     const params = new URLSearchParams(searchParams);
@@ -56,44 +67,41 @@ export function TaskView({
   }
 
   function handleCreated(task: TaskItem) {
-    setTasks((prev) => [task, ...prev]);
+    void enqueue('create', task);
   }
 
-  async function handleToggle(task: TaskItem) {
+  function handleToggle(task: TaskItem) {
     if (pending === task.id) return;
-    const snapshot = task;
+    setPending(task.id);
     const next = task.status === 'done' ? 'todo' : 'done';
-    setPending(task.id);
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === task.id
-          ? { ...t, status: next, completedAt: next === 'done' ? new Date().toISOString() : null }
-          : t
-      )
-    );
-    const result = await toggleTaskAction({ id: task.id });
-    setPending(null);
-    if (!result.ok) {
-      setTasks((prev) => prev.map((t) => (t.id === task.id ? snapshot : t)));
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', {
+      id: task.id,
+      status: next,
+      completedAt: next === 'done' ? new Date().toISOString() : null,
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
-  async function handleDelete(task: TaskItem) {
+  function handleDelete(task: TaskItem) {
     if (pending === task.id) return;
-    const snapshot = task;
     setPending(task.id);
-    setTasks((prev) => prev.filter((t) => t.id !== task.id));
-    const result = await deleteTaskAction({ id: task.id });
-    setPending(null);
-    if (!result.ok) {
-      setTasks((prev) => [...prev, snapshot]);
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('delete', {
+      id: task.id,
+      deletedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Tasks" />
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -128,7 +136,7 @@ export function TaskView({
         </form>
       </div>
       <TaskList
-        tasks={tasks}
+        tasks={rows ?? []}
         pending={pending}
         onEdit={setEditing}
         onToggle={handleToggle}
@@ -142,4 +150,30 @@ export function TaskView({
       />
     </div>
   );
+}
+
+function selectTasks(tasks: TaskItem[], status: string, search: string): TaskItem[] {
+  let result = tasks;
+  if (status) result = result.filter((task) => task.status === status);
+  if (search) {
+    const query = search.toLowerCase();
+    result = result.filter(
+      (task) =>
+        task.title.toLowerCase().includes(query) ||
+        (task.description ?? '').toLowerCase().includes(query)
+    );
+  }
+  return [...result].sort((a, b) => {
+    if (a.completedAt !== b.completedAt) {
+      if (!a.completedAt) return -1;
+      if (!b.completedAt) return 1;
+      return a.completedAt < b.completedAt ? -1 : 1;
+    }
+    if (a.dueAt !== b.dueAt) {
+      if (!a.dueAt) return 1;
+      if (!b.dueAt) return -1;
+      return a.dueAt < b.dueAt ? -1 : 1;
+    }
+    return a.createdAt < b.createdAt ? 1 : -1;
+  });
 }

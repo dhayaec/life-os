@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -21,11 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  createTransactionAction,
-  deleteTransactionAction,
-  updateTransactionAction,
-} from '@/features/finance/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 import type { TransactionTypeLiteral } from '@/features/finance/services/finance-service';
 
 export type TransactionInitial = {
@@ -46,18 +41,18 @@ export function TransactionDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [amount, setAmount] = useState(initial?.amount?.toString() ?? '');
   const [type, setType] = useState<TransactionTypeLiteral>(initial?.type ?? 'expense');
   const [category, setCategory] = useState(initial?.category ?? '');
   const [date, setDate] = useState(initial?.date ?? '');
   const [note, setNote] = useState(initial?.note ?? '');
+  const { enqueue } = useSyncMutation('transactions');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const parsed = Number(amount);
     if (!amount.trim() || Number.isNaN(parsed) || parsed <= 0) {
@@ -75,26 +70,26 @@ export function TransactionDialog({
       date,
       note: note.trim() || null,
     };
-    const result = isEdit
-      ? await updateTransactionAction({ id: current.id, ...payload })
-      : await createTransactionAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteTransactionAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

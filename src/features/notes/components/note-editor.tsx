@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import {
@@ -26,60 +26,63 @@ import { toast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import {
-  createNoteAction,
-  restoreNoteAction,
-  softDeleteNoteAction,
-  toggleFavoriteAction,
-  updateNoteAction,
-} from '@/features/notes/actions';
+import type { SyncNote } from '@/features/notes/services/note-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
-
-type NoteTag = { tag: { id: string; name: string } };
-
-type NoteEditorProps = {
-  id: string;
-  title: string;
-  content: string;
-  isFavorite: boolean;
-  trashedAt: string | null;
-  tags: NoteTag[];
-};
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
-export function NoteEditor({
-  id,
-  title: initialTitle,
-  content: initialContent,
-  isFavorite,
-  trashedAt,
-  tags: initialTags,
-}: NoteEditorProps) {
+export function NoteEditor({ id, note }: { id: string; note: SyncNote | null }) {
   useRouteLoadedSignal();
   const router = useRouter();
+  const { enqueue } = useSyncMutation('notes');
   const isNew = id === 'new';
-  const initialTagsString = initialTags.map(({ tag }) => tag.name).join(', ');
-  const [title, setTitle] = useState(initialTitle);
-  const [content, setContent] = useState(initialContent);
+  const initialTagsString = (note?.tagNames ?? []).join(', ');
+  const [title, setTitle] = useState(note?.title ?? '');
+  const [content, setContent] = useState(note?.content ?? '');
   const [tags, setTags] = useState(initialTagsString);
-  const [favorite, setFavorite] = useState(isFavorite);
+  const [favorite, setFavorite] = useState(note?.isFavorite ?? false);
+  const [trashedAt, setTrashedAt] = useState(note?.trashedAt ?? null);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [aiBusy, setAiBusy] = useState<string | null>(null);
   const trashed = Boolean(trashedAt);
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: initialContent,
+    content,
     onUpdate: ({ editor }) => {
       setContent(editor.getHTML());
       setSaveState('idle');
     },
   });
 
+  // For local-only notes (created offline, not yet on the server) the RSC props
+  // are empty — adopt the row from the local store once it hydrates.
+  const { rows } = useLocalQuery<SyncNote>(
+    'notes',
+    (all) => (isNew ? [] : all.filter((n) => n.id === id)),
+    [id]
+  );
+  const stored = rows?.[0];
+  const adopted = useRef(false);
+  useEffect(() => {
+    if (adopted.current || !stored || !editor) return;
+    adopted.current = true;
+    setTitle(stored.title);
+    setTags(stored.tagNames.join(', '));
+    setFavorite(stored.isFavorite);
+    setTrashedAt(stored.trashedAt);
+    if (editor.getHTML() !== stored.content) {
+      editor.commands.setContent(stored.content);
+    }
+  }, [stored, editor]);
+
   const hasChanges =
-    title !== initialTitle || content !== initialContent || tags !== initialTagsString;
+    title !== (note?.title ?? '') ||
+    content !== (note?.content ?? '') ||
+    tags !== initialTagsString;
 
   async function handleSave() {
     const trimmedTitle = title.trim();
@@ -93,54 +96,50 @@ export function NoteEditor({
       .map((tag) => tag.trim())
       .filter(Boolean);
     if (isNew) {
-      const result = await createNoteAction({ title: trimmedTitle, content, tagNames });
-      if (!result.ok) {
-        setSaveState('error');
-        toast.error(result.error);
-        return;
-      }
-      if (!result.data) {
-        setSaveState('error');
-        toast.error('Something went wrong');
-        return;
-      }
-      router.replace(`/notes/${result.data.id}`);
+      const record: SyncNote = {
+        id: crypto.randomUUID(),
+        title: trimmedTitle,
+        content,
+        folderId: null,
+        isFavorite: false,
+        archived: false,
+        trashedAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        tagNames,
+      };
+      void enqueue('create', record);
+      router.replace(`/notes/${record.id}`);
       return;
     }
+    void enqueue('update', {
+      id,
+      title: trimmedTitle,
+      content,
+      tagNames,
+      updatedAt: new Date().toISOString(),
+    });
     setSaveState('saved');
-    const result = await updateNoteAction({ id, title: trimmedTitle, content, tagNames });
-    if (!result.ok) {
-      setSaveState('error');
-      toast.error(result.error);
-    }
   }
 
-  async function handleToggleFavorite() {
-    setFavorite((prev) => !prev);
-    const result = await toggleFavoriteAction({ id });
-    if (!result.ok) {
-      setFavorite((prev) => !prev);
-      toast.error(result.error);
-    }
+  function handleToggleFavorite() {
+    const next = !favorite;
+    setFavorite(next);
+    void enqueue('update', {
+      id,
+      isFavorite: next,
+      updatedAt: new Date().toISOString(),
+    });
   }
 
-  async function handleDelete() {
-    const result = await softDeleteNoteAction({ id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+  function handleDelete() {
+    void enqueue('delete', { id, deletedAt: new Date().toISOString() });
     router.push('/notes');
-    router.refresh();
   }
 
-  async function handleRestore() {
-    const result = await restoreNoteAction({ id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+  function handleRestore() {
+    setTrashedAt(null);
+    void enqueue('update', { id, trashedAt: null, updatedAt: new Date().toISOString() });
   }
 
   async function callAI(operation: 'summarize' | 'tasks-from-note', body: object) {

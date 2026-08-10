@@ -12,6 +12,7 @@ export type NotificationItem = {
   type: string;
   read: boolean;
   createdAt: string;
+  updatedAt: string;
 };
 
 const NOTIFICATION_SUBJECTS: Record<string, string> = {
@@ -25,7 +26,7 @@ function subjectFor(type: string): string {
   return NOTIFICATION_SUBJECTS[type] ?? 'LifeOS notification';
 }
 
-function serialize(notification: NotificationRecord): NotificationItem {
+export function serializeNotification(notification: NotificationRecord): NotificationItem {
   return {
     id: notification.id,
     title: notification.title,
@@ -33,6 +34,7 @@ function serialize(notification: NotificationRecord): NotificationItem {
     type: notification.type,
     read: notification.read,
     createdAt: notification.createdAt.toISOString(),
+    updatedAt: notification.updatedAt.toISOString(),
   };
 }
 
@@ -64,7 +66,7 @@ export async function getNotifications(userId: string, limit = 50): Promise<Noti
     orderBy: { createdAt: 'desc' },
     take: limit,
   });
-  return rows.map(serialize);
+  return rows.map(serializeNotification);
 }
 
 export async function getUnreadCount(userId: string): Promise<number> {
@@ -89,14 +91,15 @@ export async function createNotification(
   // the caller or slow down the in-app notification.
   void sendNotificationEmail(userId, type, input.title, input.body ?? null).catch(() => {});
 
-  return serialize(row);
+  return serializeNotification(row);
 }
 
-export async function markNotificationRead(userId: string, id: string): Promise<void> {
-  await db.notification.update({
+export async function markNotificationRead(userId: string, id: string): Promise<NotificationItem> {
+  const row = await db.notification.update({
     where: { id, userId },
     data: { read: true },
   });
+  return serializeNotification(row);
 }
 
 export async function markAllNotificationsRead(userId: string): Promise<void> {

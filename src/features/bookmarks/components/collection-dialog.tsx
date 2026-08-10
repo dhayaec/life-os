@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -14,25 +13,26 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createCollectionAction } from '@/features/bookmarks/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 export function CollectionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const router = useRouter();
   const [name, setName] = useState('');
+  const { enqueue } = useSyncMutation('collections');
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim()) {
       toast.error('Collection name is required');
       return;
     }
-    const result = await createCollectionAction({ name: name.trim() });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('create', {
+      id: crypto.randomUUID(),
+      name: name.trim(),
+      parentId: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
     onClose();
-    router.refresh();
   }
 
   return (

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
 import { requireUser } from '@/server/session';
-import { getNote } from '@/features/notes/services/note-service';
+import { getNote, serializeNote } from '@/features/notes/services/note-service';
 import { NoteEditor } from '@/features/notes/components/note-editor';
 
 export const metadata: Metadata = { title: 'Note' };
@@ -12,19 +11,7 @@ export default async function NotePage({ params }: { params: Promise<{ noteId: s
   const { noteId } = await params;
   const note = await getNote(user.id, noteId);
 
-  if (!note) {
-    notFound();
-  }
-
-  return (
-    <NoteEditor
-      key={note.id}
-      id={note.id}
-      title={note.title}
-      content={note.content}
-      isFavorite={note.isFavorite}
-      trashedAt={note.trashedAt?.toISOString() ?? null}
-      tags={note.tags}
-    />
-  );
+  // Render the editor shell from the id even when the note is not on the server yet
+  // (a local-only note created offline). The editor resolves content from the store.
+  return <NoteEditor key={noteId} id={noteId} note={note ? serializeNote(note) : null} />;
 }

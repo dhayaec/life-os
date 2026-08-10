@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { upload } from '@vercel/blob/client';
@@ -20,16 +20,14 @@ import {
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
-import {
-  deleteDocumentAction,
-  restoreDocumentAction,
-  toggleDocumentFavoriteAction,
-  trashDocumentAction,
-} from '@/features/documents/actions';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { DocumentItem } from '@/features/documents/services/documents-service';
 
 import { useMounted } from '@/hooks/use-mounted';
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { useConnectivityStore } from '@/lib/sync/connectivity-store';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function DocumentsView({
@@ -44,12 +42,29 @@ export function DocumentsView({
   useRouteLoadedSignal();
   const mounted = useMounted();
   const router = useRouter();
-  const [documents, setDocuments] = useSyncedState(initialDocuments);
+  const online = useConnectivityStore((state) => state.online);
   const [pending, setPending] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  const { rows, hydrated } = useLocalQuery<DocumentItem>(
+    'documents',
+    (all) => selectDocuments(all, trashed),
+    [trashed]
+  );
+  const { enqueue } = useSyncMutation('documents');
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('documents', initialDocuments);
+  }, [initialDocuments]);
+
+  const documents = rows ?? [];
+
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0 || uploading) return;
+    if (!online) {
+      toast.error('Uploads need an internet connection');
+      return;
+    }
     setUploading(true);
     try {
       for (const file of Array.from(files)) {
@@ -70,69 +85,61 @@ export function DocumentsView({
     }
   }
 
-  async function favorite(doc: DocumentItem) {
+  function favorite(doc: DocumentItem) {
     if (pending === doc.id) return;
-    const snapshot = doc;
     setPending(doc.id);
-    setDocuments((prev) =>
-      prev.map((d) => (d.id === doc.id ? { ...d, isFavorite: !d.isFavorite } : d))
-    );
-    const result = await toggleDocumentFavoriteAction({ id: doc.id });
-    setPending(null);
-    if (!result.ok) {
-      setDocuments((prev) => prev.map((d) => (d.id === doc.id ? snapshot : d)));
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', {
+      id: doc.id,
+      isFavorite: !doc.isFavorite,
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
-  async function trash(doc: DocumentItem) {
+  function trash(doc: DocumentItem) {
     if (pending === doc.id) return;
-    const snapshot = doc;
     setPending(doc.id);
-    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
-    const result = await trashDocumentAction({ id: doc.id });
-    setPending(null);
-    if (!result.ok) {
-      setDocuments((prev) => [...prev, snapshot]);
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', {
+      id: doc.id,
+      trashedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
-  async function restore(doc: DocumentItem) {
+  function restore(doc: DocumentItem) {
     if (pending === doc.id) return;
-    const snapshot = doc;
     setPending(doc.id);
-    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
-    const result = await restoreDocumentAction({ id: doc.id });
-    setPending(null);
-    if (!result.ok) {
-      setDocuments((prev) => [...prev, snapshot]);
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', {
+      id: doc.id,
+      trashedAt: null,
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
-  async function remove(doc: DocumentItem) {
+  function remove(doc: DocumentItem) {
     const confirmed = window.confirm(`Permanently delete "${doc.name}"?`);
     if (!confirmed) return;
     if (pending === doc.id) return;
-    const snapshot = doc;
     setPending(doc.id);
-    setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
-    const result = await deleteDocumentAction({ id: doc.id });
-    setPending(null);
-    if (!result.ok) {
-      setDocuments((prev) => [...prev, snapshot]);
-      toast.error(result.error);
-      return;
-    }
-    toast.success('Deleted');
-    router.refresh();
+    void enqueue('delete', {
+      id: doc.id,
+      deletedAt: new Date().toISOString(),
+    }).finally(() => {
+      setPending(null);
+      toast.success('Deleted');
+    });
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <h1 className="text-lg font-semibold">{trashed ? 'Trash' : 'Documents'}</h1>
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -160,7 +167,7 @@ export function DocumentsView({
               onChange={(event) => void handleFiles(event.target.files)}
             />
             <label htmlFor="document-upload">
-              <Button asChild disabled={uploading} className="cursor-pointer">
+              <Button asChild disabled={uploading || !online} className="cursor-pointer">
                 <span>
                   <Upload className="size-4" />
                   {uploading ? 'Uploading…' : 'Upload'}
@@ -257,6 +264,14 @@ export function DocumentsView({
       )}
     </div>
   );
+}
+
+function selectDocuments(all: DocumentItem[], trashed: boolean): DocumentItem[] {
+  const filtered = all.filter((doc) => (trashed ? doc.trashedAt !== null : doc.trashedAt === null));
+  return [...filtered].sort((a, b) => {
+    if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
+    return a.createdAt < b.createdAt ? 1 : -1;
+  });
 }
 
 function typeIcon(type: string): LucideIcon {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { createHabitAction, deleteHabitAction, updateHabitAction } from '@/features/habits/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 import type { HabitFrequency } from '@/features/habits/services/habit-service';
 
 export type HabitInitial = {
@@ -45,41 +44,43 @@ export function HabitFormDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [name, setName] = useState(initial?.name ?? '');
   const [frequency, setFrequency] = useState<HabitFrequency>(initial?.frequency ?? 'daily');
+  const { enqueue } = useSyncMutation('habits');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!name.trim()) {
       toast.error('Name is required');
       return;
     }
     const payload = { name: name.trim(), frequency };
-    const result = isEdit
-      ? await updateHabitAction({ id: current.id, ...payload })
-      : await createHabitAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        entries: [],
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteHabitAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

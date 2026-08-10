@@ -1,14 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EntryDialog, type EntryInitial } from '@/features/journal/components/entry-dialog';
 import type { JournalEntryItem, JournalMood } from '@/features/journal/services/journal-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
 import { useMounted } from '@/hooks/use-mounted';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const moodStyles: Record<JournalMood, { color: string; label: string }> = {
@@ -19,12 +22,20 @@ const moodStyles: Record<JournalMood, { color: string; label: string }> = {
   great: { color: '#10b981', label: 'Great' },
 };
 
-export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
+export function JournalView({ entries: initialEntries }: { entries: JournalEntryItem[] }) {
   useRouteLoadedSignal();
   const mounted = useMounted();
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; entry: JournalEntryItem } | null
   >(null);
+
+  const { rows, hydrated } = useLocalQuery<JournalEntryItem>('journalEntries', selectEntries, []);
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('journalEntries', initialEntries);
+  }, [initialEntries]);
+
+  const entries = rows ?? [];
 
   const dialogInitial: EntryInitial | null = dialog
     ? dialog.mode === 'edit'
@@ -43,6 +54,19 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
           entryAt: new Date().toISOString(),
         }
     : null;
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Journal" />
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -104,6 +128,10 @@ export function JournalView({ entries }: { entries: JournalEntryItem[] }) {
       />
     </div>
   );
+}
+
+function selectEntries(all: JournalEntryItem[]): JournalEntryItem[] {
+  return [...all].sort((a, b) => (a.entryAt < b.entryAt ? 1 : -1)).slice(0, 100);
 }
 
 function formatDateTime(iso: string) {

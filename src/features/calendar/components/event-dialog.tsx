@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
+
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,11 +17,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  createEventAction,
-  deleteEventAction,
-  updateEventAction,
-} from '@/features/calendar/actions';
 
 export type EventInitial = {
   id: string | null;
@@ -44,7 +40,6 @@ export function EventDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [startDate, setStartDate] = useState(
@@ -59,12 +54,13 @@ export function EventDialog({
   const [allDay, setAllDay] = useState(initial?.allDay ?? false);
   const [location, setLocation] = useState(initial?.location ?? '');
   const [color, setColor] = useState(initial?.color ?? '#6366f1');
+  const { enqueue } = useSyncMutation('calendarEvents');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!title.trim() || !startDate) {
       toast.error('Title and start date are required');
@@ -76,6 +72,7 @@ export function EventDialog({
     const endAt =
       hasEnd && endDate ? new Date(`${endDate}T${endTime || '00:00'}`).toISOString() : null;
     const payload = {
+      id: isEdit ? current.id : crypto.randomUUID(),
       title: title.trim(),
       description: description || null,
       startAt,
@@ -83,27 +80,16 @@ export function EventDialog({
       allDay,
       location: location || null,
       color,
+      updatedAt: new Date().toISOString(),
     };
-    const result = isEdit
-      ? await updateEventAction({ id: current.id, ...payload })
-      : await createEventAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue(isEdit ? 'update' : 'create', payload);
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteEventAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

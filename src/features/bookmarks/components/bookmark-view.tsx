@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FileText, FolderGit2, FolderPlus, Globe, Play, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   BookmarkDialog,
   type BookmarkInitial,
@@ -27,6 +28,8 @@ import type {
 } from '@/features/bookmarks/services/bookmark-service';
 
 import { useMounted } from '@/hooks/use-mounted';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const typeConfig: Record<BookmarkTypeLiteral, { label: string; icon: LucideIcon }> = {
@@ -37,8 +40,8 @@ const typeConfig: Record<BookmarkTypeLiteral, { label: string; icon: LucideIcon 
 };
 
 export function BookmarkView({
-  bookmarks,
-  collections,
+  bookmarks: initialBookmarks,
+  collections: initialCollections,
   collection,
 }: {
   bookmarks: BookmarkItem[];
@@ -53,6 +56,29 @@ export function BookmarkView({
     { mode: 'create' } | { mode: 'edit'; bookmark: BookmarkItem } | null
   >(null);
   const [collectionDialog, setCollectionDialog] = useState(false);
+
+  const { rows: bookmarkRows, hydrated: bookmarksHydrated } = useLocalQuery<BookmarkItem>(
+    'bookmarks',
+    (all) => selectBookmarks(all, collection),
+    [collection]
+  );
+  const { rows: collectionRows, hydrated: collectionsHydrated } = useLocalQuery<CollectionItem>(
+    'collections',
+    (all) => selectCollections(all),
+    []
+  );
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('bookmarks', initialBookmarks);
+  }, [initialBookmarks]);
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('collections', initialCollections);
+  }, [initialCollections]);
+
+  const bookmarks = bookmarkRows ?? [];
+  const collections = collectionRows ?? [];
+  const hydrated = bookmarksHydrated && collectionsHydrated;
 
   function onCollectionChange(value: string) {
     const params = new URLSearchParams(searchParams);
@@ -82,6 +108,19 @@ export function BookmarkView({
           tags: '',
         }
     : null;
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Bookmarks" />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} className="h-36 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -203,4 +242,14 @@ function formatDate(iso: string) {
     day: 'numeric',
     year: 'numeric',
   });
+}
+
+function selectBookmarks(items: BookmarkItem[], collectionId: string | null): BookmarkItem[] {
+  let result = items;
+  if (collectionId) result = result.filter((b) => b.collectionId === collectionId);
+  return [...result].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+}
+
+function selectCollections(items: CollectionItem[]): CollectionItem[] {
+  return [...items].sort((a, b) => a.name.localeCompare(b.name));
 }

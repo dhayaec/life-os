@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -22,11 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  createJournalEntryAction,
-  deleteJournalEntryAction,
-  updateJournalEntryAction,
-} from '@/features/journal/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 import type { JournalMood } from '@/features/journal/services/journal-service';
 
 export type EntryInitial = {
@@ -54,18 +49,18 @@ export function EntryDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? '');
   const [content, setContent] = useState(initial?.content ?? '');
   const [mood, setMood] = useState<JournalMood>(initial?.mood ?? 'okay');
   const [entryDate, setEntryDate] = useState(initial ? toDateInputValue(initial.entryAt) : '');
   const [entryTime, setEntryTime] = useState(initial ? toTimeInputValue(initial.entryAt) : '');
+  const { enqueue } = useSyncMutation('journalEntries');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!content.trim()) {
       toast.error('Entry content is required');
@@ -78,26 +73,27 @@ export function EntryDialog({
       mood,
       entryAt,
     };
-    const result = isEdit
-      ? await updateJournalEntryAction({ id: current.id, ...payload })
-      : await createJournalEntryAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteJournalEntryAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

@@ -31,4 +31,7 @@ export type * from './models/FinanceTransaction';
 export type * from './models/Budget';
 export type * from './models/ShoppingItem';
 export type * from './models/Document';
+export type * from './models/SyncState';
+export type * from './models/SyncOp';
+export type * from './models/SyncTombstone';
 export type * from './commonInputTypes';

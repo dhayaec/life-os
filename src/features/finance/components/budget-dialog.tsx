@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
@@ -14,11 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  createBudgetAction,
-  deleteBudgetAction,
-  updateBudgetAction,
-} from '@/features/finance/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 
 export type BudgetInitial = {
   id: string | null;
@@ -36,16 +31,16 @@ export function BudgetDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
   const [category, setCategory] = useState(initial?.category ?? '');
   const [amount, setAmount] = useState(initial?.amount?.toString() ?? '');
   const [month, setMonth] = useState(initial?.month ?? '');
+  const { enqueue } = useSyncMutation('budgets');
 
   if (!initial) return null;
   const isEdit = initial.id !== null;
   const current = initial;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const parsed = Number(amount);
     if (!amount.trim() || Number.isNaN(parsed) || parsed <= 0) {
@@ -57,26 +52,27 @@ export function BudgetDialog({
       return;
     }
     const payload = { category: category.trim(), amount: parsed, month };
-    const result = isEdit
-      ? await updateBudgetAction({ id: current.id, ...payload })
-      : await createBudgetAction(payload);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    if (isEdit) {
+      void enqueue('update', {
+        id: current.id,
+        ...payload,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      void enqueue('create', {
+        id: crypto.randomUUID(),
+        ...payload,
+        spent: 0,
+        updatedAt: new Date().toISOString(),
+      });
     }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!current.id) return;
-    const result = await deleteBudgetAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    void enqueue('delete', { id: current.id, deletedAt: new Date().toISOString() });
     onClose();
-    router.refresh();
   }
 
   return (

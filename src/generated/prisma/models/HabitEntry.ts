@@ -29,6 +29,7 @@ export type HabitEntryMinAggregateOutputType = {
   date: Date | null;
   done: boolean | null;
   createdAt: Date | null;
+  updatedAt: Date | null;
 };
 
 export type HabitEntryMaxAggregateOutputType = {
@@ -37,6 +38,7 @@ export type HabitEntryMaxAggregateOutputType = {
   date: Date | null;
   done: boolean | null;
   createdAt: Date | null;
+  updatedAt: Date | null;
 };
 
 export type HabitEntryCountAggregateOutputType = {
@@ -45,6 +47,7 @@ export type HabitEntryCountAggregateOutputType = {
   date: number;
   done: number;
   createdAt: number;
+  updatedAt: number;
   _all: number;
 };
 
@@ -54,6 +57,7 @@ export type HabitEntryMinAggregateInputType = {
   date?: true;
   done?: true;
   createdAt?: true;
+  updatedAt?: true;
 };
 
 export type HabitEntryMaxAggregateInputType = {
@@ -62,6 +66,7 @@ export type HabitEntryMaxAggregateInputType = {
   date?: true;
   done?: true;
   createdAt?: true;
+  updatedAt?: true;
 };
 
 export type HabitEntryCountAggregateInputType = {
@@ -70,6 +75,7 @@ export type HabitEntryCountAggregateInputType = {
   date?: true;
   done?: true;
   createdAt?: true;
+  updatedAt?: true;
   _all?: true;
 };
 
@@ -153,6 +159,7 @@ export type HabitEntryGroupByOutputType = {
   date: Date;
   done: boolean;
   createdAt: Date;
+  updatedAt: Date;
   _count: HabitEntryCountAggregateOutputType | null;
   _min: HabitEntryMinAggregateOutputType | null;
   _max: HabitEntryMaxAggregateOutputType | null;
@@ -179,6 +186,7 @@ export type HabitEntryWhereInput = {
   date?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
   done?: Prisma.BoolFilter<'HabitEntry'> | boolean;
   createdAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
+  updatedAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
   habit?: Prisma.XOR<Prisma.HabitScalarRelationFilter, Prisma.HabitWhereInput>;
 };
 
@@ -188,6 +196,7 @@ export type HabitEntryOrderByWithRelationInput = {
   date?: Prisma.SortOrder;
   done?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  updatedAt?: Prisma.SortOrder;
   habit?: Prisma.HabitOrderByWithRelationInput;
 };
 
@@ -202,6 +211,7 @@ export type HabitEntryWhereUniqueInput = Prisma.AtLeast<
     date?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
     done?: Prisma.BoolFilter<'HabitEntry'> | boolean;
     createdAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
     habit?: Prisma.XOR<Prisma.HabitScalarRelationFilter, Prisma.HabitWhereInput>;
   },
   'id' | 'habitId_date'
@@ -213,6 +223,7 @@ export type HabitEntryOrderByWithAggregationInput = {
   date?: Prisma.SortOrder;
   done?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  updatedAt?: Prisma.SortOrder;
   _count?: Prisma.HabitEntryCountOrderByAggregateInput;
   _max?: Prisma.HabitEntryMaxOrderByAggregateInput;
   _min?: Prisma.HabitEntryMinOrderByAggregateInput;
@@ -231,6 +242,7 @@ export type HabitEntryScalarWhereWithAggregatesInput = {
   date?: Prisma.DateTimeWithAggregatesFilter<'HabitEntry'> | Date | string;
   done?: Prisma.BoolWithAggregatesFilter<'HabitEntry'> | boolean;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'HabitEntry'> | Date | string;
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<'HabitEntry'> | Date | string;
 };
 
 export type HabitEntryCreateInput = {
@@ -238,6 +250,7 @@ export type HabitEntryCreateInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
   habit: Prisma.HabitCreateNestedOneWithoutEntriesInput;
 };
 
@@ -247,6 +260,7 @@ export type HabitEntryUncheckedCreateInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
 };
 
 export type HabitEntryUpdateInput = {
@@ -254,6 +268,7 @@ export type HabitEntryUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   habit?: Prisma.HabitUpdateOneRequiredWithoutEntriesNestedInput;
 };
 
@@ -263,6 +278,7 @@ export type HabitEntryUncheckedUpdateInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntryCreateManyInput = {
@@ -271,6 +287,7 @@ export type HabitEntryCreateManyInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
 };
 
 export type HabitEntryUpdateManyMutationInput = {
@@ -278,6 +295,7 @@ export type HabitEntryUpdateManyMutationInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntryUncheckedUpdateManyInput = {
@@ -286,6 +304,7 @@ export type HabitEntryUncheckedUpdateManyInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntryListRelationFilter = {
@@ -309,6 +328,7 @@ export type HabitEntryCountOrderByAggregateInput = {
   date?: Prisma.SortOrder;
   done?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  updatedAt?: Prisma.SortOrder;
 };
 
 export type HabitEntryMaxOrderByAggregateInput = {
@@ -317,6 +337,7 @@ export type HabitEntryMaxOrderByAggregateInput = {
   date?: Prisma.SortOrder;
   done?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  updatedAt?: Prisma.SortOrder;
 };
 
 export type HabitEntryMinOrderByAggregateInput = {
@@ -325,6 +346,7 @@ export type HabitEntryMinOrderByAggregateInput = {
   date?: Prisma.SortOrder;
   done?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
+  updatedAt?: Prisma.SortOrder;
 };
 
 export type HabitEntryCreateNestedManyWithoutHabitInput = {
@@ -418,6 +440,7 @@ export type HabitEntryCreateWithoutHabitInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
 };
 
 export type HabitEntryUncheckedCreateWithoutHabitInput = {
@@ -425,6 +448,7 @@ export type HabitEntryUncheckedCreateWithoutHabitInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
 };
 
 export type HabitEntryCreateOrConnectWithoutHabitInput = {
@@ -477,6 +501,7 @@ export type HabitEntryScalarWhereInput = {
   date?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
   done?: Prisma.BoolFilter<'HabitEntry'> | boolean;
   createdAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
+  updatedAt?: Prisma.DateTimeFilter<'HabitEntry'> | Date | string;
 };
 
 export type HabitEntryCreateManyHabitInput = {
@@ -484,6 +509,7 @@ export type HabitEntryCreateManyHabitInput = {
   date: Date | string;
   done?: boolean;
   createdAt?: Date | string;
+  updatedAt?: Date | string;
 };
 
 export type HabitEntryUpdateWithoutHabitInput = {
@@ -491,6 +517,7 @@ export type HabitEntryUpdateWithoutHabitInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntryUncheckedUpdateWithoutHabitInput = {
@@ -498,6 +525,7 @@ export type HabitEntryUncheckedUpdateWithoutHabitInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntryUncheckedUpdateManyWithoutHabitInput = {
@@ -505,6 +533,7 @@ export type HabitEntryUncheckedUpdateManyWithoutHabitInput = {
   date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   done?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
 export type HabitEntrySelect<
@@ -516,6 +545,7 @@ export type HabitEntrySelect<
     date?: boolean;
     done?: boolean;
     createdAt?: boolean;
+    updatedAt?: boolean;
     habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['habitEntry']
@@ -530,6 +560,7 @@ export type HabitEntrySelectCreateManyAndReturn<
     date?: boolean;
     done?: boolean;
     createdAt?: boolean;
+    updatedAt?: boolean;
     habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['habitEntry']
@@ -544,6 +575,7 @@ export type HabitEntrySelectUpdateManyAndReturn<
     date?: boolean;
     done?: boolean;
     createdAt?: boolean;
+    updatedAt?: boolean;
     habit?: boolean | Prisma.HabitDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['habitEntry']
@@ -555,12 +587,13 @@ export type HabitEntrySelectScalar = {
   date?: boolean;
   done?: boolean;
   createdAt?: boolean;
+  updatedAt?: boolean;
 };
 
 export type HabitEntryOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'habitId' | 'date' | 'done' | 'createdAt',
+  'id' | 'habitId' | 'date' | 'done' | 'createdAt' | 'updatedAt',
   ExtArgs['result']['habitEntry']
 >;
 export type HabitEntryInclude<
@@ -593,6 +626,7 @@ export type $HabitEntryPayload<
       date: Date;
       done: boolean;
       createdAt: Date;
+      updatedAt: Date;
     },
     ExtArgs['result']['habitEntry']
   >;
@@ -1181,6 +1215,7 @@ export interface HabitEntryFieldRefs {
   readonly date: Prisma.FieldRef<'HabitEntry', 'DateTime'>;
   readonly done: Prisma.FieldRef<'HabitEntry', 'Boolean'>;
   readonly createdAt: Prisma.FieldRef<'HabitEntry', 'DateTime'>;
+  readonly updatedAt: Prisma.FieldRef<'HabitEntry', 'DateTime'>;
 }
 
 // Custom InputTypes

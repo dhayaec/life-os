@@ -414,6 +414,9 @@ export const ModelName = {
   Budget: 'Budget',
   ShoppingItem: 'ShoppingItem',
   Document: 'Document',
+  SyncState: 'SyncState',
+  SyncOp: 'SyncOp',
+  SyncTombstone: 'SyncTombstone',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -457,7 +460,10 @@ export type TypeMap<
       | 'financeTransaction'
       | 'budget'
       | 'shoppingItem'
-      | 'document';
+      | 'document'
+      | 'syncState'
+      | 'syncOp'
+      | 'syncTombstone';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -2245,6 +2251,229 @@ export type TypeMap<
         };
       };
     };
+    SyncState: {
+      payload: Prisma.$SyncStatePayload<ExtArgs>;
+      fields: Prisma.SyncStateFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.SyncStateFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.SyncStateFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        findFirst: {
+          args: Prisma.SyncStateFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.SyncStateFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        findMany: {
+          args: Prisma.SyncStateFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>[];
+        };
+        create: {
+          args: Prisma.SyncStateCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        createMany: {
+          args: Prisma.SyncStateCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.SyncStateCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>[];
+        };
+        delete: {
+          args: Prisma.SyncStateDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        update: {
+          args: Prisma.SyncStateUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        deleteMany: {
+          args: Prisma.SyncStateDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.SyncStateUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.SyncStateUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>[];
+        };
+        upsert: {
+          args: Prisma.SyncStateUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncStatePayload>;
+        };
+        aggregate: {
+          args: Prisma.SyncStateAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSyncState>;
+        };
+        groupBy: {
+          args: Prisma.SyncStateGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.SyncStateGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.SyncStateCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.SyncStateCountAggregateOutputType> | number;
+        };
+      };
+    };
+    SyncOp: {
+      payload: Prisma.$SyncOpPayload<ExtArgs>;
+      fields: Prisma.SyncOpFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.SyncOpFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.SyncOpFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        findFirst: {
+          args: Prisma.SyncOpFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.SyncOpFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        findMany: {
+          args: Prisma.SyncOpFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>[];
+        };
+        create: {
+          args: Prisma.SyncOpCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        createMany: {
+          args: Prisma.SyncOpCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.SyncOpCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>[];
+        };
+        delete: {
+          args: Prisma.SyncOpDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        update: {
+          args: Prisma.SyncOpUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        deleteMany: {
+          args: Prisma.SyncOpDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.SyncOpUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.SyncOpUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>[];
+        };
+        upsert: {
+          args: Prisma.SyncOpUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncOpPayload>;
+        };
+        aggregate: {
+          args: Prisma.SyncOpAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSyncOp>;
+        };
+        groupBy: {
+          args: Prisma.SyncOpGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.SyncOpGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.SyncOpCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.SyncOpCountAggregateOutputType> | number;
+        };
+      };
+    };
+    SyncTombstone: {
+      payload: Prisma.$SyncTombstonePayload<ExtArgs>;
+      fields: Prisma.SyncTombstoneFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.SyncTombstoneFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.SyncTombstoneFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        findFirst: {
+          args: Prisma.SyncTombstoneFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.SyncTombstoneFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        findMany: {
+          args: Prisma.SyncTombstoneFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>[];
+        };
+        create: {
+          args: Prisma.SyncTombstoneCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        createMany: {
+          args: Prisma.SyncTombstoneCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.SyncTombstoneCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>[];
+        };
+        delete: {
+          args: Prisma.SyncTombstoneDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        update: {
+          args: Prisma.SyncTombstoneUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        deleteMany: {
+          args: Prisma.SyncTombstoneDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.SyncTombstoneUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.SyncTombstoneUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>[];
+        };
+        upsert: {
+          args: Prisma.SyncTombstoneUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SyncTombstonePayload>;
+        };
+        aggregate: {
+          args: Prisma.SyncTombstoneAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSyncTombstone>;
+        };
+        groupBy: {
+          args: Prisma.SyncTombstoneGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.SyncTombstoneGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.SyncTombstoneCountArgs<ExtArgs>;
+          result:
+            runtime.Types.Utils.Optional<Prisma.SyncTombstoneCountAggregateOutputType> | number;
+        };
+      };
+    };
   };
 } & {
   other: {
@@ -2367,6 +2596,7 @@ export const NotificationScalarFieldEnum = {
   body: 'body',
   read: 'read',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
 } as const;
 
 export type NotificationScalarFieldEnum =
@@ -2494,6 +2724,7 @@ export const HabitEntryScalarFieldEnum = {
   date: 'date',
   done: 'done',
   createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
 } as const;
 
 export type HabitEntryScalarFieldEnum =
@@ -2601,12 +2832,53 @@ export const DocumentScalarFieldEnum = {
 export type DocumentScalarFieldEnum =
   (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum];
 
+export const SyncStateScalarFieldEnum = {
+  userId: 'userId',
+  watermark: 'watermark',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type SyncStateScalarFieldEnum =
+  (typeof SyncStateScalarFieldEnum)[keyof typeof SyncStateScalarFieldEnum];
+
+export const SyncOpScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  opId: 'opId',
+  domain: 'domain',
+  opType: 'opType',
+  result: 'result',
+  createdAt: 'createdAt',
+} as const;
+
+export type SyncOpScalarFieldEnum =
+  (typeof SyncOpScalarFieldEnum)[keyof typeof SyncOpScalarFieldEnum];
+
+export const SyncTombstoneScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  domain: 'domain',
+  recordId: 'recordId',
+  deletedAt: 'deletedAt',
+} as const;
+
+export type SyncTombstoneScalarFieldEnum =
+  (typeof SyncTombstoneScalarFieldEnum)[keyof typeof SyncTombstoneScalarFieldEnum];
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
 } as const;
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const;
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
 
 export const QueryMode = {
   default: 'default',
@@ -2621,6 +2893,14 @@ export const NullsOrder = {
 } as const;
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull,
+} as const;
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 
 /**
  * Field references
@@ -2776,6 +3056,16 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 
 /**
  * Reference to a field of type 'Float'
@@ -2968,6 +3258,9 @@ export type GlobalOmitConfig = {
   budget?: Prisma.BudgetOmit;
   shoppingItem?: Prisma.ShoppingItemOmit;
   document?: Prisma.DocumentOmit;
+  syncState?: Prisma.SyncStateOmit;
+  syncOp?: Prisma.SyncOpOmit;
+  syncTombstone?: Prisma.SyncTombstoneOmit;
 };
 
 /* Types for Logging */

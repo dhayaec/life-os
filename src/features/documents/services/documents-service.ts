@@ -15,6 +15,7 @@ export type DocumentItem = {
   isFavorite: boolean;
   trashedAt: string | null;
   createdAt: string;
+  updatedAt: string;
   downloadUrl: string;
 };
 
@@ -26,7 +27,7 @@ export type UploadedDocumentData = {
   pathname: string;
 };
 
-function serialize(row: DocumentRecord) {
+export function serializeDocument(row: DocumentRecord): DocumentItem {
   return {
     id: row.id,
     name: row.name,
@@ -37,6 +38,8 @@ function serialize(row: DocumentRecord) {
     isFavorite: row.isFavorite,
     trashedAt: row.trashedAt ? row.trashedAt.toISOString() : null,
     createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+    downloadUrl: getDownloadUrl(row.pathname),
   };
 }
 
@@ -53,10 +56,7 @@ export async function getDocuments(
     take: 200,
     orderBy: [{ isFavorite: 'desc' }, { createdAt: 'desc' }],
   });
-  return rows.map((row) => ({
-    ...serialize(row),
-    downloadUrl: getDownloadUrl(row.pathname),
-  }));
+  return rows.map(serializeDocument);
 }
 
 export async function createDocument(userId: string, input: UploadedDocumentData): Promise<void> {
@@ -72,26 +72,29 @@ export async function createDocument(userId: string, input: UploadedDocumentData
   });
 }
 
-export async function toggleDocumentFavorite(userId: string, id: string): Promise<void> {
+export async function toggleDocumentFavorite(userId: string, id: string): Promise<DocumentItem> {
   const row = await db.document.findUniqueOrThrow({ where: { id, userId } });
-  await db.document.update({
+  const updated = await db.document.update({
     where: { id, userId },
     data: { isFavorite: !row.isFavorite },
   });
+  return serializeDocument(updated);
 }
 
-export async function trashDocument(userId: string, id: string): Promise<void> {
-  await db.document.update({
+export async function trashDocument(userId: string, id: string): Promise<DocumentItem> {
+  const updated = await db.document.update({
     where: { id, userId },
     data: { trashedAt: new Date() },
   });
+  return serializeDocument(updated);
 }
 
-export async function restoreDocument(userId: string, id: string): Promise<void> {
-  await db.document.update({
+export async function restoreDocument(userId: string, id: string): Promise<DocumentItem> {
+  const updated = await db.document.update({
     where: { id, userId },
     data: { trashedAt: null },
   });
+  return serializeDocument(updated);
 }
 
 export async function deleteDocument(userId: string, id: string): Promise<void> {

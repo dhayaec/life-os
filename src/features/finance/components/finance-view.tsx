@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { formatCurrency } from '@/lib/format';
 import { useLocale } from '@/providers/locale-provider';
 import { BudgetDialog, type BudgetInitial } from '@/features/finance/components/budget-dialog';
@@ -20,7 +21,9 @@ import type {
   TransactionItem,
 } from '@/features/finance/services/finance-service';
 
+import { useLocalQuery } from '@/hooks/use-local-query';
 import { useMounted } from '@/hooks/use-mounted';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 const CATEGORY_COLORS = [
@@ -44,7 +47,6 @@ const SpendingChart = dynamic(
 
 export function FinanceView({
   transactions,
-  summary,
   budgets,
   month,
 }: {
@@ -65,6 +67,32 @@ export function FinanceView({
   const [budgetDialog, setBudgetDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; budget: BudgetItem } | null
   >(null);
+
+  const { rows: txRows, hydrated: txHydrated } = useLocalQuery<TransactionItem>(
+    'transactions',
+    (all) => selectTransactions(all, month),
+    [month]
+  );
+  const { rows: budgetRows, hydrated: budgetHydrated } = useLocalQuery<BudgetItem>(
+    'budgets',
+    (all) => selectBudgets(all, month),
+    [month]
+  );
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('transactions', transactions);
+  }, [transactions]);
+  useEffect(() => {
+    void syncEngine.hydrateSeed('budgets', budgets);
+  }, [budgets]);
+
+  const localTransactions = txRows ?? [];
+  const localBudgets = budgetRows ?? [];
+  const localSummary = summarizeLocal(localTransactions);
+  const budgetItems = localBudgets.map((budget) => ({
+    ...budget,
+    spent: localSummary.byCategory.find((item) => item.category === budget.category)?.amount ?? 0,
+  }));
 
   function goToMonth(offset: number) {
     const parts = month.split('-').map(Number);
@@ -87,7 +115,7 @@ export function FinanceView({
   }
 
   const categoryColors = new Map<string, string>();
-  for (const item of summary.byCategory) {
+  for (const item of localSummary.byCategory) {
     if (!categoryColors.has(item.category)) {
       categoryColors.set(
         item.category,
@@ -97,7 +125,7 @@ export function FinanceView({
   }
   const colorFor = (category: string) => categoryColors.get(category) ?? '#64748b';
 
-  const pieData = summary.byCategory.map((item) => ({
+  const pieData = localSummary.byCategory.map((item) => ({
     name: item.category,
     value: item.amount,
     fill: colorFor(item.category),
@@ -134,6 +162,24 @@ export function FinanceView({
       : { id: null, category: '', amount: null, month }
     : null;
 
+  if (!txHydrated || !budgetHydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Finance" />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-24 w-full" />
+          ))}
+        </div>
+        <div className="flex flex-col gap-2">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <PageHeader title={mounted ? monthLabel(month) : ''}>
@@ -162,25 +208,25 @@ export function FinanceView({
       </PageHeader>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <SummaryCard label="Income" value={summary.income} className="text-emerald-600" />
-        <SummaryCard label="Expenses" value={summary.expense} className="text-red-600" />
+        <SummaryCard label="Income" value={localSummary.income} className="text-emerald-600" />
+        <SummaryCard label="Expenses" value={localSummary.expense} className="text-red-600" />
         <SummaryCard
           label="Balance"
-          value={summary.balance}
-          className={summary.balance >= 0 ? '' : 'text-red-600'}
+          value={localSummary.balance}
+          className={localSummary.balance >= 0 ? '' : 'text-red-600'}
         />
       </div>
 
-      {summary.byCategory.length > 0 || budgets.length > 0 ? (
+      {localSummary.byCategory.length > 0 || budgetItems.length > 0 ? (
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-          {summary.byCategory.length > 0 ? (
+          {localSummary.byCategory.length > 0 ? (
             <div className="rounded-md border p-4">
               <h2 className="text-sm font-semibold">Spending by category</h2>
               <div className="h-52">
                 <SpendingChart data={pieData} locale={locale} />
               </div>
               <div className="mt-2 flex flex-col gap-1">
-                {summary.byCategory.map((item) => (
+                {localSummary.byCategory.map((item) => (
                   <div key={item.category} className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2">
                       <span
@@ -196,7 +242,7 @@ export function FinanceView({
             </div>
           ) : null}
           <BudgetSection
-            budgets={budgets}
+            budgets={budgetItems}
             onEdit={(budget) => setBudgetDialog({ mode: 'edit', budget })}
             onCreate={() => setBudgetDialog({ mode: 'create' })}
           />
@@ -205,11 +251,11 @@ export function FinanceView({
 
       <div className="flex flex-col gap-2">
         <h2 className="text-sm font-semibold">Transactions</h2>
-        {transactions.length === 0 ? (
+        {localTransactions.length === 0 ? (
           <p className="text-muted-foreground text-sm">No transactions this month.</p>
         ) : (
           <div className="flex flex-col">
-            {transactions.map((tx) => (
+            {localTransactions.map((tx) => (
               <button
                 key={tx.id}
                 type="button"
@@ -330,6 +376,41 @@ function BudgetSection({
       )}
     </div>
   );
+}
+
+function selectTransactions(all: TransactionItem[], month: string): TransactionItem[] {
+  const [year, m] = month.split('-').map(Number);
+  const prefix = `${year}-${String(m).padStart(2, '0')}`;
+  return all
+    .filter((tx) => tx.date.startsWith(prefix))
+    .sort((a, b) => {
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      return a.updatedAt < b.updatedAt ? 1 : -1;
+    });
+}
+
+function selectBudgets(all: BudgetItem[], month: string): BudgetItem[] {
+  return all
+    .filter((budget) => budget.month === month)
+    .sort((a, b) => a.category.localeCompare(b.category));
+}
+
+function summarizeLocal(transactions: TransactionItem[]): MonthlySummary {
+  let income = 0;
+  let expense = 0;
+  const categoryTotals = new Map<string, number>();
+  for (const tx of transactions) {
+    if (tx.type === 'income') {
+      income += tx.amount;
+    } else {
+      expense += tx.amount;
+      categoryTotals.set(tx.category, (categoryTotals.get(tx.category) ?? 0) + tx.amount);
+    }
+  }
+  const byCategory = [...categoryTotals.entries()]
+    .map(([category, amount]) => ({ category, amount }))
+    .sort((a, b) => b.amount - a.amount);
+  return { income, expense, balance: income - expense, byCategory };
 }
 
 function monthLabel(month: string) {

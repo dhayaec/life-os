@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 import { requireUser } from '@/server/session';
-import { getNotesPage, noteExcerpt } from '@/features/notes/services/note-service';
-import { NoteList, type NoteListItem } from '@/features/notes/components/note-list';
+import { getNotesPage, serializeNote } from '@/features/notes/services/note-service';
+import { NoteList } from '@/features/notes/components/note-list';
 import { NewNoteButton } from '@/features/notes/components/new-note-button';
 import { NotesSearch } from '@/features/notes/components/notes-search';
 
@@ -16,21 +16,11 @@ export default async function NotesPage({
   const user = await requireUser();
   const { folder, favorite, search } = await searchParams;
 
-  const { items, nextCursor } = await getNotesPage(user.id, {
+  const { items } = await getNotesPage(user.id, {
     ...(folder ? { folderId: folder } : {}),
     ...(favorite ? { favorite: favorite === '1' } : {}),
     ...(search ? { search } : {}),
   });
-
-  const noteItems: NoteListItem[] = items.map((note) => ({
-    id: note.id,
-    title: note.title,
-    content: noteExcerpt(note.content),
-    isFavorite: note.isFavorite,
-    trashedAt: note.trashedAt?.toISOString() ?? null,
-    updatedAt: note.updatedAt.toISOString(),
-    tags: note.tags,
-  }));
 
   return (
     <>
@@ -38,11 +28,7 @@ export default async function NotesPage({
         <NotesSearch />
         <NewNoteButton />
       </div>
-      <NoteList
-        key={[folder ?? '', favorite ?? '', search ?? ''].join('|')}
-        notes={noteItems}
-        initialNextCursor={nextCursor}
-      />
+      <NoteList notes={items.map(serializeNote)} />
     </>
   );
 }

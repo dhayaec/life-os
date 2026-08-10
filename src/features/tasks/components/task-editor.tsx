@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from '@/components/ui/toast';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { deleteTaskAction, updateTaskAction } from '@/features/tasks/actions';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
 import type { TaskItem, TaskPriority, TaskStatus } from '@/features/tasks/services/task-service';
 
 const statuses: { value: TaskStatus; label: string }[] = [
@@ -46,7 +44,7 @@ export function TaskEditor({
   open: boolean;
   onClose: () => void;
 }) {
-  const router = useRouter();
+  const { enqueue } = useSyncMutation('tasks');
   const [title, setTitle] = useState(task?.title ?? '');
   const [description, setDescription] = useState(task?.description ?? '');
   const [status, setStatus] = useState<TaskStatus>(task?.status ?? 'todo');
@@ -59,9 +57,9 @@ export function TaskEditor({
   if (!task) return null;
   const current = task;
 
-  async function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const result = await updateTaskAction({
+    void enqueue('update', {
       id: current.id,
       title: title.trim() || current.title,
       description: description || null,
@@ -72,23 +70,17 @@ export function TaskEditor({
         .split(',')
         .map((name) => name.trim())
         .filter(Boolean),
+      updatedAt: new Date().toISOString(),
     });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
     onClose();
-    router.refresh();
   }
 
-  async function handleDelete() {
-    const result = await deleteTaskAction({ id: current.id });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+  function handleDelete() {
+    void enqueue('delete', {
+      id: current.id,
+      deletedAt: new Date().toISOString(),
+    });
     onClose();
-    router.refresh();
   }
 
   return (

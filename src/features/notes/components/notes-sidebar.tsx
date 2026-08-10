@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ChevronDown,
   ChevronRight,
@@ -12,44 +12,54 @@ import {
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from '@/components/ui/toast';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { createFolderAction } from '@/features/notes/actions';
-import type { FolderNode } from '@/features/notes/services/note-service';
+import type { FolderNode, SyncFolder } from '@/features/notes/services/note-service';
+
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 
 type NotesSidebarProps = {
-  folders: FolderNode[];
+  initialFolders: SyncFolder[];
 };
 
-export function NotesSidebar({ folders }: NotesSidebarProps) {
+export function NotesSidebar({ initialFolders }: NotesSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const activeFolder = searchParams.get('folder');
   const [creating, setCreating] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
+  const { rows } = useLocalQuery<SyncFolder>('folders');
+  const { enqueue } = useSyncMutation('folders');
+  useEffect(() => {
+    void syncEngine.hydrateSeed('folders', initialFolders);
+  }, [initialFolders]);
+
+  const folders = buildFolderTree(rows ?? []);
   const isTrash = pathname === '/notes/trash';
 
   function toggleFolder(id: string) {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   }
 
-  async function handleCreateFolder(event: React.FormEvent) {
+  function handleCreateFolder(event: React.FormEvent) {
     event.preventDefault();
-    if (!newFolderName.trim()) return;
-    const result = await createFolderAction({ name: newFolderName.trim() });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
+    const name = newFolderName.trim();
+    if (!name) return;
+    void enqueue('create', {
+      id: crypto.randomUUID(),
+      name,
+      parentId: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
     setNewFolderName('');
     setCreating(false);
-    router.refresh();
   }
 
   async function handleCreateNote() {
@@ -178,4 +188,22 @@ export function NotesSidebar({ folders }: NotesSidebarProps) {
       </ul>
     </nav>
   );
+}
+
+function buildFolderTree(folders: SyncFolder[]): FolderNode[] {
+  const sorted = [...folders].sort((a, b) => a.name.localeCompare(b.name));
+  const nodes = new Map<string, FolderNode>();
+  const roots: FolderNode[] = [];
+
+  for (const folder of sorted) {
+    nodes.set(folder.id, { id: folder.id, name: folder.name, children: [] });
+  }
+  for (const folder of sorted) {
+    const node = nodes.get(folder.id);
+    if (!node) continue;
+    const parent = folder.parentId ? nodes.get(folder.parentId) : undefined;
+    if (parent) parent.children.push(node);
+    else roots.push(node);
+  }
+  return roots;
 }

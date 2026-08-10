@@ -164,3 +164,18 @@ export type ShoppingItem = Prisma.ShoppingItemModel;
  *
  */
 export type Document = Prisma.DocumentModel;
+/**
+ * Model SyncState
+ *
+ */
+export type SyncState = Prisma.SyncStateModel;
+/**
+ * Model SyncOp
+ *
+ */
+export type SyncOp = Prisma.SyncOpModel;
+/**
+ * Model SyncTombstone
+ *
+ */
+export type SyncTombstone = Prisma.SyncTombstoneModel;

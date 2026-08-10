@@ -3,13 +3,41 @@ import 'server-only';
 import { db } from '@/server/db';
 
 export type UserSettingsData = {
+  id: string;
   name: string;
   email: string;
   theme: string;
   timezone: string;
   locale: string;
   emailNotifications: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
+
+export function serializeSettings(
+  user: { name: string; email: string },
+  settings: {
+    id: string;
+    theme: string;
+    timezone: string;
+    locale: string;
+    emailNotifications: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+): UserSettingsData {
+  return {
+    id: settings.id,
+    name: user.name,
+    email: user.email,
+    theme: settings.theme,
+    timezone: settings.timezone,
+    locale: settings.locale,
+    emailNotifications: settings.emailNotifications,
+    createdAt: settings.createdAt.toISOString(),
+    updatedAt: settings.updatedAt.toISOString(),
+  };
+}
 
 export async function getSettings(userId: string): Promise<UserSettingsData> {
   const [user, settings] = await Promise.all([
@@ -24,14 +52,7 @@ export async function getSettings(userId: string): Promise<UserSettingsData> {
     }),
   ]);
 
-  return {
-    name: user.name,
-    email: user.email,
-    theme: settings.theme,
-    timezone: settings.timezone,
-    locale: settings.locale,
-    emailNotifications: settings.emailNotifications,
-  };
+  return serializeSettings(user, settings);
 }
 
 export async function getLocale(userId: string): Promise<string> {
@@ -52,7 +73,7 @@ export async function updateSettings(
     emailNotifications: boolean;
   }
 ): Promise<UserSettingsData> {
-  await Promise.all([
+  const [, settings] = await Promise.all([
     db.user.update({ where: { id: userId }, data: { name: input.name } }),
     db.userSettings.upsert({
       where: { userId },
@@ -77,12 +98,5 @@ export async function updateSettings(
     select: { name: true, email: true },
   });
 
-  return {
-    name: user.name,
-    email: user.email,
-    theme: input.theme,
-    timezone: input.timezone,
-    locale: input.locale,
-    emailNotifications: input.emailNotifications,
-  };
+  return serializeSettings(user, settings);
 }

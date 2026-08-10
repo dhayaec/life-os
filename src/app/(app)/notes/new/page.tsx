@@ -7,5 +7,5 @@ export const metadata: Metadata = { title: 'New Note' };
 
 export default async function NewNotePage() {
   await requireUser();
-  return <NoteEditor id="new" title="" content="" isFavorite={false} trashedAt={null} tags={[]} />;
+  return <NoteEditor id="new" note={null} />;
 }

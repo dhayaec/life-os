@@ -1,19 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { toast } from '@/components/ui/toast';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { setHabitEntryAction } from '@/features/habits/actions';
+import { Skeleton } from '@/components/ui/skeleton';
 import { HabitFormDialog, type HabitInitial } from '@/features/habits/components/habit-form-dialog';
 import type { HabitEntryItem, HabitItem } from '@/features/habits/services/habit-service';
 
 import { useMounted } from '@/hooks/use-mounted';
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
 export function HabitView({
@@ -28,11 +29,20 @@ export function HabitView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [habits, setHabits] = useSyncedState(initialHabits);
   const [pending, setPending] = useState<string | null>(null);
   const [dialog, setDialog] = useState<
     { mode: 'create' } | { mode: 'edit'; habit: HabitItem } | null
   >(null);
+
+  const { rows, hydrated } = useLocalQuery<HabitItem>('habits', (all) =>
+    [...all].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  );
+  const { enqueue } = useSyncMutation('habits');
+  const habits = rows ?? [];
+
+  useEffect(() => {
+    void syncEngine.hydrateSeed('habits', initialHabits);
+  }, [initialHabits]);
 
   const parts = month.split('-').map(Number);
   const year = parts[0] ?? new Date().getFullYear();
@@ -41,6 +51,12 @@ export function HabitView({
   const daysInMonth = new Date(year, month0 + 1, 0).getDate();
   const today = new Date();
   const todayKey = toKey(today);
+  const title = mounted
+    ? new Date(year, month0, 1).toLocaleDateString(undefined, {
+        month: 'long',
+        year: 'numeric',
+      })
+    : '';
 
   function goToMonth(offset: number) {
     const target = new Date(year, month0 + offset, 1);
@@ -52,27 +68,18 @@ export function HabitView({
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  async function toggle(habitId: string, date: string, done: boolean) {
+  function toggle(habitId: string, date: string, done: boolean) {
     const lock = `${habitId}:${date}`;
     if (pending === lock) return;
-    if (!habits.some((h) => h.id === habitId)) return;
+    const habit = habits.find((h) => h.id === habitId);
+    if (!habit) return;
     const next = !done;
     setPending(lock);
-    setHabits((prev) =>
-      prev.map((h) => (h.id === habitId ? { ...h, entries: applyEntry(h.entries, date, next) } : h))
-    );
-    const result = await setHabitEntryAction({ habitId, date, done: next });
-    setPending(null);
-    if (!result.ok) {
-      setHabits((prev) =>
-        prev.map((h) =>
-          h.id === habitId ? { ...h, entries: applyEntry(h.entries, date, done) } : h
-        )
-      );
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', {
+      id: habitId,
+      entries: applyEntry(habit.entries, date, next),
+      updatedAt: new Date().toISOString(),
+    }).finally(() => setPending(null));
   }
 
   const days: { key: string; day: number }[] = [];
@@ -89,18 +96,22 @@ export function HabitView({
       : { id: null, name: '', frequency: 'daily' }
     : null;
 
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-3">
+        <PageHeader title={title} />
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      <PageHeader
-        title={
-          mounted
-            ? new Date(year, month0, 1).toLocaleDateString(undefined, {
-                month: 'long',
-                year: 'numeric',
-              })
-            : ''
-        }
-      >
+      <PageHeader title={title}>
         <Button variant="outline" size="sm" onClick={() => goToMonth(0)}>
           Today
         </Button>
@@ -218,7 +229,9 @@ export function HabitView({
 }
 
 function applyEntry(entries: HabitEntryItem[], date: string, done: boolean): HabitEntryItem[] {
-  if (!entries.some((e) => e.date === date)) return [...entries, { date, done }];
+  if (!entries.some((e) => e.date === date)) {
+    return [...entries, { date, done, updatedAt: new Date().toISOString() }];
+  }
   return entries.map((e) => (e.date === date ? { ...e, done } : e));
 }
 

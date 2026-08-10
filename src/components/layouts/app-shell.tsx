@@ -1,5 +1,7 @@
 import { CommandMenu } from '@/components/common/command-menu';
+import { OfflineBanner } from '@/components/common/offline-banner';
 import { RouteLoadingBar } from '@/components/common/route-loading-bar';
+import { SyncBootstrap } from '@/components/common/sync-bootstrap';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { LocaleProvider } from '@/providers/locale-provider';
 import { RouteLoaderProvider } from '@/providers/route-loader-provider';
@@ -20,6 +22,8 @@ export function AppShell({
     <LocaleProvider locale={locale}>
       <RouteLoaderProvider>
         <RouteLoadingBar />
+        <SyncBootstrap />
+        <OfflineBanner />
         <TooltipProvider delayDuration={200}>
           <a
             href="#main"

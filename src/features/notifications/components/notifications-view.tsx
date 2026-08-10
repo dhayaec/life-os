@@ -1,81 +1,64 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { CheckCheck, Trash2 } from 'lucide-react';
-import { toast } from '@/components/ui/toast';
 
 import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
-import {
-  deleteNotificationAction,
-  markAllNotificationsReadAction,
-  markNotificationReadAction,
-} from '@/features/notifications/actions';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { NotificationItem } from '@/features/notifications/services/notifications-service';
 
 import { useMounted } from '@/hooks/use-mounted';
-import { useSyncedState } from '@/hooks/use-synced-state';
+import { useLocalQuery } from '@/hooks/use-local-query';
+import { useSyncMutation } from '@/hooks/use-sync-mutation';
+import { syncEngine } from '@/lib/sync/engine';
 import { useRouteLoadedSignal } from '@/providers/route-loader-provider';
 
-export function NotificationsView({
-  items: initialItems,
-  unread: initialUnread,
-}: {
-  items: NotificationItem[];
-  unread: number;
-}) {
+export function NotificationsView({ items: initialItems }: { items: NotificationItem[] }) {
   useRouteLoadedSignal();
-  const router = useRouter();
-  const [items, setItems] = useSyncedState(initialItems);
-  const [unread, setUnread] = useSyncedState(initialUnread);
   const mounted = useMounted();
+  const { rows, hydrated } = useLocalQuery<NotificationItem>('notifications', (all) =>
+    [...all].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  );
+  const { enqueue } = useSyncMutation('notifications');
+  const items = rows ?? [];
+  const unread = items.filter((item) => !item.read).length;
 
-  async function markAll() {
+  useEffect(() => {
+    void syncEngine.hydrateSeed('notifications', initialItems);
+  }, [initialItems]);
+
+  function markAll() {
     if (unread === 0) return;
-    const unreadIds = new Set(items.filter((item) => !item.read).map((item) => item.id));
-    const unreadSnapshot = unread;
-    setItems((prev) => prev.map((item) => ({ ...item, read: true })));
-    setUnread(0);
-    const result = await markAllNotificationsReadAction();
-    if (!result.ok) {
-      setItems((prev) =>
-        prev.map((item) => (unreadIds.has(item.id) ? { ...item, read: false } : item))
-      );
-      setUnread(unreadSnapshot);
-      toast.error(result.error);
-      return;
+    const now = new Date().toISOString();
+    for (const item of items) {
+      if (!item.read) {
+        void enqueue('update', { id: item.id, read: true, updatedAt: now });
+      }
     }
-    router.refresh();
   }
 
-  async function markOne(item: NotificationItem) {
+  function markOne(item: NotificationItem) {
     if (item.read) return;
-    const snapshot = item;
-    setItems((prev) => prev.map((n) => (n.id === item.id ? { ...n, read: true } : n)));
-    setUnread((prev) => Math.max(0, prev - 1));
-    const result = await markNotificationReadAction({ id: item.id });
-    if (!result.ok) {
-      setItems((prev) => prev.map((n) => (n.id === item.id ? snapshot : n)));
-      setUnread((prev) => prev + 1);
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('update', { id: item.id, read: true, updatedAt: new Date().toISOString() });
   }
 
-  async function remove(item: NotificationItem) {
+  function remove(item: NotificationItem) {
     if (!items.some((n) => n.id === item.id)) return;
-    const wasUnread = !item.read;
-    setItems((prev) => prev.filter((n) => n.id !== item.id));
-    if (wasUnread) setUnread((prev) => Math.max(0, prev - 1));
-    const result = await deleteNotificationAction({ id: item.id });
-    if (!result.ok) {
-      setItems((prev) => [...prev, item]);
-      if (wasUnread) setUnread((prev) => prev + 1);
-      toast.error(result.error);
-      return;
-    }
-    router.refresh();
+    void enqueue('delete', { id: item.id, deletedAt: new Date().toISOString() });
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col gap-4">
+        <PageHeader title="Notifications" />
+        <div className="flex flex-col gap-1">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (

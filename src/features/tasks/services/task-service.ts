@@ -25,7 +25,7 @@ type TaskWithLabels = Prisma.TaskGetPayload<{
   include: { labels: { include: { label: true } } };
 }>;
 
-function serializeTask(task: TaskWithLabels): TaskItem {
+export function serializeTask(task: TaskWithLabels): TaskItem {
   return {
     id: task.id,
     title: task.title,
@@ -112,16 +112,21 @@ export type TaskUpdateInput = {
   labelNames?: string[] | undefined;
 };
 
-async function setLabels(userId: string, taskId: string, labelNames: string[]) {
-  await db.taskLabel.deleteMany({ where: { taskId } });
+export async function setLabels(
+  client: Prisma.TransactionClient,
+  userId: string,
+  taskId: string,
+  labelNames: string[]
+) {
+  await client.taskLabel.deleteMany({ where: { taskId } });
 
   for (const name of labelNames) {
-    const label = await db.label.upsert({
+    const label = await client.label.upsert({
       where: { userId_name: { userId, name } },
       update: {},
       create: { userId, name },
     });
-    await db.taskLabel.upsert({
+    await client.taskLabel.upsert({
       where: { taskId_labelId: { taskId, labelId: label.id } },
       update: {},
       create: { taskId, labelId: label.id },
@@ -143,7 +148,7 @@ export async function createTask(userId: string, input: TaskInput) {
   });
 
   if (input.labelNames?.length) {
-    await setLabels(userId, task.id, input.labelNames);
+    await setLabels(db, userId, task.id, input.labelNames);
   }
 
   return getTask(userId, task.id);
@@ -171,7 +176,7 @@ export async function updateTask(userId: string, id: string, input: TaskUpdateIn
   }
 
   if (input.labelNames !== undefined) {
-    await setLabels(userId, id, input.labelNames);
+    await setLabels(db, userId, id, input.labelNames);
   }
 
   return getTask(userId, id);

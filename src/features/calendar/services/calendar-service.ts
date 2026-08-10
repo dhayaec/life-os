@@ -12,11 +12,12 @@ export type CalendarEventItem = {
   allDay: boolean;
   location: string | null;
   color: string;
+  updatedAt: string;
 };
 
 type CalendarEventRow = CalendarEvent;
 
-function serializeEvent(event: CalendarEventRow): CalendarEventItem {
+export function serializeEvent(event: CalendarEventRow): CalendarEventItem {
   return {
     id: event.id,
     title: event.title,
@@ -26,6 +27,7 @@ function serializeEvent(event: CalendarEventRow): CalendarEventItem {
     allDay: event.allDay,
     location: event.location,
     color: event.color,
+    updatedAt: event.updatedAt.toISOString(),
   };
 }
 
