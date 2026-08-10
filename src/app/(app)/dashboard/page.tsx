@@ -207,10 +207,10 @@ function FinanceCard({
           <Stat label="Income" value={currency(income, locale)} className="text-emerald-600" />
           <Stat label="Expenses" value={currency(expense, locale)} className="text-red-600" />
         </div>
-        <div className="min-w-0 text-right">
+        <div className="min-w-0 overflow-hidden text-right">
           <div className="text-muted-foreground text-xs font-medium uppercase">Balance</div>
           <div
-            className={`${valueSize(currency(balance, locale))} whitespace-nowrap font-semibold ${
+            className={`${valueSize(currency(balance, locale))} truncate font-semibold ${
               balance < 0 ? 'text-red-600' : ''
             }`}
           >
@@ -394,7 +394,7 @@ function StatCard({
   bg: string;
 }) {
   return (
-    <div className="rounded-xl border bg-card p-4 shadow-sm">
+    <div className="overflow-hidden rounded-xl border bg-card p-4 shadow-sm">
       <div className="flex items-center gap-3">
         <div
           className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${bg} ${color}`}
@@ -403,7 +403,7 @@ function StatCard({
         </div>
         <div className="min-w-0">
           <p className="text-muted-foreground text-sm">{label}</p>
-          <p className={`${valueSize(value)} whitespace-nowrap font-semibold`}>{value}</p>
+          <p className={`${valueSize(value)} truncate font-semibold`}>{value}</p>
         </div>
       </div>
     </div>
@@ -412,10 +412,11 @@ function StatCard({
 
 /** Shrink the value font so long strings (e.g. large currency) fit the card. */
 function valueSize(value: string) {
-  if (value.length <= 10) return 'text-2xl';
-  if (value.length <= 14) return 'text-xl';
-  if (value.length <= 18) return 'text-lg';
-  return 'text-base';
+  if (value.length <= 5) return 'text-2xl';
+  if (value.length <= 9) return 'text-xl';
+  if (value.length <= 13) return 'text-lg';
+  if (value.length <= 17) return 'text-base';
+  return 'text-sm';
 }
 
 function isOverdue(dueAt: string | null): boolean {
