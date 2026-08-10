@@ -38,8 +38,15 @@ export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
 
   const { pathname } = request.nextUrl;
-  const isPublic = pathname === '/' || AUTH_ROUTES.some((route) => pathname.startsWith(route));
   const sessionCookie = getSessionCookie(request);
+
+  // The root landing page was removed — `/` now routes to the dashboard when
+  // signed in and the login page otherwise.
+  if (pathname === '/') {
+    return NextResponse.redirect(new URL(sessionCookie ? '/dashboard' : '/login', request.url));
+  }
+
+  const isPublic = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
   if (!sessionCookie && !isPublic) {
     const loginUrl = new URL('/login', request.url);
