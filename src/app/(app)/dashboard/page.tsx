@@ -207,9 +207,13 @@ function FinanceCard({
           <Stat label="Income" value={currency(income, locale)} className="text-emerald-600" />
           <Stat label="Expenses" value={currency(expense, locale)} className="text-red-600" />
         </div>
-        <div className="text-right">
+        <div className="min-w-0 text-right">
           <div className="text-muted-foreground text-xs font-medium uppercase">Balance</div>
-          <div className={`text-2xl font-semibold ${balance < 0 ? 'text-red-600' : ''}`}>
+          <div
+            className={`${valueSize(currency(balance, locale))} whitespace-nowrap font-semibold ${
+              balance < 0 ? 'text-red-600' : ''
+            }`}
+          >
             {currency(balance, locale)}
           </div>
         </div>
@@ -397,13 +401,21 @@ function StatCard({
         >
           <Icon className="size-5" />
         </div>
-        <div>
+        <div className="min-w-0">
           <p className="text-muted-foreground text-sm">{label}</p>
-          <p className="text-2xl font-semibold">{value}</p>
+          <p className={`${valueSize(value)} whitespace-nowrap font-semibold`}>{value}</p>
         </div>
       </div>
     </div>
   );
+}
+
+/** Shrink the value font so long strings (e.g. large currency) fit the card. */
+function valueSize(value: string) {
+  if (value.length <= 10) return 'text-2xl';
+  if (value.length <= 14) return 'text-xl';
+  if (value.length <= 18) return 'text-lg';
+  return 'text-base';
 }
 
 function isOverdue(dueAt: string | null): boolean {
